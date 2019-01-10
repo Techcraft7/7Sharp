@@ -1,0 +1,18 @@
+c:\users\mctec\documents\visual studio 2017\Projects\7Sharp\7Sharp\bin\Debug\7Sharp.exe.config
+c:\users\mctec\documents\visual studio 2017\Projects\7Sharp\7Sharp\bin\Debug\7Sharp.exe
+c:\users\mctec\documents\visual studio 2017\Projects\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
+c:\users\mctec\documents\visual studio 2017\Projects\7Sharp\7Sharp\obj\Debug\7Sharp.csprojResolveAssemblyReference.cache
+c:\users\mctec\documents\visual studio 2017\Projects\7Sharp\7Sharp\obj\Debug\7Sharp.exe
+c:\users\mctec\documents\visual studio 2017\Projects\7Sharp\7Sharp\obj\Debug\7Sharp.pdb
+C:\Users\mctec\OneDrive\Softwarez\7Sharp\7Sharp\bin\Debug\7Sharp.exe.config
+C:\Users\mctec\OneDrive\Softwarez\7Sharp\7Sharp\bin\Debug\7Sharp.exe
+C:\Users\mctec\OneDrive\Softwarez\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
+C:\Users\mctec\OneDrive\Softwarez\7Sharp\7Sharp\obj\Debug\7Sharp.csprojResolveAssemblyReference.cache
+C:\Users\mctec\OneDrive\Softwarez\7Sharp\7Sharp\obj\Debug\7Sharp.exe
+C:\Users\mctec\OneDrive\Softwarez\7Sharp\7Sharp\obj\Debug\7Sharp.pdb
+C:\Users\mctec\Source\Repos\7Sharp\7Sharp\bin\Debug\7Sharp.exe.config
+C:\Users\mctec\Source\Repos\7Sharp\7Sharp\bin\Debug\7Sharp.exe
+C:\Users\mctec\Source\Repos\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
+C:\Users\mctec\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.csprojResolveAssemblyReference.cache
+C:\Users\mctec\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.exe
+C:\Users\mctec\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.pdb
