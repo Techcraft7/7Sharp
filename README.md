@@ -2,4 +2,4 @@
 # 7Sharp
 A simple shell!
 
-##Lets make shelling a who lot simpler with 7Sharp!
+## Lets make shelling a who lot simpler with 7Sharp!
