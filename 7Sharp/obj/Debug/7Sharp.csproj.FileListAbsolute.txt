@@ -16,3 +16,11 @@ C:\Users\mctec\Source\Repos\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
 C:\Users\mctec\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.csprojResolveAssemblyReference.cache
 C:\Users\mctec\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.exe
 C:\Users\mctec\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.pdb
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CoreCompileInputs.cache
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.csprojAssemblyReference.cache
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\bin\Debug\7Sharp.exe.config
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\bin\Debug\7Sharp.exe
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CopyComplete
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.exe
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Debug\7Sharp.pdb

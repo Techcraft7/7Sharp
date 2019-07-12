@@ -9,3 +9,15 @@ C:\Users\mctec\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package
 C:\Users\mctec\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.exe
 C:\Users\mctec\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.pdb
 C:\Users\mctec\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.ArgDialog.resources
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.exe.config
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.exe
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.pdb
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csprojAssemblyReference.cache
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.ArgDialog.resources
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Blocks.resources
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Form1.resources
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Properties.Resources.resources
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.GenerateResource.cache
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.CoreCompileInputs.cache
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.exe
+C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.pdb

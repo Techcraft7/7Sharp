@@ -29,21 +29,21 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.Text = new System.Windows.Forms.Label();
+			this.BlockText = new System.Windows.Forms.Label();
 			this.UpdateClock = new System.Windows.Forms.Timer(this.components);
 			this.SuspendLayout();
 			// 
 			// Text
 			// 
-			this.Text.AutoSize = true;
-			this.Text.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.Text.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-			this.Text.Location = new System.Drawing.Point(0, 0);
-			this.Text.Name = "Text";
-			this.Text.Size = new System.Drawing.Size(32, 13);
-			this.Text.TabIndex = 0;
-			this.Text.Text = "Block";
-			this.Text.Click += new System.EventHandler(this.Text_Click);
+			this.BlockText.AutoSize = true;
+			this.BlockText.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.BlockText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.BlockText.Location = new System.Drawing.Point(0, 0);
+			this.BlockText.Name = "Text";
+			this.BlockText.Size = new System.Drawing.Size(32, 13);
+			this.BlockText.TabIndex = 0;
+			this.BlockText.Text = "Block";
+			this.BlockText.Click += new System.EventHandler(this.Text_Click);
 			// 
 			// UpdateClock
 			// 
@@ -54,7 +54,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.DarkGray;
-			this.Controls.Add(this.Text);
+			this.Controls.Add(this.BlockText);
 			this.Name = "Blocks";
 			this.Size = new System.Drawing.Size(150, 59);
 			this.Load += new System.EventHandler(this.Blocks_Load);
@@ -67,7 +67,7 @@
 
 		#endregion
 
-		public System.Windows.Forms.Label Text;
+		public System.Windows.Forms.Label BlockText;
 		private System.Windows.Forms.Timer UpdateClock;
 	}
 }

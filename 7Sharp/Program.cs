@@ -4,11 +4,15 @@ using System.Diagnostics;
 using System.Text;
 using System.IO;
 using _7Sharp;
+using Techcraft7_DLL_Pack;
 using System.Reflection;
+using _7Sharp.API;
 
 namespace _7Sharp
 {
-	class Program
+    using static ColorConsoleMethods;
+    using static Console;
+	internal class Program
 	{
 		public static bool _inputs = false;
 		public static string[] input_split = { };
@@ -16,17 +20,19 @@ namespace _7Sharp
 		public static bool loop = false;
 		public static bool parsed = false;
 		public static string input = "";
-		public static List<InstalledPackageCmd> custom_cmds = new List<InstalledPackageCmd>();
 		public static bool has_args = false;
 		public static List<VarInt> ints = new List<VarInt>();
 		public static List<VarString> strings = new List<VarString>();
 		public static StreamReader srr = null;
+        public static List<Assembly> PluginAssemblies = new List<Assembly>();
 		public static int times = 1;
 		public static List<Command> commands = new List<Command>();
 		public static bool echo = true;
 		static void Main(string[] args)
 		{
-			//add commands
+            //title
+            Title = "7Sharp";
+            //add commands
 			commands.Add(new Write());
 			commands.Add(new Help());
 			commands.Add(new Clear());
@@ -44,98 +50,123 @@ namespace _7Sharp
 			commands.Add(new Out());
 			commands.Add(new Open());
 			commands.Add(new Com());
-			commands.Add(new WhileInt());
+			commands.Add(new While());
 			commands.Add(new If());
 			commands.Add(new Out());
-			//Do parsing stuff...
-			if (args.Length == 0 || args == null)
-			{
-				has_args = false;
-			}
-			else
-			{
-				has_args = true;
-			}
-			//set titlebar
-			Console.Title = "7Sharp";
-			//cant read more than one 7s file
-			if (has_args == true)
-			{
-				if (args.Length > 1)
-				{
-					Console.WriteLine("Cannot read multiple .7s files...  Press enter to exit...");
-					Console.Read();
-				}
-			}
-			//start 7Sharp
+            //initialize plugins
+            WriteLineColor("Looking for plugins", ConsoleColor.Yellow);
+            if (Directory.Exists(@"plugins\"))
+            {
+                int successes = 0;
+                int n_plugins = 0;
+                IEnumerable<string> plugins = Directory.EnumerateFiles(@"plugins\", "*.dll", SearchOption.TopDirectoryOnly);
+                WriteLineColor("Found plugins directory! Initalizing plugins!", ConsoleColor.Green);
+                foreach (string i in plugins)
+                {
+                    n_plugins++;
+                }
+                WriteLineColor("Found " + n_plugins + " plugin(s)!", ConsoleColor.Green);
+                foreach (string path in plugins)
+                {
+                    try
+                    {
+                        //load dll
+                        Assembly asm = Assembly.LoadFrom(path);
+                        //load assembly of dll
+                        AppDomain.CurrentDomain.Load(asm.GetName());
+                        //get all types in dll
+                        foreach (Type t in asm.GetExportedTypes())
+                        {
+                            if (t.IsSubclassOf(typeof(Command)))
+                            {
+                                //check for no parameter constructor
+                                if (t.GetConstructor(Type.EmptyTypes) == null)
+                                {
+                                    throw new PluginIntializationException("The 7Sharp API does not allow commands that have constructors with parameters!");
+                                }
+                                //attempt to get parse method
+                                if (t.GetMethod("Parse") == null || t.GetMethod("Parse") == typeof(Command).GetMethod("Parse"))
+                                {
+                                    throw new PluginIntializationException("Plugin " + Path.GetFileName(path) + ": Command " + t.Name + " did not have a parse method!");
+                                }
+                                //create instance
+                                commands.Add((Command)Activator.CreateInstance(t));
+                                //woo hoo it works!
+                                successes++;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        WriteLineColor(e.GetType() + ": " + e.Message, ConsoleColor.Red);
+                    }
+                }
+            }
+            else
+            {
+                WriteLineColor("Plugin directory not found!", ConsoleColor.Magenta);
+            }
+            #if DEBUG
+                //do nothing
+            #else
+                Console.Clear();
+            #endif
+            //parse script if any
+            has_args = args.Length == 1;
+            UpdateEnvironment();
 			while (true)
-			{
-				if (_inputs == true)
-				{
-					_inputs = false;
-					goto inputs;
-				}
-				if (has_args == true)
-				{
-					//display "Parsing..."
-					srr = new StreamReader(args[0]);
-					input = srr.ReadLine();
-					input_split = input.Split(' ', '\n');
-					bool x = false;
-					if (input != "out off" && x == false)
-					{
-						Techcraft7_DLL_Pack.ColorConsoleMethods.WriteLineColor("Parsing...", ConsoleColor.Yellow);
-						x = true;
-					}
-				}
-				exit = false;
-				//get input
-				if (!has_args)
-				{
-					input = Console.ReadLine();
-					input_split = input.Split(' ', '\n');
-				}
-				//Input parsing
-				inputs:
-				parse:
-				//loops
-				foreach (Command i in commands)
-				{
-					input_split = input.Split(' ', '\n');
-					i.Parse();
-				}
-				//custom commands
-				foreach (InstalledPackageCmd i in custom_cmds)
-				{
-					input_split = input.Split(' ', '\n');
-					i.Parse();
-				}
-				if (exit == true)
-				{
-					if (srr != null)
-					{
-						srr.Close();
-						srr.Dispose();
-					}
-				}
-				if (srr != null && srr.EndOfStream == false)
-				{
-					has_args = true;
-					input = srr.ReadLine();
-					goto parse;
-				}
-				else if (srr != null && srr.EndOfStream == true)
-				{
-					has_args = false;
-					if (parsed == false && echo)
-					{
-						Techcraft7_DLL_Pack.ColorConsoleMethods.WriteLineColor("Done!", ConsoleColor.Yellow);
-					}
-					parsed = true;
-				}
-				//retake input
-				_inputs = false;
-			}
+            {
+                if (!has_args)
+                {
+                    input = ReadLine();
+                    input_split = input.Split(' ', '\n');
+                    UpdateEnvironment();
+                    ParseCommands();
+                }
+                else
+                {
+                    while (srr.EndOfStream == false)
+                    {
+                        input = srr.ReadLine();
+                        input_split = input.Split(' ', '\n');
+                        UpdateEnvironment();
+                        ParseCommands();
+                    }
+                    srr.Close();
+                    UpdateEnvironment();
+                }
+            }
 		}
-	}
+        private static void ParseCommands()
+        {
+            foreach (Command i in commands)
+            {
+                i.Parse();
+            }
+        }
+
+        private static void UpdateEnvironment()
+        {
+            InternalEnv.commands = commands;
+            InternalEnv.echo = echo;
+            InternalEnv.exit = exit;
+            InternalEnv.has_args = has_args;
+            InternalEnv.input = input;
+            InternalEnv.input_split = input.Split(' ', '\n');
+            InternalEnv.ints = ints;
+            InternalEnv.loop = loop;
+            InternalEnv.parsed = parsed;
+            InternalEnv.srr = srr;
+            InternalEnv.strings = strings;
+            InternalEnv.times = times;
+            InternalEnv._inputs = _inputs;
+            _7sEnvironment.Commands = commands;
+            _7sEnvironment.Echo = echo;
+            _7sEnvironment.Input = input;
+            _7sEnvironment.Ints = ints;
+            _7sEnvironment.SplitInput = input.Split(' ', '\n');
+            _7sEnvironment.Strings = strings;
+            _7sEnvironment.CurrentScriptStream = srr;
+        }
+    }
 }

@@ -1,0 +1,12 @@
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\bin\Debug\APITests.dll
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\bin\Debug\APITests.pdb
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\bin\Debug\7Sharp.exe
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\bin\Debug\ColorConsoleMethods.dll
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\bin\Debug\ExpressionEval.dll
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\bin\Debug\7Sharp.pdb
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\bin\Debug\7Sharp.exe.config
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\obj\Debug\APITests.csprojAssemblyReference.cache
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\obj\Debug\APITests.csproj.CoreCompileInputs.cache
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\obj\Debug\APITests.csproj.CopyComplete
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\obj\Debug\APITests.dll
+C:\Users\Brandon\Source\Repos\7Sharp\APITests\obj\Debug\APITests.pdb

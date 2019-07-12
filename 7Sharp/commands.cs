@@ -6,33 +6,16 @@ using System.Diagnostics;
 using System.IO;
 using Techcraft7_DLL_Pack;
 using ExpressionEvaluation;
+using System.Windows.Forms;
+using _7Sharp.API;
+using Sys = _7Sharp.Program;
 
 namespace _7Sharp
 {
-	using static Program;
+    using static InternalEnv;
 	using static ColorConsoleMethods;
 	using static Console;
-	class Command
-	{
-		public override string ToString()
-		{
-			return string.Format("{0} -  {1}", call, help);
-		}
-		protected string call { get; set; }
-		protected string help { get; set; }
-		public virtual void Parse()
-		{
-			if (input_split[0].ToLower() == call)
-			{
-				//Code goes here
-			}
-			else
-			{
-				return;
-			}
-		}
-	}
-	class StartWithArgs : Command
+	class StartWithArgs : Command, ISysCommand
 	{
 		public StartWithArgs()
 		{
@@ -72,7 +55,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class Write : Command
+	class Write : Command, ISysCommand
 	{
 		public Write()
 		{
@@ -142,7 +125,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class StringSet : Command
+	class StringSet : Command, ISysCommand
 	{
 		public StringSet()
 		{
@@ -176,7 +159,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class VarStringSet : Command
+	class VarStringSet : Command, ISysCommand
 	{
 		public VarStringSet()
 		{
@@ -222,7 +205,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class Add : Command
+	class Add : Command, ISysCommand
 	{
 		public Add()
 		{
@@ -264,7 +247,7 @@ namespace _7Sharp
 			return;
 		}
 	}
-	class VarIntSet : Command
+	class VarIntSet : Command, ISysCommand
 	{
 		public VarIntSet()
 		{
@@ -301,7 +284,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class WriteFile : Command
+	class WriteFile : Command, ISysCommand
 	{
 		public WriteFile()
 		{
@@ -336,7 +319,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class ReadFile : Command
+	class ReadFile : Command, ISysCommand
 	{
 		public ReadFile()
 		{
@@ -398,7 +381,7 @@ namespace _7Sharp
 			return;
 		}
 	}
-	class Int : Command
+	class Int : Command, ISysCommand
 	{
 		public Int()
 		{
@@ -423,14 +406,14 @@ namespace _7Sharp
 					}
 					catch (Exception e)
 					{
-						WriteLineColor("Format Exception: invalid number", ConsoleColor.Red);
+						WriteLineColor(e.GetType() + ": " + e.Message, ConsoleColor.Red);
 					}
 				}
 			}
 
 		}
 	}
-	class Exit : Command
+	class Exit : Command, ISysCommand
 	{
 		public Exit()
 		{
@@ -441,13 +424,11 @@ namespace _7Sharp
 		{
 			if (input_split[0].ToLower() == call)
 			{
-				WriteLine("Press enter to continue...");
-				ReadLine();
 				Environment.Exit(0);
 			}
 		}
 	}
-	class Help : Command
+	class Help : Command, ISysCommand
 	{
 		public Help()
 		{
@@ -465,7 +446,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class Clear : Command
+	class Clear : Command, ISysCommand
 	{
 		public Clear()
 		{
@@ -480,7 +461,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class Open : Command
+	class Open : Command, ISysCommand
 	{
 		public Open()
 		{
@@ -517,7 +498,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class Loop : Command
+	class Loop : Command, ISysCommand
 	{
 		public Loop()
 		{
@@ -526,7 +507,6 @@ namespace _7Sharp
 		}
 		public override void Parse()
 		{
-			bool invalid = false;
 			if (input_split[0].ToLower() == call)
 			{
 				try
@@ -548,7 +528,6 @@ namespace _7Sharp
 									while (count < ints.Count);
 									List<string> z = new List<string>();
 									bool retu = false;
-									ret:
 									if (retu == true)
 									{
 										return;
@@ -557,29 +536,21 @@ namespace _7Sharp
 									{
 										if (echo)
 										{
-											WriteLine("Loop Commands (type end to exit):");
-										}
-										input = has_args == true ? srr.ReadLine() : ReadLine();
-										if (input.ToLower().Contains("loop") || input.ToLower().Contains("while") || input.ToLower().Contains("if"))
-										{
-											throw new InvalidOperationException("NO LOOPS, IFS, OR WHILE COMMANDS!");
-											retu = true;
-											goto ret;
-										}
+											WriteLine("Loop Commands (type end to exit loop):");
+                                            input = has_args == true ? srr.ReadLine() : ReadLine();
+                                        }
 										else
 										{
 											z.Add(input);
-										}
+                                            input = has_args == true ? srr.ReadLine() : ReadLine();
+                                        }
 									}
 									for (int i = 0; i < times; i++)
 									{
 										foreach (string x in z)
 										{
 											input_split = x.Split(' ', '\n');
-											foreach (InstalledPackageCmd c in custom_cmds)
-											{
-												c.Parse();
-											}
+                                            
 											foreach (Command c in commands)
 											{
 												c.Parse();
@@ -620,10 +591,6 @@ namespace _7Sharp
 										foreach (string x in z)
 										{
 											input_split = x.Split(' ', '\n');
-											foreach (InstalledPackageCmd c in custom_cmds)
-											{
-												c.Parse();
-											}
 											foreach (Command c in commands)
 											{
 												c.Parse();
@@ -661,7 +628,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class _7sRandom : Command
+	class _7sRandom : Command, ISysCommand
 	{
 		public _7sRandom()
 		{
@@ -699,14 +666,13 @@ namespace _7Sharp
 			}
 		}
 	}
-	class If : Command
+	class If : Command, ISysCommand
 	{
 		public If()
 		{
 			call = "if";
 			help = "executes a command if the condition matches the input boolean value, NO NESTED IF STATEMENTS!!!: if <true/false> (enter) <condition> (enter) <command to execute if condition is true/false>";
 		}
-		private int x = 0;
 		private string eq = "";
 		private bool y = false;
 		ExpressionEval ee = null;
@@ -716,7 +682,6 @@ namespace _7Sharp
 			{
 				try
 				{
-					x = 0;
 					y = false;
 					eq = "";
 					if (Convert.ToBoolean(input.Split(' ', '\n')[1]) == true)
@@ -759,7 +724,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class Com : Command
+	class Com : Command, ISysCommand
 	{
 		public Com()
 		{
@@ -822,51 +787,20 @@ namespace _7Sharp
 			}
 		}
 	}
-	class InstallPkg : Command, ICommandShare
+	class InstallPkg : Command, ISysCommand, ICommandShare
 	{
 		public InstallPkg()
 		{
 			call = "install-pkg";
-			help = "installs a package: install-pkg <path>";
+			help = "installs a package: install-pkg <path> (DEPRECATED)";
 		}
-		private int x = 0;
-		private StreamReader sr;
-		private string path;
 		public override void Parse()
 		{
-			sr = null;
-			path = "";
-			x = 0;
 			if (input_split[0] == call)
 			{
-				foreach (string i in input_split)
-				{
-					if (x == 0)
-					{
-						x++;
-						continue;
-					}
-					else
-					{
-						path += i + " ";
-						x++;
-					}
-				}
 				try
 				{
-					sr = new StreamReader(path);
-					InstalledPackageCmd cmd = new InstalledPackageCmd(sr.ReadLine());
-					while (sr.EndOfStream == false)
-					{
-						cmd.commands.Add(sr.ReadLine().Replace("\\~", " "));
-					}
-					sr.Close();
-					sr.Dispose();
-					custom_cmds.Add(cmd);
-					if (echo)
-					{
-						WriteLineColor("Installed Package!", ConsoleColor.Yellow);
-					}
+                    throw new DeprecatedException("This command is deprecated... please use the 7Sharp API or use an ealier build!");
 				}
 				catch (Exception e)
 				{
@@ -897,7 +831,7 @@ namespace _7Sharp
 			}
 		}
 	}
-	class Out : Command
+	class Out : Command, ISysCommand
 	{
 		public Out()
 		{
@@ -906,7 +840,7 @@ namespace _7Sharp
 		}
 		public override void Parse()
 		{
-			if (input_split[0] == call)
+			if (input_split[0] == call && input_split.Length == 2)
 			{
 				if (!(input_split.Length == 2))
 				{
@@ -928,9 +862,9 @@ namespace _7Sharp
 			}
 		}
 	}
-	class WhileInt : Command
+	class While : Command, ISysCommand
 	{
-		public WhileInt()
+		public While()
 		{
 			call = "while";
 			help = "loops until the expression is ture or false: while <expression (use $<intname>$ to get int value)> (enter) <true/false> (enter) <command> (enter)";
@@ -942,7 +876,6 @@ namespace _7Sharp
 		private ExpressionEval ee = null;
 		private List<string> replace = null;
 		private int n = 0;
-		private bool fail = false;
 		public override void Parse()
 		{
 			if (input_split[0] == call)
@@ -951,7 +884,6 @@ namespace _7Sharp
 				{
 					//usage: while$ <expression>, use $<int name>$ to get an ints value
 					eq = "";
-					fail = false;
 					eq_noformat = "";
 					n = 0;
 					replace = new List<string>();
@@ -959,11 +891,6 @@ namespace _7Sharp
 					ee = null;
 					y = false;
 					string[] sep = { "$" };
-					fail:
-					if (fail == true)
-					{
-						return;
-					}
 					if (input_split[0] == call)
 					{
 						foreach (string i in input_split)
@@ -1009,25 +936,9 @@ namespace _7Sharp
 						input = has_args == true ? srr.ReadLine() : ReadLine();
 						input_split = input.Split(' ', '\n');
 						ee = new ExpressionEval(eq);
-						if (input.ToLower().Contains("loop") || input.ToLower().Contains("while") || input.ToLower().Contains("if"))
-						{
-							try
-							{
-								throw new InvalidOperationException("NO LOOPS, IFS, OR WHILE COMMANDS!");
-							}
-							catch (Exception e)
-							{
-								WriteLineColor(string.Format("Error occured of type {0}: {1}...", e.GetType().ToString(), e.Message), ConsoleColor.Red);
-								return;
-							}
-						}
 						while (ee.EvaluateBool() == y)
 						{
 							foreach (Command i in commands)
-							{
-								i.Parse();
-							}
-							foreach (InstalledPackageCmd i in custom_cmds)
 							{
 								i.Parse();
 							}

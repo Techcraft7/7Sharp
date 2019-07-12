@@ -125,18 +125,18 @@ namespace _7Sharp_Package_Maker
 		}
 		private void Update_Tick(object sender, EventArgs e)
 		{
-			if (Text.Text.Length != 0)
+			if (BlockText.Text.Length != 0)
 			{
-				Text.Size = new Size(Size.Width, Size.Height);
-				Text.Font = new Font(FontFamily.GenericMonospace, Size.Width / Text.Text.Length, FontStyle.Regular);
+				BlockText.Size = new Size(Size.Width, Size.Height);
+				BlockText.Font = new Font(FontFamily.GenericMonospace, Size.Width / BlockText.Text.Length, FontStyle.Regular);
 				BackColor = Color;
-				Text.Text = Command;
-				Size = new Size(Size.Width, Text.Font.Height);
-				Text.BackColor = Color.FromArgb(0, 0, 0, 0);
+				BlockText.Text = Command;
+				Size = new Size(Size.Width, BlockText.Font.Height);
+				BlockText.BackColor = Color.FromArgb(0, 0, 0, 0);
 			}
 			else
 			{
-				Text.Text = "Error";
+				BlockText.Text = "Error";
 			}
 		}
 
