@@ -96,7 +96,7 @@ namespace _7Sharp
 				else if (input_split[1] == "$")
 				{
 					string output = "";
-					foreach (VarInt i in ints)
+					foreach (_7sInt i in ints)
 					{
 						if (input_split[2] == i.name)
 						{
@@ -109,7 +109,7 @@ namespace _7Sharp
 				{
 					if (input_split.Length == 3)
 					{
-						foreach (VarString i in strings)
+						foreach (_7sString i in strings)
 						{
 							if (i.name == input_split[2])
 							{
@@ -148,7 +148,7 @@ namespace _7Sharp
 						}
 						x++;
 					}
-					strings.Add(new VarString(input_split[1], val));
+					strings.Add(new _7sString(input_split[1], val));
 					if (echo)
 						WriteLineColor("Stored...", ConsoleColor.Yellow);
 				}
@@ -170,7 +170,7 @@ namespace _7Sharp
 		{
 			if (input_split.Length >= 4 && input_split[0].ToLower() == call)
 			{
-				foreach (VarString i in strings)
+				foreach (_7sString i in strings)
 				{
 					if (input.Split(' ', '\n')[2] == i.name)
 					{
@@ -218,7 +218,7 @@ namespace _7Sharp
 			{
 				if (input_split.Length == 3 && input_split[0].ToLower() == call)
 				{
-					foreach (VarInt i in ints)
+					foreach (_7sInt i in ints)
 					{
 						if (input_split[1] == i.name)
 						{
@@ -258,7 +258,7 @@ namespace _7Sharp
 		{
 			if (input_split[0] == call)
 			{
-				foreach (VarInt y in ints)
+				foreach (_7sInt y in ints)
 				{
 					if (input.Split(' ', '\n')[1] == y.name)
 					{
@@ -302,7 +302,7 @@ namespace _7Sharp
 					{
 						WriteLineColor("Write text (escape squences allowed (\\n \\t)):", ConsoleColor.Yellow);
 					}
-					string foo = has_args == true ? srr.ReadLine() : ReadLine();
+                    string foo = has_args == true ? srr.ReadLine() : RunningEnvCode == true ? EnvCode[EnvCodeIndex + 1] : ReadLine();
 					foo.Replace("\\n", "\n");
 					foo.Replace("\\t", "\t");
 					sw.Write(foo);
@@ -400,7 +400,7 @@ namespace _7Sharp
 				{
 					try
 					{
-						ints.Add(new VarInt(Convert.ToInt32(input_split[1]), input_split[2]));
+						ints.Add(new _7sInt(Convert.ToInt32(input_split[1]), input_split[2]));
 						if (echo)
 							WriteLineColor("Set value...", ConsoleColor.Yellow);
 					}
@@ -537,19 +537,21 @@ namespace _7Sharp
 										if (echo)
 										{
 											WriteLine("Loop Commands (type end to exit loop):");
-                                            input = has_args == true ? srr.ReadLine() : ReadLine();
+                                            Sys.UpdateInputFromEnvCode();
                                         }
 										else
 										{
 											z.Add(input);
-                                            input = has_args == true ? srr.ReadLine() : ReadLine();
+                                            Sys.UpdateInputFromEnvCode();
+
                                         }
 									}
 									for (int i = 0; i < times; i++)
 									{
 										foreach (string x in z)
 										{
-											input_split = x.Split(' ', '\n');
+											Sys.input_split = x.Split(' ', '\n');
+                                            Sys.UpdateEnvironment();
                                             
 											foreach (Command c in commands)
 											{
@@ -557,8 +559,9 @@ namespace _7Sharp
 											}
 										}
 									}
-									times = 0;
-								}
+									Sys.times = 0;
+                                    Sys.UpdateEnvironment();
+                                }
 								else
 								{
 									throw new FormatException("Too many arguments...");
@@ -568,7 +571,8 @@ namespace _7Sharp
 							{
 								if (!(input_split.Length > 2))
 								{
-									times = Convert.ToInt32(input_split[1]);
+									Sys.times = Convert.ToInt32(input_split[1]);
+                                    Sys.UpdateEnvironment();
 									List<string> z = new List<string>();
 									while (input != "end")
 									{
@@ -576,29 +580,25 @@ namespace _7Sharp
 										{
 											WriteLine("Loop Commands (type end to exit):");
 										}
-										input = has_args == true ? srr.ReadLine() : ReadLine();
-										if (input.ToLower().Contains("loop") || input.ToLower().Contains("while") || input.ToLower().Contains("if"))
-										{
-											throw new InvalidOperationException("NO LOOPS, IFS, OR WHILE COMMANDS!");
-										}
-										else
-										{
-											z.Add(input);
-										}
+                                        Sys.UpdateInputFromEnvCode();
+                                        z.Add(input);
 									}
 									for (int i = 0; i < times; i++)
 									{
 										foreach (string x in z)
 										{
-											input_split = x.Split(' ', '\n');
+                                            Sys.input = x;
+											Sys.input_split = x.Split(' ', '\n');
+                                            Sys.UpdateEnvironment(true);
 											foreach (Command c in commands)
 											{
 												c.Parse();
 											}
 										}
 									}
-									times = 0;
-								}
+									Sys.times = 0;
+                                    Sys.UpdateEnvironment();
+                                }
 								else
 								{
 									throw new FormatException("Too many arguments...");
@@ -644,7 +644,7 @@ namespace _7Sharp
 					Random rng = new Random();
 					int min = Convert.ToInt32(input_split[1]);
 					int max = Convert.ToInt32(input_split[2]) + 1;
-					foreach (VarInt i in ints)
+					foreach (_7sInt i in ints)
 					{
 						if (i.name == input_split[3])
 						{
@@ -700,14 +700,14 @@ namespace _7Sharp
 					{
 						WriteLine("Condition:");
 					}
-					eq = has_args == true ? srr.ReadLine() : ReadLine();
+                    Sys.UpdateInputFromEnvCode();
+                    eq = input;
 					if (echo)
 					{
 						WriteLine("Command to execute if condition is {0}:", y);
 					}
 					ee = new ExpressionEval(eq);
-					input = has_args == true ? srr.ReadLine() : ReadLine();
-					input_split = input.Split(' ', '\n');
+                    Sys.UpdateInputFromEnvCode();
 					if (Convert.ToBoolean(ee.EvaluateBool()) == Convert.ToBoolean(y))
 					{
 						foreach (Command i in commands)
@@ -819,15 +819,7 @@ namespace _7Sharp
 		{
 			if (input_split[0] == call)
 			{
-				foreach (string i in commands)
-				{
-					input = i;
-					//				input_split = input.Split(' ', '\n');
-					foreach (Command cmd in Program.commands)
-					{
-						cmd.Parse();
-					}
-				}
+                WriteLine("Deprecated! Use the 7Sharp API!");
 			}
 		}
 	}
@@ -842,7 +834,7 @@ namespace _7Sharp
 		{
 			if (input_split[0] == call && input_split.Length == 2)
 			{
-				if (!(input_split.Length == 2))
+				if (input_split.Length != 2)
 				{
 					WriteLineColor("You did the command wrong... syntax: out <on/off>" , ConsoleColor.Red);
 					return;
@@ -850,11 +842,13 @@ namespace _7Sharp
 				if (input_split[1] == "off" && input_split.Length == 2)
 				{
 					echo = false;
+                    Sys.UpdateEnvironment();
 				}
 				else if (input_split[1] == "on" && input_split.Length == 2)
 				{
 					echo = true;
-				}
+                    Sys.UpdateEnvironment();
+                }
 				else
 				{
 					WriteLineColor("Usage: out <on/off>", ConsoleColor.Red);
@@ -906,7 +900,7 @@ namespace _7Sharp
 						eq_noformat = eq;
 						foreach (string text in eq.Split(sep, StringSplitOptions.RemoveEmptyEntries))
 						{
-							foreach (VarInt foo in ints)
+							foreach (_7sInt foo in ints)
 							{
 								if (foo.name == text)
 								{
@@ -928,13 +922,12 @@ namespace _7Sharp
 						{
 							WriteLine("If {0} == : (true/false)", eq);
 						}
-						y = Convert.ToBoolean(has_args == true ? srr.ReadLine() : ReadLine());
+						y = Convert.ToBoolean(has_args == true ? srr.ReadLine() : RunningEnvCode == true ? EnvCode[EnvCodeIndex + 1] : ReadLine());
 						if (echo)
 						{
 							WriteLine("Command to execute if {0} == {1}", eq, y);
 						}
-						input = has_args == true ? srr.ReadLine() : ReadLine();
-						input_split = input.Split(' ', '\n');
+                        Sys.UpdateInputFromEnvCode();
 						ee = new ExpressionEval(eq);
 						while (ee.EvaluateBool() == y)
 						{

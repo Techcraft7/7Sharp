@@ -8,3 +8,13 @@ C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\bin\Release\ExpressionEval.dll
 C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Release\7Sharp.csproj.CopyComplete
 C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Release\7Sharp.exe
 C:\Users\Brandon\Source\Repos\7Sharp\7Sharp\obj\Release\7Sharp.pdb
+C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Release\7Sharp.csprojAssemblyReference.cache
+C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Release\7Sharp.csproj.CoreCompileInputs.cache
+C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Release\7Sharp.exe
+C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Release\7Sharp.pdb
+C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\7Sharp.exe.config
+C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\7Sharp.exe
+C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\7Sharp.pdb
+C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\ColorConsoleMethods.dll
+C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\ExpressionEval.dll
+C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Release\7Sharp.csproj.CopyComplete

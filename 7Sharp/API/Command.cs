@@ -12,8 +12,8 @@ namespace _7Sharp.API
         {
             return string.Format("{0} - {1}", call, help);
         }
-        protected string call { get; set; }
-        protected string help { get; set; }
+        protected internal string call { get; set; }
+        protected internal string help { get; set; }
         public virtual void Parse()
         {
             throw new Exception("Use me only in child classes!");
