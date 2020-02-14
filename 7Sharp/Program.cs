@@ -257,8 +257,11 @@ namespace _7Sharp
         {
             bool last = EnvCodeIndex == EnvCode.Length;
             input = has_args == true ? srr.ReadLine() : (RunningEnvCode ? (last ? NoEnvCode : EnvCode[EnvCodeIndex + 1]) : ReadLine());
-            EnvCodeIndex++;
-            UpdateEnvironment();
+            if (RunningEnvCode)
+            {
+                EnvCodeIndex++;
+            }
+            UpdateEnvironment(RunningEnvCode);
         }
     }
 }
