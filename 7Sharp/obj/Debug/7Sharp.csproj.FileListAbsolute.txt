@@ -32,3 +32,13 @@ C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CoreCompileInputs.
 C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CopyComplete
 C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Debug\7Sharp.exe
 C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Debug\7Sharp.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csprojAssemblyReference.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CoreCompileInputs.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.exe
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\7Sharp.exe.config
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\7Sharp.exe
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Techcraft7 DLL Pack.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Techcraft7 DLL Pack.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CopyComplete
