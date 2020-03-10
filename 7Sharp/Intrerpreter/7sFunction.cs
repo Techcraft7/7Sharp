@@ -6,33 +6,33 @@ using System.Threading.Tasks;
 
 namespace _7Sharp.Intrerpreter
 {
-    using static Techcraft7_DLL_Pack.Text.ColorConsoleMethods;
-    using static ConsoleColor;
-    using static Console;
-    public class _7sFunction
-    {
-        public int NumberOfArguments;
-        public string Name;
-        public dynamic Code;
+	using static Techcraft7_DLL_Pack.Text.ColorConsoleMethods;
+	using static ConsoleColor;
+	using static Console;
+	public class _7sFunction
+	{
+		public int NumberOfArguments;
+		public string Name;
+		public dynamic Code;
 
-        public _7sFunction(string name, int args, Delegate action)
-        {
-            Name = name;
-            NumberOfArguments = args;
-            Code = action;
-        }
+		public _7sFunction(string name, int args, Delegate action)
+		{
+			Name = name;
+			NumberOfArguments = args;
+			Code = action;
+		}
 
-        public void Run(out dynamic ReturnValue, params object[] args)
-        {
-            ReturnValue = null;
-            try
-            {
-                ReturnValue = Code.DynamicInvoke(args);
-            }
-            catch (Exception e)
-            {
-                WriteLineColor($"Error in function {Name}: {e.Message}", Red);
-            }
-        }
-    }
+		public void Run(out dynamic ReturnValue, params object[] args)
+		{
+			ReturnValue = null;
+			try
+			{
+				ReturnValue = Code.DynamicInvoke(args);
+			}
+			catch (Exception e)
+			{
+				WriteLineColor($"Error in function {Name}: {e.Message}", Red);
+			}
+		}
+	}
 }

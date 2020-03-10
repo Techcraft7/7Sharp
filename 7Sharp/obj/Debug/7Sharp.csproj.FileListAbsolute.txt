@@ -42,3 +42,16 @@ C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Techcraft7 DLL Pack.dll
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Techcraft7 DLL Pack.pdb
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CopyComplete
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\CodingSeb.ExpressionEvaluator.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\sly.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Buffers.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Memory.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.ValueTuple.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\sly.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Buffers.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Memory.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.ValueTuple.xml

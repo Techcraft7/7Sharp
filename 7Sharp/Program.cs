@@ -11,19 +11,22 @@ using _7Sharp.Intrerpreter;
 
 namespace _7Sharp
 {
-    using static ColorConsoleMethods;
-    using static Console;
+	using static ColorConsoleMethods;
+	using static Console;
 	internal class Program
 	{
-        internal static Interpreter interpreter = new Interpreter();
+		internal static Interpreter interpreter = new Interpreter();
 		private static void Main(string[] args)
 		{
-            //init
-            SystemFunctions.Init();
-            //title
-            Title = "7Sharp";
-            interpreter.Run("loop (5) {\n\twrite(\"Hey\") //this is a comment\n\tif (@(foo) == 69) {\n\t\twrite(\"i can math\")\n\t}\n\twrite(\"Ok im done\")\n}");
-            ReadLine();
-        }
-    }
+			//init
+			SystemFunctions.Init();
+			//title
+			Title = "7Sharp";
+			//string code = "foo = 1\nloop (5) {\n\twrite(\"Hey\"); //this is a comment\n\tif (foo == 5) {\n\t\twrite(\"i can math\");\n\t}\n\twrite(\"Ok im done\");\n\tfoo++\n}";
+			string code = "aaa = 1\nwrite(aaa * 10)";
+			WriteLine(code);
+			interpreter.Run(code);
+			ReadLine();
+		}
+	}
 }
