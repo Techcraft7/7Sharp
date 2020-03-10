@@ -16,12 +16,18 @@ namespace _7Sharp.Intrerpreter
 		INT,
 		[Lexeme(GenericToken.Identifier, IdentifierType.AlphaNumericDash)]
 		IDENTIFIER,
+		[Lexeme(GenericToken.SugarToken, ";")]
+		SEMICOLON,
 		[Lexeme(GenericToken.SugarToken, "=")]
 		ASSIGNMENT,
 		[Lexeme(GenericToken.SugarToken, "(")]
 		LPAREN,
 		[Lexeme(GenericToken.SugarToken, ")")]
 		RPAREN,
+		[Lexeme(GenericToken.SugarToken, "{")]
+		LBRACE,
+		[Lexeme(GenericToken.SugarToken, "}")]
+		RBRACE,
 		[Lexeme(GenericToken.SugarToken, ">")]
 		GREATER,
 		[Lexeme(GenericToken.SugarToken, "<")]
