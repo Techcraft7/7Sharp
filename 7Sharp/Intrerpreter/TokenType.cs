@@ -14,6 +14,8 @@ namespace _7Sharp.Intrerpreter
 		DOUBLE,
 		[Lexeme(GenericToken.Int)]
 		INT,
+		[Lexeme(GenericToken.String, "\"", "\\")]
+		STRING,
 		[Lexeme(GenericToken.Identifier, IdentifierType.AlphaNumericDash)]
 		IDENTIFIER,
 		[Lexeme(GenericToken.SugarToken, ";")]
@@ -33,7 +35,7 @@ namespace _7Sharp.Intrerpreter
 		[Lexeme(GenericToken.SugarToken, "<")]
 		LESSER,
 		[Lexeme(GenericToken.SugarToken, "==")]
-		EQUALS,
+		DOUBLEEQUALS,
 		[Lexeme(GenericToken.SugarToken, "!=")]
 		DIFFERENT,
 		[Lexeme(GenericToken.SugarToken, "+")]
@@ -54,5 +56,7 @@ namespace _7Sharp.Intrerpreter
 		TRUE,
 		[Lexeme(GenericToken.KeyWord, "false")]
 		FALSE,
+		[Comment("//", "/*", "*/")]
+		COMMENT
 	}
 }

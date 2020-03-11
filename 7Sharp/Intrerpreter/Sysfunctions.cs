@@ -23,7 +23,7 @@ namespace _7Sharp.Intrerpreter
 
 		static int GetLoopIndex()
 		{
-			return interpreter.loopIndexes.Peek();
+			return interpreter.loopIndexes.Count != 0 ? interpreter.loopIndexes.Peek() : -1;
 		}
 	}
 }

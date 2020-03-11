@@ -30,7 +30,7 @@ namespace _7Sharp
 			//title
 			Title = "7Sharp";
 			//string code = "foo = 1\nloop (5) {\n\twrite(\"Hey\"); //this is a comment\n\tif (foo == 5) {\n\t\twrite(\"i can math\");\n\t}\n\twrite(\"Ok im done\");\n\tfoo++\n}";
-			string code = "aaa = 2;\nloop(5) {\n\twrite(aaa * getLoopIndex());\n}";
+			string code = "aaa = (1 + 1) * 4;//comment\nwrite(\"aaa is \" + aaa);\nloop(2 * 2) {\n\twrite(aaa * getLoopIndex());\n}\nwrite(\"some semicolons: ;;;;;\");";
 			if (args.Length == 1)
 			{
 				try
