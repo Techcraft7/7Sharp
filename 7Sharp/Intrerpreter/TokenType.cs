@@ -46,8 +46,14 @@ namespace _7Sharp.Intrerpreter
 		TIMES,
 		[Lexeme(GenericToken.SugarToken, "/")]
 		DIVIDE,
+		[Lexeme(GenericToken.SugarToken, "++")]
+		PLUSPLUS,
+		[Lexeme(GenericToken.SugarToken, "--")]
+		MINUSMINUS,
 		[Lexeme(GenericToken.KeyWord, "if")]
 		IF,
+		[Lexeme(GenericToken.KeyWord, "else")]
+		ELSE,
 		[Lexeme(GenericToken.KeyWord, "loop")]
 		LOOP,
 		[Lexeme(GenericToken.KeyWord, "while")]

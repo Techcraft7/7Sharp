@@ -29,8 +29,24 @@ namespace _7Sharp
 			SystemFunctions.Init();
 			//title
 			Title = "7Sharp";
-			//string code = "foo = 1\nloop (5) {\n\twrite(\"Hey\"); //this is a comment\n\tif (foo == 5) {\n\t\twrite(\"i can math\");\n\t}\n\twrite(\"Ok im done\");\n\tfoo++\n}";
-			string code = "aaa = (1 + 1) * 4;//comment\nwrite(\"aaa is \" + aaa);\nloop(2 * 2) {\n\twrite(aaa * getLoopIndex());\n}\nwrite(\"some semicolons: ;;;;;\");";
+			//string code = "foo = 1;\nloop (5) {\n\twrite(\"Hey\"); //this is a comment\n\tif (foo == 5) {\n\t\twrite(\"i can math\");\n\t}\n\twrite(\"Ok im done\");\n\tfoo++;\n}";
+			//string code = "aaa = 0;//comment\nwrite(\"aaa is \" + aaa);\nwhile(aaa < 10) {\n\twrite(aaa);\n\taaa = aaa + 1;\n}\nwrite(\"some semicolons: ;;;;;\");";
+			//string code = "x=0;\nwhile(x<10){\nwrite(x);\nx = x + 1;\n}";
+			string code =
+@"foo = new Random();
+if (foo	< 5) {
+	write(""foo is small!"");
+} else if (foo == 5) {
+	write(""foo is 5!"");
+} else if (foo == 10) {
+	write(""foo is VERY big!"");
+} else {
+	write(""foo is big"");
+}
+loop (foo) {
+	write(""Writing this number {foo} times!"");
+}";
+			WriteLine(code);
 			if (args.Length == 1)
 			{
 				try
@@ -47,7 +63,6 @@ namespace _7Sharp
 					return;
 				}
 			}
-			WriteLine(code);
 			interpreter.Run(code);
 			ReadLine();
 		}

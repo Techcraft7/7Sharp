@@ -8,9 +8,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Techcraft7_DLL_Pack.Text;
+using TokenList = System.Collections.Generic.List<sly.lexer.Token<_7Sharp.Intrerpreter.TokenType>>;
 
 namespace _7Sharp.Intrerpreter
 {
+	using static Utils;
 	using static ColorConsoleMethods;
 	using static Console;
 	using static ConsoleColor;
@@ -19,13 +21,68 @@ namespace _7Sharp.Intrerpreter
 	{
 		internal Dictionary<string, _7sFunction> functions = new Dictionary<string, _7sFunction>();
 		internal Stack<int> loopIndexes = new Stack<int>();
-		internal ExpressionEvaluator ee = new ExpressionEvaluator();
+		internal ExpressionEvaluator evaluator = new ExpressionEvaluator();
+		internal ILexer<TokenType> lexer;
+
+		public Interpreter()
+		{
+			InitEvaluator();
+			var built = LexerBuilder.BuildLexer<TokenType>();
+			if (built.Errors.FindAll(x => x.Level != sly.buildresult.ErrorLevel.WARN).Count != 0)
+			{
+				WriteLineColor($"Could not build lexer!", Red);
+				foreach (var e in built.Errors)
+				{
+					if (e.Level == sly.buildresult.ErrorLevel.WARN)
+					{
+						continue;
+					}
+					WriteLineColor($"\t{e.GetType()} level {e.Level}: {e.Message}", Red);
+				}
+				lexer = null;
+			}
+			else
+			{
+
+				lexer = built.Result;
+			}
+		}
+
+		private void InitEvaluator()
+		{
+			evaluator.Variables.Clear();
+			foreach (var f in functions)
+			{
+				evaluator.Variables.Add(f.Key, f.Value.Code);
+			}
+		}
+
 		public void Run(string code)
 		{
-			//Write("\n\nCreating tokens\n\n");
+			code = evaluator.RemoveComments(code);
+			try
+			{
+				InternalRun(code, true);
+			}
+			catch (Exception e)
+			{
+				PrintError(e);
+			}
+			evaluator = new ExpressionEvaluator();
+		}
+
+		private void InternalRun(string code, bool reset = true)
+		{
+			if (reset)
+			{
+				InitEvaluator();
+			}
+			if (lexer == null)
+			{
+				WriteLineColor($"The lexer was null! Cannot run code! Check {new string(typeof(TokenType).ToString().Replace('.', '\\').Skip(1).ToArray())}.cs for lexer errors!", Red);
+				return;
+			}
 			//create tokens
-			var built = LexerBuilder.BuildLexer<TokenType>();
-			ILexer<TokenType> lexer = built.Result;
 			LexerResult<TokenType> result = lexer.Tokenize(code);
 			if (result.IsError)
 			{
@@ -33,15 +90,12 @@ namespace _7Sharp.Intrerpreter
 				return;
 			}
 			result.Tokens.RemoveAt(result.Tokens.Count - 1); //last one is always a double? (probably a bug)
-															 //init expression evaluator
-			ee.PreEvaluateFunction += Add7sFunctions;
 			//evaluate
-			//Write("\n\nParsing\n\n");
-			var tokens = result.Tokens.ToArray();
-			for (int i = 0; i < tokens.Length; i++)
+			var tokens = result.Tokens;
+			for (int i = 0; i < tokens.Count; i++)
 			{
 				//get expression
-				List<Token<TokenType>> expression = new List<Token<TokenType>>();
+				TokenList expression = new TokenList();
 				do
 				{
 					if (tokens[i].TokenID != COMMENT)
@@ -50,135 +104,238 @@ namespace _7Sharp.Intrerpreter
 					}
 					i++;
 				}
-				while (IsNotEndOfExpression(expression) && i < tokens.Length);
+				while (IsNotEndOfExpression(expression) && i < tokens.Count);
 				//evaluate
 				if (IsNotEndOfExpression(expression))
 				{
-					WriteLineColor($"Expected \';\' at line {expression.Last().Position.Line + 1}, char {expression.Last().Position.Column + 1}", Red);
+					string got = string.Empty;
+					expression.ForEach(t =>
+					{
+						got += t.Value;
+					});
+					WriteLineColor($"Expected \';\' at line {expression.Last().Position.Line + 1}, char {expression.Last().Position.Column + 1}, but got \"{got}\"", Red);
 					return;
 				}
 				if (IsVarExpression(expression))
 				{
-					string expr = code.Substring(expression[1].Position.Index + 1, expression.FindLast(t => t.TokenID == SEMICOLON).Position.Index - 5);
-
-					ee.Variables.Add(expression.First().Value, ee.Evaluate(expr));
+					string expr = GetExpressionToToken(expression, SEMICOLON);
+					var x = Evaluate(expr);
+					try
+					{
+						evaluator.Variables.Add(expression.First().Value, x);
+					}
+					catch
+					{
+						evaluator.Variables[expression.First().Value] = x;
+					}
 				}
 				else if (IsLoopExpression(expression))
 				{
-					List<Token<TokenType>> looped = new List<Token<TokenType>>();
-					int count = 0;
-					for (int j = i; j < tokens.Length; j++)
+					int loc = GetClosingBrace(tokens, i, out var looped, out string inside);
+					if (loc < 0 || looped == null)
 					{
-						while (j < tokens.Length)
-						{
-							if (tokens[j].TokenID == RBRACE)
+						WriteLineColor("Error parsing loop/while block!", Red);
+						return;
+					}
+					string expr = GetExpressionToToken(expression, LBRACE);
+					string args = GetArgs(expr);
+					switch (expression.First().TokenID)
+					{
+						case LOOP:
+							int times = (int)Evaluate(args);
+							loopIndexes.Push(0);
+							for (int j = 0; j < times; j++)
 							{
-								WriteLine("END");
-								j = tokens.Length;
-								continue;
+								InternalRun(expr, false);
+								loopIndexes.Push(loopIndexes.Pop() + 1);
 							}
-							looped.Add(tokens[j]);
-							WriteLine(tokens[j]);
-							j++;
-						}
-						if (count != 0)
-						{
-							WriteLineColor("Mismatched braces!", Red);
-							return;
-						}
+							break;
+						case WHILE:
+							while ((bool)Evaluate(args))
+							{
+								InternalRun(expr, false);
+							}
+							break;
 					}
-					string expr = "";
-					foreach (var t in looped)
-					{
-						if (t.TokenID != COMMENT)
-						{
-							expr += t.Value;
-						}
-					}
-					//get args
-					int start = expression.Find(x => x.TokenID == LPAREN).Position.Index + 1;
-					int len = expression.FindLast(x => x.TokenID == RPAREN).Position.Index - start;
-					string args = code.Substring(start, len);
-					int times = (int)ee.Evaluate(args);
-					loopIndexes.Push(0);
-					for (int j = 0; j < times; j++)
-					{
-						loopIndexes.Push(loopIndexes.Pop() + 1);
-						Run(expr);
-					}
+					i = loc;
+					continue;
 				}
 				else if (IsFunctionCall(expression))
 				{
-					string expr = "";
-					foreach (var t in expression)
-					{
-						if (!new TokenType[] { COMMENT, SEMICOLON }.Contains(t.TokenID))
-						{
-							expr += t.Value;
-						}
-					}
-					_ = ee.Evaluate(expr);
+					_ = Evaluate(GetExpressionToToken(expression, SEMICOLON));
+				}
+				else if (IsIfElseBlock(expression))
+				{
+					ProcessIf(expression, tokens, code, ref i);
 				}
 				i--;
 			}
 		}
 
-		private bool IsLoopExpression(List<Token<TokenType>> expression)
+		private void ProcessIf(TokenList expression, TokenList tokens, string code, ref int i)
 		{
-			bool result = true;
-			result &= new TokenType[] { LOOP, WHILE }.Contains(expression.First().TokenID);
-			return result;
+			
+			i -= expression.Count;
+			int offset = expression.First().PositionInTokenFlow;
+			while (!new TokenType[] { IF, ELSE }.Contains(tokens[offset].TokenID))
+			{
+				offset++;
+			}
+			int jump = GetClosingBrace(tokens, offset, out _, out _);
+			while (tokens[offset].TokenID != LBRACE)
+			{
+				offset++;
+			}
+			offset++;
+			if (tokens[jump + 1].TokenID == ELSE) //if another block
+			{
+				lookAgain:
+				try
+				{
+					while (tokens[offset].TokenID != LBRACE)
+					{
+						offset++;
+						_ = tokens[offset]; // throw exception if out of bounds
+					}
+					offset = GetClosingBrace(tokens, offset, out _, out _);
+					if (!new TokenType[] { ELSE }.Contains(tokens[offset + 1].TokenID))
+					{
+						throw new Exception("bad code!");
+					}
+					goto lookAgain;
+				}
+				catch
+				{
+					//do nothing, you found the end
+				}
+			}
+			_ = evaluator.ScriptEvaluate(code.Substring(expression.First().Position.Index, tokens[offset].Position.Index - expression.First().Position.Index + 1));
+			ReadLine();
 		}
-		private bool IsFunctionCall(List<Token<TokenType>> expression)
+
+		private object Evaluate(string expr)
 		{
 			try
 			{
-				bool result = true;
-				result &= expression[0].TokenID == IDENTIFIER; //if first is identifier
-				result &= expression[1].TokenID == LPAREN; //if second is (
-				return result;
+				return evaluator.Evaluate(expr);
 			}
-			catch
+			catch (Exception e)
+			{
+				PrintError(e);
+				return null;
+			}
+		}
+
+		private bool IsLoopExpression(TokenList expression)
+		{
+			if (expression.Count < 1)
 			{
 				return false;
 			}
+			return new TokenType[] { LOOP, WHILE }.Contains(expression.First().TokenID);
 		}
 
-		private bool IsVarExpression(List<Token<TokenType>> expression)
+		private bool IsFunctionCall(TokenList expression)
 		{
-			bool result = true;
-			result &= expression[0].TokenID == IDENTIFIER; //if first is identifier
-			result &= expression[1].TokenID == ASSIGNMENT; //if second is =
+			bool result = false;
+			if (expression.Count >= 2)
+			{
+				result |= expression[0].TokenID == IDENTIFIER; //if first is identifier
+				result &= expression[1].TokenID == LPAREN; //if second is (
+			}
 			return result;
 		}
 
-		private bool IsNotEndOfExpression(List<Token<TokenType>> list) => list.Count == 0 || !new TokenType[] { SEMICOLON, LBRACE }.Contains(list.Last().TokenID);
-
-		private void Add7sFunctions(object sender, FunctionPreEvaluationEventArg e)
+		private bool IsVarExpression(TokenList expression)
 		{
-			foreach (string f in functions.Keys)
+			bool result = false;
+			if (expression.Count >= 2)
 			{
-				if (e.Name == f)
+				result |= expression[0].TokenID == IDENTIFIER; //if first is identifier
+				result &= expression[1].TokenID == ASSIGNMENT; //if second is =
+			}
+			return result;
+		}
+
+		private bool IsIfElseBlock(TokenList expression)
+		{
+			bool result = false;
+			if (expression.Count >= 2)
+			{
+				result |= new TokenType[] { IF, ELSE }.Contains(expression[0].TokenID); //if first is part of an if else block
+				result &= expression[1].TokenID == LPAREN; //if second is (
+				result &= expression.Last().TokenID == LBRACE;
+			}
+			return result;
+		}
+
+		private string GetExpressionToToken(TokenList tokens, TokenType type)
+		{
+			string expr = string.Empty;
+			foreach (var t in tokens)
+			{
+				expr += t.Value;
+			}
+			int l = lexer.Tokenize(expr).Tokens.Find(x => x.TokenID == type).Position.Index;
+			expr = expr.Remove(l, expr.Length - l);
+			return expr;
+		}
+
+		private int GetClosingBrace(TokenList tokens, int start, out TokenList inside, out string insideCode)
+		{
+			string c = string.Empty;
+			inside = new TokenList();
+			int count = 0;
+			int loc = 0;
+			for (int j = start; j < tokens.Count; j++)
+			{
+				while (j < tokens.Count)
 				{
-					int nargs = functions[f].NumberOfArguments;
-					if (e.Args.Count != nargs)
+					if (tokens[j].TokenID == LBRACE)
 					{
-						WriteLineColor($"Function {f} has {functions[f].NumberOfArguments} arguments, you put {e.Args.Count}", Red);
-						e.CancelEvaluation = true;
-						return;
+						count++;
 					}
-					dynamic ret;
-					if (nargs != 0)
+					else if (tokens[j].TokenID == RBRACE && count == 0)
 					{
-						functions[f].Run(out ret, nargs != 1 ? e.EvaluateArgs() : e.EvaluateArg(0));
+						j = tokens.Count;
+						continue;
 					}
-					else
+					else if (tokens[j].TokenID == RBRACE && count > 0)
 					{
-						functions[f].Run(out ret);
+						count--;
+						if (count == 0)
+						{
+							j = tokens.Count;
+							continue;
+						}
 					}
-					e.Value = ret;
+					inside.Add(tokens[j]);
+					j++;
+					loc = j;
+				}
+				if (count != 0)
+				{
+					WriteLineColor("Mismatched braces!", Red);
+					inside = null;
+					insideCode = null;
+					return -1;
 				}
 			}
+			TokenType[] types = new TokenType[] { LBRACE, SEMICOLON, COMMENT };
+			inside.ForEach(x =>
+			{
+				c += x.Value;
+				if (types.Contains(x.TokenID))
+				{
+					c += "\n";
+				}
+			});
+			insideCode = c;
+			return loc;
 		}
+
+		private string GetArgs(string expr) => expr.Substring(expr.IndexOf('(') + 1, expr.LastIndexOf(')') - expr.IndexOf('(') - 1);
+
+		private bool IsNotEndOfExpression(TokenList list) => list.Count == 0 || !new TokenType[] { SEMICOLON, LBRACE, RBRACE }.Contains(list.Last().TokenID);
 	}
 }
