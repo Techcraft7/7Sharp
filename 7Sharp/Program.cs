@@ -32,20 +32,7 @@ namespace _7Sharp
 			//string code = "foo = 1;\nloop (5) {\n\twrite(\"Hey\"); //this is a comment\n\tif (foo == 5) {\n\t\twrite(\"i can math\");\n\t}\n\twrite(\"Ok im done\");\n\tfoo++;\n}";
 			//string code = "aaa = 0;//comment\nwrite(\"aaa is \" + aaa);\nwhile(aaa < 10) {\n\twrite(aaa);\n\taaa = aaa + 1;\n}\nwrite(\"some semicolons: ;;;;;\");";
 			//string code = "x=0;\nwhile(x<10){\nwrite(x);\nx = x + 1;\n}";
-			string code =
-@"foo = 10;
-if (foo	< 5) {
-	write(""foo is small!"");
-} else if (foo == 5) {
-	write(""foo is 5!"");
-} else if (foo == 10) {
-	write(""foo is VERY big!"");
-} else {
-	write(""foo is big"");
-}
-loop (foo) {
-	write(""Writing this number {foo} times!"");
-}";
+			string code = "foo = 10;\nif (foo\t< 5) {\n\twrite(\"foo is small!\");\n} else if (foo == 5) {\n\twrite(\"foo is 5!\");\n} else if (foo == 10) {\n\twrite(\"foo is VERY big!\");\n} else {\n\twrite(\"foo is big\");\n}\nloop (foo) {\n\twrite(\"Writing this number {foo} times!\");\n}";
 			WriteLine(code);
 			if (args.Length == 1)
 			{
