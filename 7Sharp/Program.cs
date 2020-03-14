@@ -33,7 +33,7 @@ namespace _7Sharp
 			//string code = "aaa = 0;//comment\nwrite(\"aaa is \" + aaa);\nwhile(aaa < 10) {\n\twrite(aaa);\n\taaa = aaa + 1;\n}\nwrite(\"some semicolons: ;;;;;\");";
 			//string code = "x=0;\nwhile(x<10){\nwrite(x);\nx = x + 1;\n}";
 			string code =
-@"foo = new Random();
+@"foo = 10;
 if (foo	< 5) {
 	write(""foo is small!"");
 } else if (foo == 5) {
