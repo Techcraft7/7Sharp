@@ -62,6 +62,10 @@ namespace _7Sharp.Intrerpreter
 		TRUE,
 		[Lexeme(GenericToken.KeyWord, "false")]
 		FALSE,
+		[Lexeme(GenericToken.KeyWord, "break")]
+		BREAK,
+		[Lexeme(GenericToken.KeyWord, "continue")]
+		CONTINUE,
 		[Comment("//", "/*", "*/")]
 		COMMENT
 	}

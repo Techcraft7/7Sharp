@@ -24,10 +24,11 @@ namespace _7Sharp.Intrerpreter
 		private ExpressionEvaluator evaluator = new ExpressionEvaluator();
 		private ILexer<TokenType> lexer;
 		private bool exit = false;
+		private bool exitLoop = false;
+		private bool skipLoop = false;
 
 		public Interpreter()
 		{
-			_ = evaluator.Evaluate("test = 0");
 			InitEvaluator();
 			var built = LexerBuilder.BuildLexer<TokenType>();
 			if (built.Errors.FindAll(x => x.Level != sly.buildresult.ErrorLevel.WARN).Count != 0)
@@ -64,7 +65,6 @@ namespace _7Sharp.Intrerpreter
 
 		public void Run(string code)
 		{
-			exit = false;
 			code = evaluator.RemoveComments(code); //just to make parsing easier
 			try
 			{
@@ -79,7 +79,7 @@ namespace _7Sharp.Intrerpreter
 
 		private void InternalRun(string code, bool reset = true)
 		{
-
+			exitLoop = skipLoop = exit = false;
 			if (exit)
 			{
 				return;
@@ -107,6 +107,10 @@ namespace _7Sharp.Intrerpreter
 			var tokens = result.Tokens;
 			for (int i = 0; i < tokens.Count; i++)
 			{
+				if (skipLoop || exitLoop)
+				{
+					return;
+				}
 				if (!IsNotEndOfExpression(tokens[i]))
 				{
 					i++;
@@ -151,6 +155,19 @@ namespace _7Sharp.Intrerpreter
 					exit = true;
 					return;
 				}
+				else if (IsFlowStatement(expression))
+				{
+					switch (expression[0].TokenID)
+					{
+						case CONTINUE:
+						case BREAK:
+							exitLoop = expression[0].TokenID == BREAK;
+							skipLoop = !exitLoop;
+							return;
+						/*case RETURN:
+							break;*/
+					}
+				}
 				else if (IsVarExpression(expression))
 				{
 					string expr = GetExpressionToToken(expression, SEMICOLON);
@@ -175,19 +192,23 @@ namespace _7Sharp.Intrerpreter
 					}
 					string expr = GetExpressionToToken(expression, LBRACE);
 					string args = GetArgs(expr);
+					exitLoop = skipLoop = false;
 					switch (expression.First().TokenID)
 					{
 						case LOOP:
 							int times = (int)Evaluate(args);
 							loopIndexes.Push(0);
-							for (int j = 0; j < times; j++)
+							for (int j = 0; j < times && !exitLoop; j++)
 							{
 								InternalRun(inside, false);
 								loopIndexes.Push(loopIndexes.Pop() + 1);
+								skipLoop = false;
 							}
+							exitLoop = false;
+							_ = loopIndexes.Pop(); //remove loop index because we are done with it
 							break;
 						case WHILE:
-							while ((bool)Evaluate(args))
+							while ((bool)Evaluate(args) && !exitLoop)
 							{
 								InternalRun(inside, false);
 							}
@@ -226,8 +247,12 @@ namespace _7Sharp.Intrerpreter
 			bool next = false;
 			if (end + 1 < tokens.Count)
 			{
-				next = true;
-				end++;
+				if (new TokenType[] { ELSE, IF }.Contains(tokens[end + 1].TokenID))
+				{
+					next = true;
+					end++;
+				}
+				
 			}
 			switch (expression[0].TokenID)
 			{
@@ -314,6 +339,17 @@ namespace _7Sharp.Intrerpreter
 				result |= new TokenType[] { IF, ELSE }.Contains(expression[0].TokenID); //if first is part of an if else block
 				result &= expression[1].TokenID == LPAREN; //if second is (
 				result &= expression.Last().TokenID == LBRACE;
+			}
+			return result;
+		}
+
+		private bool IsFlowStatement(TokenList expression)
+		{
+			bool result = false;
+			if (expression.Count == 2)
+			{
+				result |= new TokenType[] { BREAK, CONTINUE }.Contains(expression[0].TokenID);
+				result &= expression[1].TokenID == SEMICOLON;
 			}
 			return result;
 		}

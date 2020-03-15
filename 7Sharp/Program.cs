@@ -46,8 +46,8 @@ namespace _7Sharp
 				}
 			}
 			shell.Run();
-			WriteLineColor("Exiting 7Sharp!", Yellow);
-			ReadLine();
+			WriteLineColor("Press enter to exit 7Sharp", Yellow);
+			_ = ReadLine();
 		}
 	}
 }
