@@ -1,5 +1,10 @@
 ![Logo](7Sharp/logo.png)
 # 7Sharp
-A simple shell!
 
-## Lets make shelling a who lot simpler with 7Sharp!
+The free, open source, and simple programming language
+
+## Features
+
+- Built in shell to load, save, edit, and run 7Sharp code
+- C-style code
+- Simple to learn

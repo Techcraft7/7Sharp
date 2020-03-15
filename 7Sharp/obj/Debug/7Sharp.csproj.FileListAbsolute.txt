@@ -40,7 +40,6 @@ C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\7Sharp.exe.config
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\7Sharp.exe
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\7Sharp.pdb
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Techcraft7 DLL Pack.dll
-C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Techcraft7 DLL Pack.pdb
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.CopyComplete
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\CodingSeb.ExpressionEvaluator.dll
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\sly.dll
