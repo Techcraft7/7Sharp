@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Techcraft7_DLL_Pack.Text;
-using _7Sharp;
 using _7Sharp.Intrerpreter;
+using _7SShell = _7Sharp.Shell.Shell;
 
 namespace _7Sharp
 {
@@ -16,7 +16,8 @@ namespace _7Sharp
 	using static ConsoleColor;
 	internal class Program
 	{
-		internal static Interpreter interpreter = new Interpreter();
+		internal static _7SShell shell = new _7SShell();
+		[STAThread]
 		private static void Main(string[] args)
 		{
 			if (args.Length > 1)
@@ -28,15 +29,13 @@ namespace _7Sharp
 			//init
 			//title
 			Title = "7Sharp";
-			string code = "";
-			WriteLine(code);
 			if (args.Length == 1)
 			{
 				try
 				{
 					using (StreamReader sr = new StreamReader(args[0]))
 					{
-						code = sr.ReadToEnd();
+						shell.SetCode(sr.ReadToEnd());
 					}
 				}
 				catch (Exception e)
@@ -46,7 +45,8 @@ namespace _7Sharp
 					return;
 				}
 			}
-			interpreter.Run(code);
+			shell.Run();
+			WriteLineColor("Exiting 7Sharp!", Yellow);
 			ReadLine();
 		}
 	}

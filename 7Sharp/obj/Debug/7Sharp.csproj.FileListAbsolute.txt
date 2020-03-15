@@ -55,3 +55,5 @@ C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Memory.xml
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.ValueTuple.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\_7Sharp.Editor.Editor.resources
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.GenerateResource.cache

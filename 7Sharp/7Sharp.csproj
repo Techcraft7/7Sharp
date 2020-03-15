@@ -47,6 +47,7 @@
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -75,7 +76,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Intrerpreter\7sFunction.cs" />
+    <Compile Include="7sFunction.cs" />
+    <Compile Include="Editor\Editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editor\Editor.Designer.cs">
+      <DependentUpon>Editor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Intrerpreter\Interpreter.cs" />
     <Compile Include="Intrerpreter\Sysfunctions.cs" />
     <Compile Include="Intrerpreter\TokenType.cs" />
@@ -86,6 +93,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shell\CommandInfo.cs" />
+    <Compile Include="Shell\Shell.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="API\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Editor\Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
