@@ -1,4 +1,4 @@
-![Logo](7Sharp/logo.png)
+![Logo](logo.png)
 # 7Sharp
 
 The simple, open source, programming language!
