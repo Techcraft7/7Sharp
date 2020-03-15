@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace _7Sharp.Intrerpreter
 {
-	using static _7Sharp.Program;
 	using static Console;
 	internal static class SystemFunctions
 	{
-		internal static void Init()
+		internal static Interpreter Interpreter = null;
+		internal static void Init(ref Interpreter interpreter)
 		{
-			interpreter.functions.Add("write", new _7sFunction("write", 1, new Action<dynamic>(Write)));
-			interpreter.functions.Add("getLoopIndex", new _7sFunction("getLoopIndex", 0, new Func<int>(GetLoopIndex)));
+			Interpreter = interpreter;
+			Interpreter.functions.Add("write", new _7sFunction("write", 1, new Action<dynamic>(Write)));
+			Interpreter.functions.Add("getLoopIndex", new _7sFunction("getLoopIndex", 0, new Func<int>(GetLoopIndex)));
 		}
 
 		static void Write(dynamic s)
@@ -23,7 +24,7 @@ namespace _7Sharp.Intrerpreter
 
 		static int GetLoopIndex()
 		{
-			return interpreter.loopIndexes.Count != 0 ? interpreter.loopIndexes.Peek() : -1;
+			return Interpreter.loopIndexes.Count != 0 ? Interpreter.loopIndexes.Peek() : -1;
 		}
 	}
 }
