@@ -17,6 +17,7 @@ namespace _7Sharp
 	internal class Program
 	{
 		internal static _7SShell shell = new _7SShell();
+
 		[STAThread]
 		private static void Main(string[] args)
 		{
@@ -26,7 +27,6 @@ namespace _7Sharp
 				Read();
 				return;
 			}
-			//init
 			//title
 			Title = "7Sharp";
 			if (args.Length == 1)
@@ -36,6 +36,7 @@ namespace _7Sharp
 					using (StreamReader sr = new StreamReader(args[0]))
 					{
 						shell.SetCode(sr.ReadToEnd());
+						shell.Execute("run");
 					}
 				}
 				catch (Exception e)
@@ -46,8 +47,8 @@ namespace _7Sharp
 				}
 			}
 			shell.Run();
-			WriteLineColor("Press enter to exit 7Sharp", Yellow);
-			_ = ReadLine();
+			WriteLineColor("Press any key to exit 7Sharp", Yellow);
+			_ = ReadKey(true);
 		}
 	}
 }

@@ -19,6 +19,7 @@ namespace _7Sharp.Intrerpreter
 	using static TokenType;
 	public class Interpreter
 	{
+		internal Dictionary<string, FunctionDefinition> userFunctions = new Dictionary<string, FunctionDefinition>();
 		internal Dictionary<string, _7sFunction> functions = new Dictionary<string, _7sFunction>();
 		internal Stack<int> loopIndexes = new Stack<int>();
 		private ExpressionEvaluator evaluator = new ExpressionEvaluator();
@@ -30,6 +31,7 @@ namespace _7Sharp.Intrerpreter
 		public Interpreter()
 		{
 			InitEvaluator();
+			evaluator.PreEvaluateFunction += AddUserFunctions;
 			var built = LexerBuilder.BuildLexer<TokenType>();
 			if (built.Errors.FindAll(x => x.Level != sly.buildresult.ErrorLevel.WARN).Count != 0)
 			{
@@ -51,6 +53,26 @@ namespace _7Sharp.Intrerpreter
 			}
 		}
 
+		private void AddUserFunctions(object sender, FunctionPreEvaluationEventArg e)
+		{
+			foreach (var kv in userFunctions)
+			{
+				if (kv.Key == e.Name)
+				{
+					if (e.Args.Count == kv.Value.NumberOfArgs())
+					{
+						e.CancelEvaluation = false;
+					}
+					else
+					{
+						WriteLineColor($"{e.Name} expects {kv.Value.NumberOfArgs()}, but you put {e.Args.Count}", Red);
+						e.CancelEvaluation = true;
+					}
+					e.Value = kv.Value.Run(e.EvaluateArgs());
+				}
+			}
+		}
+
 		private void InitEvaluator()
 		{
 			functions.Clear();
@@ -61,6 +83,10 @@ namespace _7Sharp.Intrerpreter
 			{
 				evaluator.Variables.Add(f.Key, f.Value.Code);
 			}
+			foreach (ConsoleColor c in Enum.GetValues(typeof(ConsoleColor)).Cast<ConsoleColor>())
+			{
+				evaluator.Variables.Add(c.ToString(), c);
+			}
 		}
 
 		public void Run(string code)
@@ -68,7 +94,7 @@ namespace _7Sharp.Intrerpreter
 			code = evaluator.RemoveComments(code); //just to make parsing easier
 			try
 			{
-				InternalRun(code, true);
+				InternalRun(code, out _, true);
 			}
 			catch (Exception e)
 			{
@@ -77,8 +103,16 @@ namespace _7Sharp.Intrerpreter
 			evaluator = new ExpressionEvaluator();
 		}
 
-		private void InternalRun(string code, bool reset = true)
+		internal void InternalRun(string code, out dynamic returnValue, bool reset = true, params KeyValuePair<string, dynamic>[] passedParams)
 		{
+			if (passedParams != null && passedParams.Length > 0)
+			{
+				foreach (var kv in passedParams)
+				{
+					evaluator.Variables.Add(kv.Key, kv.Value);
+				}
+			}
+			returnValue = null;
 			exitLoop = skipLoop = exit = false;
 			if (exit)
 			{
@@ -164,9 +198,29 @@ namespace _7Sharp.Intrerpreter
 							exitLoop = expression[0].TokenID == BREAK;
 							skipLoop = !exitLoop;
 							return;
-						/*case RETURN:
-							break;*/
+						case RETURN:
+							expression = expression.Skip(1).ToList(); //remove "return" keyword
+							string expr = GetExpressionToToken(expression, SEMICOLON);
+							try
+							{
+								returnValue = Evaluate(expr);
+							}
+							catch
+							{
+								returnValue = null;
+							}
+							return;
 					}
+				}
+				else if (IsFunctionDef(expression))
+				{
+					string expr = GetExpressionToToken(expression, LBRACE);
+					string[] args = GetArgs(expr).Replace(" ", string.Empty).Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+					int end = GetClosingBrace(tokens, i, out TokenList ts, out string inside);
+					bool returns = ts.FindIndex(t => t.TokenID == RETURN) > -1;
+					userFunctions.Add(expression[1].Value, new FunctionDefinition(inside, this, args));
+					i = end;
+					continue;
 				}
 				else if (IsVarExpression(expression))
 				{
@@ -200,7 +254,7 @@ namespace _7Sharp.Intrerpreter
 							loopIndexes.Push(0);
 							for (int j = 0; j < times && !exitLoop; j++)
 							{
-								InternalRun(inside, false);
+								InternalRun(inside, out _, false);
 								loopIndexes.Push(loopIndexes.Pop() + 1);
 								skipLoop = false;
 							}
@@ -210,7 +264,7 @@ namespace _7Sharp.Intrerpreter
 						case WHILE:
 							while ((bool)Evaluate(args) && !exitLoop)
 							{
-								InternalRun(inside, false);
+								InternalRun(inside, out _, false);
 							}
 							break;
 					}
@@ -233,6 +287,25 @@ namespace _7Sharp.Intrerpreter
 				}
 				i--;
 			}
+			if (passedParams != null && passedParams.Length > 0)
+			{
+				foreach (var kv in passedParams)
+				{
+					evaluator.Variables.Remove(kv.Key);
+				}
+			}
+		}
+
+		private bool IsFunctionDef(TokenList expression)
+		{
+			bool result = false;
+			if (expression.Count >= 3)
+			{
+				result |= expression[0].TokenID == FUNCTION;
+				result &= expression[1].TokenID == IDENTIFIER;
+				result &= expression[2].TokenID == LPAREN;
+			}
+			return result;
 		}
 
 		private void ProcessIf(TokenList expression, TokenList tokens, string code, ref int i)
@@ -259,7 +332,7 @@ namespace _7Sharp.Intrerpreter
 				case IF:
 					if ((bool)Evaluate(args))
 					{
-						InternalRun(inside, false);
+						InternalRun(inside, out _, false);
 						i = end;
 					}
 					else
@@ -285,7 +358,7 @@ namespace _7Sharp.Intrerpreter
 					break;
 				case ELSE:
 					i = end;
-					InternalRun(inside, false);
+					InternalRun(inside, out _, false);
 					break;
 			}
 		}
@@ -360,6 +433,10 @@ namespace _7Sharp.Intrerpreter
 			foreach (var t in tokens)
 			{
 				expr += t.Value;
+				if (new TokenType[] { FUNCTION, IF, ELSE, RETURN }.Contains(t.TokenID))
+				{
+					expr += " ";
+				}
 			}
 			var ts = lexer.Tokenize(expr).Tokens;
 			var f = ts.Find(x => x.TokenID == type);

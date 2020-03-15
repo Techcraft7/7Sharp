@@ -20,6 +20,8 @@ namespace _7Sharp.Intrerpreter
 		IDENTIFIER,
 		[Lexeme(GenericToken.SugarToken, ";")]
 		SEMICOLON,
+		[Lexeme(GenericToken.SugarToken, ",")]
+		COMMA,
 		[Lexeme(GenericToken.SugarToken, "=")]
 		ASSIGNMENT,
 		[Lexeme(GenericToken.SugarToken, "(")]
@@ -66,6 +68,10 @@ namespace _7Sharp.Intrerpreter
 		BREAK,
 		[Lexeme(GenericToken.KeyWord, "continue")]
 		CONTINUE,
+		[Lexeme(GenericToken.KeyWord, "return")]
+		RETURN,
+		[Lexeme(GenericToken.KeyWord, "function")]
+		FUNCTION,
 		[Comment("//", "/*", "*/")]
 		COMMENT
 	}

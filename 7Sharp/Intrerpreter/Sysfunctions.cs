@@ -10,11 +10,30 @@ namespace _7Sharp.Intrerpreter
 	internal static class SystemFunctions
 	{
 		internal static Interpreter Interpreter = null;
+
 		internal static void Init(ref Interpreter interpreter)
 		{
 			Interpreter = interpreter;
 			Interpreter.functions.Add("write", new _7sFunction("write", 1, new Action<dynamic>(Write)));
+			Interpreter.functions.Add("read", new _7sFunction("read", 0, new Func<string>(Read)));
 			Interpreter.functions.Add("getLoopIndex", new _7sFunction("getLoopIndex", 0, new Func<int>(GetLoopIndex)));
+			Interpreter.functions.Add("fgColor", new _7sFunction("fgColor", 1, new Action<dynamic>(FgColor)));
+			Interpreter.functions.Add("bgColor", new _7sFunction("bgColor", 1, new Action<dynamic>(BgColor)));
+		}
+
+		static string Read()
+		{
+			return ReadLine();
+		}
+
+		static void BgColor(dynamic c)
+		{
+			BackgroundColor = (ConsoleColor)c;
+		}
+
+		static void FgColor(dynamic c)
+		{
+			ForegroundColor = (ConsoleColor)c;
 		}
 
 		static void Write(dynamic s)
