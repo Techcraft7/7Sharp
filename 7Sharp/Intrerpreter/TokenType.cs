@@ -32,6 +32,10 @@ namespace _7Sharp.Intrerpreter
 		LBRACE,
 		[Lexeme(GenericToken.SugarToken, "}")]
 		RBRACE,
+		[Lexeme(GenericToken.SugarToken, "[")]
+		LBRACKET,
+		[Lexeme(GenericToken.SugarToken, "]")]
+		RBRACKET,
 		[Lexeme(GenericToken.SugarToken, ">")]
 		GREATER,
 		[Lexeme(GenericToken.SugarToken, "<")]
@@ -74,6 +78,8 @@ namespace _7Sharp.Intrerpreter
 		FUNCTION,
 		[Lexeme(GenericToken.KeyWord, "import")]
 		IMPORT,
+		[Lexeme(GenericToken.KeyWord, "new")]
+		NEW,
 		[Comment("//", "/*", "*/")]
 		COMMENT
 	}

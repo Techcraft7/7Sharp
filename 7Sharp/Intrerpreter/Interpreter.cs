@@ -115,7 +115,6 @@ namespace _7Sharp.Intrerpreter
 			_7sLibrary library = _7sLibManager.Load(path);
 			if (library != null)
 			{
-				WriteLine(library.Content);
 				var res = lexer.Tokenize(library.Content);
 				if (res == null || res.IsError)
 				{
@@ -130,7 +129,7 @@ namespace _7Sharp.Intrerpreter
 					{
 						string expr = GetExpressionToToken(expression, LBRACE);
 						string[] args = GetArgs(expr).Replace(" ", string.Empty).Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-						int end = GetClosingBrace(tokens, i, out TokenList ts, out string inside);
+						int end = GetClosingBrace(tokens, i, out _, out string inside);
 						userFunctions.Add(expression[1].Value, new FunctionDefinition(inside, this, args));
 						i = end;
 					}
@@ -185,11 +184,10 @@ namespace _7Sharp.Intrerpreter
 				{
 					return;
 				}
-				if (!IsNotEndOfExpression(tokens[i]))
+				if (!IsNotEndOfExpression(new TokenList() { tokens[i] }))
 				{
 					i++;
 				}
-				//
 				//get expression
 				TokenList expression = GetExpression(tokens, ref i);
 				//evaluate
@@ -197,7 +195,7 @@ namespace _7Sharp.Intrerpreter
 				{
 					continue;
 				}
-				else if (IsNotEndOfExpression(tokens[i < tokens.Count ? i : tokens.Count - 1]))
+				else if (IsNotEndOfExpression(expression))
 				{
 					string got = string.Empty;
 					expression.ForEach(t =>
@@ -276,7 +274,6 @@ namespace _7Sharp.Intrerpreter
 							break;
 					}
 					var x = Evaluate(expr);
-
 				}
 				else if (IsLoopExpression(expression))
 				{
@@ -322,7 +319,7 @@ namespace _7Sharp.Intrerpreter
 				{
 					ProcessIf(expression, tokens, code, ref i);
 				}
-				else if (IsNotEndOfExpression(tokens[i]))
+				else if (IsNotEndOfExpression(new TokenList() { tokens[i < tokens.Count ? i : tokens.Count - 1] }))
 				{
 					WriteLineColor($"Invalid syntax at line {tokens[i].Position.Line + 1}, col {tokens[i].Position.Column + 1}: {tokens[i].Value}", Red);
 					exit = true;
@@ -354,12 +351,12 @@ namespace _7Sharp.Intrerpreter
 				}
 				i++;
 			}
-			while (i < tokens.Count && IsNotEndOfExpression(tokens[i]));
-			if (i < tokens.Count && !IsNotEndOfExpression(tokens[i]))
+			while (i < tokens.Count && IsNotEndOfExpression(expression));
+			if (i < tokens.Count && !IsNotEndOfExpression(new TokenList() { tokens[i] }))
 			{
 				expression.Add(tokens[i]);
 			}
-			while (!IsNotEndOfExpression(expression.First()))
+			while (!IsNotEndOfExpression(new TokenList() { expression.First() }))
 			{
 				expression.RemoveAt(0);
 			}
@@ -515,7 +512,7 @@ namespace _7Sharp.Intrerpreter
 			foreach (var t in tokens)
 			{
 				expr += t.Value;
-				if (new TokenType[] { FUNCTION, IF, ELSE, RETURN }.Contains(t.TokenID))
+				if (new TokenType[] { FUNCTION, IF, ELSE, RETURN, NEW }.Contains(t.TokenID))
 				{
 					expr += " ";
 				}
@@ -555,11 +552,10 @@ namespace _7Sharp.Intrerpreter
 							continue;
 						}
 					}
-					j++;
 					inside.Add(tokens[j]);
+					j++;
 					loc = j;
 				}
-				inside.RemoveAt(inside.Count - 1); //remove last
 				if (count != 0)
 				{
 					WriteLineColor("Mismatched braces!", Red);
@@ -588,6 +584,15 @@ namespace _7Sharp.Intrerpreter
 
 		private string GetArgs(string expr) => expr.Substring(expr.IndexOf('(') + 1, expr.LastIndexOf(')') - expr.IndexOf('(') - 1);
 
-		private bool IsNotEndOfExpression(Token<TokenType> t) => !new TokenType[] { SEMICOLON, LBRACE, RBRACE, COMMENT }.Contains(t.TokenID);
+		private bool IsNotEndOfExpression(TokenList t)
+		{
+			bool v = false;
+			if (t.Count >= 2)
+			{
+				v = t[t.Count - 2].TokenID == RBRACKET && t.Last().TokenID == LBRACE;
+			}
+			return new TokenType[] { SEMICOLON, LBRACE, RBRACE, COMMENT }.Contains(t.Last().TokenID) == false || v;
+				
+		}
 	}
 }
