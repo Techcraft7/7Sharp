@@ -9,7 +9,7 @@ namespace _7Sharp.Shell
 	using static ColorConsoleMethods;
 	internal partial class Shell
 	{
-		public void Load(string[] args)
+		void Load(string[] args)
 		{
 			string path = string.Join(" ", args);
 			if (File.Exists(path))
@@ -33,7 +33,7 @@ namespace _7Sharp.Shell
 			}
 		}
 
-		public void Save(string[] args)
+		void Save(string[] args)
 		{
 			bool replace = false;
 			if (args[0] == "-o")
@@ -63,7 +63,7 @@ namespace _7Sharp.Shell
 			}
 		}
 
-		public void Help(string[] args) => commands.ToList().ForEach(c => { WriteLineMultiColor(new string[] { c.Key.Name + ": ", c.Key.Help }, new ConsoleColor[] { Yellow, Cyan }); });
+		void Help(string[] args) => commands.ToList().ForEach(c => { WriteLineMultiColor(new string[] { c.Key.Name + ": ", c.Key.Help }, new ConsoleColor[] { Yellow, Cyan }); });
 
 		void RunCode(string[] args) => interpreter.Run(GetCode());
 

@@ -19,6 +19,12 @@ namespace _7Sharp.Intrerpreter
 			Interpreter.functions.Add("getLoopIndex", new _7sFunction("getLoopIndex", 0, new Func<int>(GetLoopIndex)));
 			Interpreter.functions.Add("fgColor", new _7sFunction("fgColor", 1, new Action<dynamic>(FgColor)));
 			Interpreter.functions.Add("bgColor", new _7sFunction("bgColor", 1, new Action<dynamic>(BgColor)));
+			Interpreter.functions.Add("clear", new _7sFunction("clear", 0, new Action(Clear)));
+		}
+
+		static void _7sClear()
+		{
+			Clear();
 		}
 
 		static string Read()
