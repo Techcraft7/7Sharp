@@ -18,3 +18,28 @@ C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\7Sharp.pdb
 C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\ColorConsoleMethods.dll
 C:\Users\Brandon\Source\7Sharp\7Sharp\bin\Release\ExpressionEval.dll
 C:\Users\Brandon\Source\7Sharp\7Sharp\obj\Release\7Sharp.csproj.CopyComplete
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\7Sharp.exe.config
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\7Sharp.exe
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\7Sharp.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\CodingSeb.ExpressionEvaluator.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\sly.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Buffers.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Memory.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Numerics.Vectors.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.ValueTuple.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\Techcraft7 DLL Pack.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\sly.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Buffers.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Memory.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Numerics.Vectors.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.ValueTuple.xml
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\Techcraft7 DLL Pack.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.csprojAssemblyReference.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\_7Sharp.Editor.Editor.resources
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.csproj.GenerateResource.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.csproj.CoreCompileInputs.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.csproj.CopyComplete
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.exe
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.pdb

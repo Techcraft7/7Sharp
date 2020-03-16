@@ -21,15 +21,17 @@ C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Packa
 C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.CoreCompileInputs.cache
 C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.exe
 C:\Users\Brandon\Source\Repos\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.pdb
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.exe.config
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.exe
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.pdb
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csprojAssemblyReference.cache
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.ArgDialog.resources
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Blocks.resources
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Form1.resources
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Properties.Resources.resources
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.GenerateResource.cache
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.CoreCompileInputs.cache
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.exe
-C:\Users\Brandon\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.exe.config
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.exe
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\bin\Debug\7Sharp Package Maker.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csprojAssemblyReference.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.ArgDialog.resources
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Blocks.resources
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Form1.resources
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\_7Sharp_Package_Maker.Properties.Resources.resources
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.GenerateResource.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.CoreCompileInputs.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.exe
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.pdb
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\bin\Debug\CodingSeb.ExpressionEvaluator.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp Package Maker\obj\Debug\7Sharp Package Maker.csproj.CopyComplete

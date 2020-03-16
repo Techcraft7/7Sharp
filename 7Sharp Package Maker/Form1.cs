@@ -16,7 +16,7 @@ namespace _7Sharp_Package_Maker
 		public Form1()
 		{
 			InitializeComponent();
-            MessageBox.Show("This is deprecated... please use the 7Sharp API!");
+			MessageBox.Show("This is deprecated... please use the 7Sharp API!");
 		}
 
 		private void CommandSpace_DragDrop(object sender, DragEventArgs e)
