@@ -1,8 +1,3 @@
 .vs/
 **/bin/**
 **/obj/**
-**/Debug/**
-**/Release/**
-**/**.exe
-**/**.pbd
-**/**.dll
