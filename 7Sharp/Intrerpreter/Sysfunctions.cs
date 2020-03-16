@@ -36,8 +36,11 @@ namespace _7Sharp.Intrerpreter
 			Interpreter.functions.Add("fgColor", new _7sFunction("fgColor", 1, new Action<dynamic>(FgColor)));
 			Interpreter.functions.Add("bgColor", new _7sFunction("bgColor", 1, new Action<dynamic>(BgColor)));
 			Interpreter.functions.Add("clear", new _7sFunction("clear", 0, new Action(Clear)));
+			Interpreter.functions.Add("wait", new _7sFunction("wait", 1, new Action<int>(Wait)));
 		}
 		#region main
+		static void Wait(int ms) => System.Threading.Thread.Sleep(ms);
+
 		static void ClearConsole() => Clear();
 
 		static string Read() => ReadLine();
