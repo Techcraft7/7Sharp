@@ -31,7 +31,8 @@ namespace _7Sharp.Shell
 				{ new CommandInfo("load", "Load a file into the editor"), Load },
 				{ new CommandInfo("save", "Save the code in the editor to a file"), Save },
 				{ new CommandInfo("clear", "Clear the screen"), new Action<string[]>((args) => { Clear(); }) },
-				{ new CommandInfo("exit", "Close 7Sharp"), new Action<string[]>((args) => { run = false; }) }
+				{ new CommandInfo("exit", "Close 7Sharp"), new Action<string[]>((args) => { run = false; }) },
+				{ new CommandInfo("export", "Export the code into "), new Action<string[]>(Export) }
 			};
 		}
 
@@ -48,7 +49,6 @@ namespace _7Sharp.Shell
 			run = true;
 			while (run)
 			{
-				
 				ForegroundColor = Gray;
 				BackgroundColor = Black;
 				WriteMultiColor(new string[] { "7", "Sharp", "> " }, new ConsoleColor[] { Yellow, Green, Cyan });

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using Techcraft7_DLL_Pack.Text;
+using _7Sharp._7sLib;
 
 namespace _7Sharp.Shell
 {
@@ -9,6 +10,11 @@ namespace _7Sharp.Shell
 	using static ColorConsoleMethods;
 	internal partial class Shell
 	{
+		private void Export(string[] args)
+		{
+			_7sLibManager.Save(string.Join(" ", args));
+		}
+
 		void Load(string[] args)
 		{
 			string path = string.Join(" ", args);
@@ -65,8 +71,12 @@ namespace _7Sharp.Shell
 
 		void Help(string[] args) => commands.ToList().ForEach(c => { WriteLineMultiColor(new string[] { c.Key.Name + ": ", c.Key.Help }, new ConsoleColor[] { Yellow, Cyan }); });
 
-		void RunCode(string[] args) => interpreter.Run(GetCode());
+		void RunCode(string[] args)
+		{
+			Intrerpreter.SystemFunctions.Init(ref interpreter);
+			interpreter.Run(GetCode());
+		}
 
-		void Edit(string[] args) => editor.ShowDialog();
+		void Edit(string[] args) => _ = editor.ShowDialog();
 	}
 }

@@ -4,11 +4,13 @@ using sly.lexer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Techcraft7_DLL_Pack.Text;
 using TokenList = System.Collections.Generic.List<sly.lexer.Token<_7Sharp.Intrerpreter.TokenType>>;
+using _7Sharp._7sLib;
 
 namespace _7Sharp.Intrerpreter
 {
@@ -19,6 +21,11 @@ namespace _7Sharp.Intrerpreter
 	using static TokenType;
 	public class Interpreter
 	{
+		internal static readonly Dictionary<string, Dictionary<string, _7sFunction>> SystemLibraries = new Dictionary<string, Dictionary<string, _7sFunction>>()
+		{
+			{ "random.sys", SystemFunctions.random },
+			{ "io.sys", SystemFunctions.io },
+		};
 		internal Dictionary<string, FunctionDefinition> userFunctions = new Dictionary<string, FunctionDefinition>();
 		internal Dictionary<string, _7sFunction> functions = new Dictionary<string, _7sFunction>();
 		internal Stack<int> loopIndexes = new Stack<int>();
@@ -103,6 +110,39 @@ namespace _7Sharp.Intrerpreter
 			evaluator = new ExpressionEvaluator();
 		}
 
+		internal void LoadLibrary(string path)
+		{
+			_7sLibrary library = _7sLibManager.Load(path);
+			if (library != null)
+			{
+				WriteLine(library.Content);
+				var res = lexer.Tokenize(library.Content);
+				if (res == null || res.IsError)
+				{
+					WriteLineColor("Error lexing library!", Red);
+					return;
+				}
+				var tokens = res.Tokens;
+				for (int i = 0; i < tokens.Count; i++)
+				{
+					TokenList expression = GetExpression(tokens, ref i);
+					if (IsFunctionDef(expression))
+					{
+						string expr = GetExpressionToToken(expression, LBRACE);
+						string[] args = GetArgs(expr).Replace(" ", string.Empty).Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+						int end = GetClosingBrace(tokens, i, out TokenList ts, out string inside);
+						userFunctions.Add(expression[1].Value, new FunctionDefinition(inside, this, args));
+						i = end;
+					}
+				}
+			}
+			else
+			{
+				WriteLineColor("Library could not be loaded!", Red);
+				return;
+			}
+		}
+
 		internal void InternalRun(string code, out dynamic returnValue, bool reset = true, params KeyValuePair<string, dynamic>[] passedParams)
 		{
 			if (passedParams != null && passedParams.Length > 0)
@@ -151,28 +191,7 @@ namespace _7Sharp.Intrerpreter
 				}
 				//
 				//get expression
-				TokenList expression = new TokenList();
-				if (i >= tokens.Count)
-				{
-					return;
-				}
-				do
-				{
-					if (tokens[i].TokenID != COMMENT)
-					{
-						expression.Add(tokens[i]);
-					}
-					i++;
-				}
-				while (i < tokens.Count && IsNotEndOfExpression(tokens[i]));
-				if (i < tokens.Count && !IsNotEndOfExpression(tokens[i]))
-				{
-					expression.Add(tokens[i]);
-				}
-				while (!IsNotEndOfExpression(expression.First()))
-				{
-					expression.RemoveAt(0);
-				}
+				TokenList expression = GetExpression(tokens, ref i);
 				//evaluate
 				if (expression.Count <= 1) //empty expression or just a brace
 				{
@@ -188,6 +207,31 @@ namespace _7Sharp.Intrerpreter
 					WriteLineColor($"Expected \';\' at line {expression.Last().Position.Line + 1}, char {expression.Last().Position.Column + 1}, but got \"{expression.First().Value}\"", Red);
 					exit = true;
 					return;
+				}
+				else if (IsImport(expression))
+				{
+					string path = GetExpressionToToken(expression.Skip(1).ToList(), SEMICOLON);
+					path = path.Substring(1, path.Length - 2);
+					if (!File.Exists(path))
+					{
+						if (SystemLibraries.ContainsKey(path))
+						{
+							foreach (var kv in SystemLibraries[path])
+							{
+								evaluator.Variables.Add(kv.Key, kv.Value.Code);
+							}
+						}
+						else
+						{
+							WriteLineColor($"File does not exist: \"{path}\"", Red);
+							exit = true;
+							return;
+						}
+					}
+					else
+					{
+						LoadLibrary(path);
+					}
 				}
 				else if (IsFlowStatement(expression))
 				{
@@ -217,7 +261,6 @@ namespace _7Sharp.Intrerpreter
 					string expr = GetExpressionToToken(expression, LBRACE);
 					string[] args = GetArgs(expr).Replace(" ", string.Empty).Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 					int end = GetClosingBrace(tokens, i, out TokenList ts, out string inside);
-					bool returns = ts.FindIndex(t => t.TokenID == RETURN) > -1;
 					userFunctions.Add(expression[1].Value, new FunctionDefinition(inside, this, args));
 					i = end;
 					continue;
@@ -294,6 +337,45 @@ namespace _7Sharp.Intrerpreter
 					evaluator.Variables.Remove(kv.Key);
 				}
 			}
+		}
+
+		private TokenList GetExpression(TokenList tokens, ref int i)
+		{
+			TokenList expression = new TokenList();
+			if (i >= tokens.Count)
+			{
+				return expression;
+			}
+			do
+			{
+				if (tokens[i].TokenID != COMMENT)
+				{
+					expression.Add(tokens[i]);
+				}
+				i++;
+			}
+			while (i < tokens.Count && IsNotEndOfExpression(tokens[i]));
+			if (i < tokens.Count && !IsNotEndOfExpression(tokens[i]))
+			{
+				expression.Add(tokens[i]);
+			}
+			while (!IsNotEndOfExpression(expression.First()))
+			{
+				expression.RemoveAt(0);
+			}
+			return expression;
+		}
+
+		private bool IsImport(TokenList expression)
+		{
+			bool result = false;
+			if (expression.Count == 3)
+			{
+				result |= expression[0].TokenID == IMPORT;
+				result &= expression[1].TokenID == STRING;
+				result &= expression[2].TokenID == SEMICOLON;
+			}
+			return result;
 		}
 
 		private bool IsFunctionDef(TokenList expression)

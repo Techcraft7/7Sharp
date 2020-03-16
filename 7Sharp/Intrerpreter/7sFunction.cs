@@ -9,9 +9,7 @@ namespace _7Sharp.Intrerpreter
 	using static Techcraft7_DLL_Pack.Text.ColorConsoleMethods;
 	using static ConsoleColor;
 	using static Console;
-#pragma warning disable IDE1006 // Naming Styles
 	public class _7sFunction
-#pragma warning restore IDE1006 // Naming Styles
 	{
 		public int NumberOfArguments;
 		public string Name;

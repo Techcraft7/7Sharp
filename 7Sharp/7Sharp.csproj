@@ -39,6 +39,7 @@
     <Reference Include="CodingSeb.ExpressionEvaluator, Version=1.4.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CodingSeb.ExpressionEvaluator.1.4.9\lib\net45\CodingSeb.ExpressionEvaluator.dll</HintPath>
     </Reference>
+    <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
     <Reference Include="sly, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sly.2.4.2\lib\netstandard2.0\sly.dll</HintPath>
     </Reference>
@@ -48,6 +49,8 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -76,13 +79,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="7sFunction.cs" />
+    <Compile Include="Intrerpreter\7sFunction.cs" />
+    <Compile Include="7sLib\7sLibManager.cs" />
+    <Compile Include="7sLib\7sLibrary.cs" />
     <Compile Include="Editor\Editor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Editor\Editor.Designer.cs">
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Intrerpreter\FunctionDefinition.cs" />
     <Compile Include="Intrerpreter\Interpreter.cs" />
     <Compile Include="Intrerpreter\Sysfunctions.cs" />

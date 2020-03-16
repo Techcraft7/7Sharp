@@ -16,6 +16,8 @@ namespace _7Sharp
 	using static ConsoleColor;
 	internal class Program
 	{
+		internal static bool IsMono { get; } = Type.GetType("Mono.Runtime") != null;
+		internal static char DirectorySeperator { get; } = IsMono ? '/' : '\\';
 		internal static _7SShell shell = new _7SShell();
 
 		[STAThread]

@@ -72,6 +72,8 @@ namespace _7Sharp.Intrerpreter
 		RETURN,
 		[Lexeme(GenericToken.KeyWord, "function")]
 		FUNCTION,
+		[Lexeme(GenericToken.KeyWord, "import")]
+		IMPORT,
 		[Comment("//", "/*", "*/")]
 		COMMENT
 	}
