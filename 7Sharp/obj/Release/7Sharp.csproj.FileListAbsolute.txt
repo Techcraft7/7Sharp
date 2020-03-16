@@ -35,7 +35,6 @@ C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Memory.xml
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Numerics.Vectors.xml
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\System.ValueTuple.xml
-C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Release\Techcraft7 DLL Pack.pdb
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.csprojAssemblyReference.cache
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\_7Sharp.Editor.Editor.resources
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Release\7Sharp.csproj.GenerateResource.cache

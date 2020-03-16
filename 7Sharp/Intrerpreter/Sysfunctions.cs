@@ -37,8 +37,14 @@ namespace _7Sharp.Intrerpreter
 			Interpreter.functions.Add("bgColor", new _7sFunction("bgColor", 1, new Action<dynamic>(BgColor)));
 			Interpreter.functions.Add("clear", new _7sFunction("clear", 0, new Action(Clear)));
 			Interpreter.functions.Add("wait", new _7sFunction("wait", 1, new Action<int>(Wait)));
+			Interpreter.functions.Add("len", new _7sFunction("len", 1, new Func<object, int>(Len)));
+			Interpreter.functions.Add("chars", new _7sFunction("chars", 1, new Func<string, char[]>(Chars)));
 		}
 		#region main
+		static char[] Chars(string s) => s.ToCharArray();
+
+		static int Len(object v) => (v == null || (!v.GetType().IsSubclassOf(typeof(Array)) && v.GetType() != typeof(string))) ? -1 : (v.GetType().IsSubclassOf(typeof(Array)) ? ((Array)v).Length : ((string)v).Length);
+
 		static void Wait(int ms) => System.Threading.Thread.Sleep(ms);
 
 		static void ClearConsole() => Clear();
