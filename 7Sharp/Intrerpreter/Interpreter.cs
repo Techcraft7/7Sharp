@@ -82,6 +82,7 @@ namespace _7Sharp.Intrerpreter
 
 		private void InitEvaluator()
 		{
+			userFunctions.Clear();
 			functions.Clear();
 			var self = this;
 			SystemFunctions.Init(ref self);
@@ -99,6 +100,7 @@ namespace _7Sharp.Intrerpreter
 		public void Run(string code)
 		{
 			code = evaluator.RemoveComments(code); //just to make parsing easier
+			InitEvaluator();
 			try
 			{
 				InternalRun(code, out _, true);
@@ -107,7 +109,7 @@ namespace _7Sharp.Intrerpreter
 			{
 				PrintError(e);
 			}
-			evaluator = new ExpressionEvaluator();
+			InitEvaluator();
 		}
 
 		internal void LoadLibrary(string path)
