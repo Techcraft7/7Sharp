@@ -19,7 +19,7 @@ namespace _7Sharp.Intrerpreter
 	using static Console;
 	using static ConsoleColor;
 	using static TokenType;
-	public class Interpreter
+	public sealed class Interpreter
 	{
 		internal static readonly Dictionary<string, Dictionary<string, _7sFunction>> SystemLibraries = new Dictionary<string, Dictionary<string, _7sFunction>>()
 		{
@@ -548,11 +548,6 @@ namespace _7Sharp.Intrerpreter
 					else if (tokens[j].TokenID == RBRACE && count > 0)
 					{
 						count--;
-						if (count == 0)
-						{
-							j = tokens.Count;
-							continue;
-						}
 					}
 					inside.Add(tokens[j]);
 					j++;

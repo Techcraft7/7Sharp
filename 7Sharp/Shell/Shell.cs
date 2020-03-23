@@ -14,7 +14,7 @@ namespace _7Sharp.Shell
 	using static Console;
 	using static ConsoleColor;
 	using static ColorConsoleMethods;
-	internal partial class Shell
+	internal sealed partial class Shell
 	{
 		internal _7SEditor editor = new _7SEditor();
 		internal Interpreter interpreter = new Interpreter();

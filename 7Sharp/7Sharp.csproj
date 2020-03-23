@@ -93,6 +93,8 @@
     <Compile Include="Intrerpreter\Interpreter.cs" />
     <Compile Include="Intrerpreter\Sysfunctions.cs" />
     <Compile Include="Intrerpreter\TokenType.cs" />
+    <Compile Include="Plugins\ShellCommand.cs" />
+    <Compile Include="Plugins\ShellPlugin.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

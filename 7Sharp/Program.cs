@@ -14,7 +14,7 @@ namespace _7Sharp
 	using static ColorConsoleMethods;
 	using static Console;
 	using static ConsoleColor;
-	internal class Program
+	internal sealed class Program
 	{
 		internal static bool IsMono { get; } = Type.GetType("Mono.Runtime") != null;
 		internal static char DirectorySeperator { get; } = IsMono ? '/' : '\\';
@@ -48,7 +48,7 @@ namespace _7Sharp
 					return;
 				}
 			}
-			shell.Run();
+			shell.Run("load test.7s", "run");
 			WriteLineColor("Press any key to exit 7Sharp", Yellow);
 			_ = ReadKey(true);
 		}
