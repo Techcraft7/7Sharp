@@ -26,6 +26,9 @@ namespace _7Sharp.Intrerpreter
 			{ "random.sys", SystemFunctions.random },
 			{ "io.sys", SystemFunctions.io },
 		};
+
+		internal Scope scope = new Scope();
+
 		internal Dictionary<string, FunctionDefinition> userFunctions = new Dictionary<string, FunctionDefinition>();
 		internal Dictionary<string, _7sFunction> functions = new Dictionary<string, _7sFunction>();
 		internal Stack<int> loopIndexes = new Stack<int>();
@@ -146,6 +149,7 @@ namespace _7Sharp.Intrerpreter
 
 		internal void InternalRun(string code, out dynamic returnValue, bool reset = true, params KeyValuePair<string, dynamic>[] passedParams)
 		{
+			scope.PushScope(evaluator.Variables);
 			if (passedParams != null && passedParams.Length > 0)
 			{
 				foreach (var kv in passedParams)
@@ -336,6 +340,7 @@ namespace _7Sharp.Intrerpreter
 					evaluator.Variables.Remove(kv.Key);
 				}
 			}
+			evaluator.Variables = scope.PopScope();
 		}
 
 		private TokenList GetExpression(TokenList tokens, ref int i)
@@ -530,7 +535,7 @@ namespace _7Sharp.Intrerpreter
 		{
 			string c = string.Empty;
 			inside = new TokenList();
-			int count = 0;
+			int count = 1;
 			int loc = 0;
 			for (int j = start; j < tokens.Count; j++)
 			{
@@ -548,6 +553,11 @@ namespace _7Sharp.Intrerpreter
 					else if (tokens[j].TokenID == RBRACE && count > 0)
 					{
 						count--;
+						if (count == 0)
+						{
+							j = tokens.Count;
+							continue;
+						}
 					}
 					inside.Add(tokens[j]);
 					j++;
@@ -569,6 +579,7 @@ namespace _7Sharp.Intrerpreter
 				if (line.Contains(x.TokenID))
 				{
 					c += "\n";
+
 				}
 				if (space.Contains(x.TokenID))
 				{

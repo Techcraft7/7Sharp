@@ -69,7 +69,22 @@ namespace _7Sharp.Shell
 			}
 		}
 
-		void Help(string[] args) => commands.ToList().ForEach(c => { WriteLineMultiColor(new string[] { c.Key.Name + ": ", c.Key.Help }, new ConsoleColor[] { Yellow, Cyan }); });
+		void Help(string[] args)
+		{
+			for (int i = 0; i < commands.Keys.Count; i++)
+			{
+				var key = commands.Keys.ToArray()[i];
+				if (key == null)
+				{
+					key = new CommandInfo(" NULL COMMAND ", " The command help could not be loaded");
+				}
+				if (commands[key] == null)
+				{
+					commands[key] = new Action<string[]>(_ => { WriteLineColor("The command code could not be loaded", Red); });
+				}
+			}
+			commands.ToList().ForEach(c => { WriteLineMultiColor(new string[] { c.Key.Name + ": ", c.Key.Help }, new ConsoleColor[] { Yellow, Cyan }); });
+		}
 
 		void RunCode(string[] args)
 		{
