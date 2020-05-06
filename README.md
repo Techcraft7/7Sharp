@@ -21,7 +21,11 @@ loop (10) {
 }
 ```
 #### What is `getLoopIndex()`?
-`getLoopIndex()` is a function to get the index in the loop statement running. It automatically accounts for nested loops, so you don't need to manage any i's, j's, k's, etc. If you look at `Interpreter.cs` you will find this:
+`getLoopIndex()` is a function to get the index in the loop statement running. It automatically accounts for nested loops, so you don't need to manage any i's, j's, k's, etc.
+
+> Please note that `getLoopIndex()` starts at 0.
+
+If you look at `Interpreter.cs` you will find this:
 ```
 int times = (int)Evaluate(args); // in the "Count to 10" example it is just 10, but it can be an expression!
 loopIndexes.Push(0); // add a new loop index
