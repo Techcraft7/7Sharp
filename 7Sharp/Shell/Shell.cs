@@ -8,6 +8,8 @@ using System.IO;
 using Techcraft7_DLL_Pack.Text;
 using _7SEditor = _7Sharp.Editor.Editor;
 using CommandList = System.Collections.Generic.Dictionary<_7Sharp.Shell.CommandInfo, System.Action<string[]>>;
+using System.Reflection;
+using _7Sharp.Plugins;
 
 namespace _7Sharp.Shell
 {
@@ -20,19 +22,25 @@ namespace _7Sharp.Shell
 		internal Interpreter interpreter = new Interpreter();
 		internal CommandList commands;
 		bool run = true;
+		private readonly string PLUGINS_DIRECTORY = "plugins" + Path.DirectorySeparatorChar;
 
 		public Shell()
 		{
+			if (!Directory.Exists(PLUGINS_DIRECTORY))
+			{
+				Directory.CreateDirectory(PLUGINS_DIRECTORY);
+			}
+			PLUGINS_DIRECTORY = Path.GetFullPath(PLUGINS_DIRECTORY);
 			commands = new CommandList()
 			{
-				{ new CommandInfo("edit", "Open the editor"), Edit },
-				{ new CommandInfo("run", "Run the code in the editor"), RunCode },
-				{ new CommandInfo("help", "Display this message"), Help },
-				{ new CommandInfo("load", "Load a file into the editor"), Load },
-				{ new CommandInfo("save", "Save the code in the editor to a file"), Save },
-				{ new CommandInfo("clear", "Clear the screen"), new Action<string[]>((args) => { Clear(); }) },
-				{ new CommandInfo("exit", "Close 7Sharp"), new Action<string[]>((args) => { run = false; }) },
-				{ new CommandInfo("export", "Export the code into "), new Action<string[]>(Export) }
+				{ new SysCommandInfo("edit", "Open the editor"), Edit },
+				{ new SysCommandInfo("run", "Run the code in the editor"), RunCode },
+				{ new SysCommandInfo("help", "Display this message"), Help },
+				{ new SysCommandInfo("load", "Load a file into the editor"), Load },
+				{ new SysCommandInfo("save", "Save the code in the editor to a file"), Save },
+				{ new SysCommandInfo("clear", "Clear the screen"), new Action<string[]>((args) => { Clear(); }) },
+				{ new SysCommandInfo("exit", "Close 7Sharp"), new Action<string[]>((args) => { run = false; }) },
+				{ new SysCommandInfo("export", "Export the code into "), new Action<string[]>(Export) }
 			};
 		}
 
@@ -47,12 +55,44 @@ namespace _7Sharp.Shell
 				}
 			}
 			run = true;
+			LoadPlugins(this);
 			while (run)
 			{
-				ForegroundColor = Gray;
-				BackgroundColor = Black;
-				WriteMultiColor(new string[] { "7", "Sharp", "> " }, new ConsoleColor[] { Yellow, Green, Cyan });
-				Execute(ReadLine());
+				try
+				{
+					ForegroundColor = Gray;
+					BackgroundColor = Black;
+					WriteMultiColor(new string[] { "7", "Sharp", "> " }, new ConsoleColor[] { Yellow, Green, Cyan });
+					Execute(ReadLine());
+				}
+				catch (Exception e)
+				{
+					Utils.PrintError(e);
+				}
+			}
+		}
+
+		internal static void LoadPlugins(Shell s)
+		{
+			try
+			{
+				foreach (string path in Directory.EnumerateFiles(s.PLUGINS_DIRECTORY, "*.dll", SearchOption.AllDirectories))
+				{
+					Assembly dll = Assembly.LoadFile(path);
+					foreach (Type t in dll.GetTypes())
+					{
+						if (t.IsSubclassOf(typeof(ShellPlugin)))
+						{
+							ShellPlugin plugin = (ShellPlugin)Activator.CreateInstance(t);
+							plugin.Load(ref s);
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				WriteLineColor("An error occured while loading plugins...", Red);
+				Utils.PrintError(e);
 			}
 		}
 

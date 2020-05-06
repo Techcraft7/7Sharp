@@ -106,6 +106,7 @@
     <Compile Include="Shell\CommandInfo.cs" />
     <Compile Include="Shell\Shell.cs" />
     <Compile Include="Shell\ShellFunctions.cs" />
+    <Compile Include="Shell\SysCommandInfo.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>

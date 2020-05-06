@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using Techcraft7_DLL_Pack.Text;
 using _7Sharp._7sLib;
+using System.Collections.Generic;
 
 namespace _7Sharp.Shell
 {
@@ -82,8 +83,9 @@ namespace _7Sharp.Shell
 				{
 					commands[key] = new Action<string[]>(_ => { WriteLineColor("The command code could not be loaded", Red); });
 				}
-			}
-			commands.ToList().ForEach(c => { WriteLineMultiColor(new string[] { c.Key.Name + ": ", c.Key.Help }, new ConsoleColor[] { Yellow, Cyan }); });
+				bool isSys = key.GetType() == typeof(SysCommandInfo);
+				WriteLineMultiColor(new string[] { isSys ? "(System) " : string.Empty, key.Name + ": ", key.Help }, new ConsoleColor[] { Green, Yellow, Cyan });
+		}
 		}
 
 		void RunCode(string[] args)
