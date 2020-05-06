@@ -8,7 +8,6 @@ The free, open source, and simple programming language
 - Built in shell to load, save, edit, and run 7Sharp code
 - C-style code
 - Simple to learn
-- No scoping (might add later)
 - Setting colors `fgColor()` and `bgColor`
   - See `System.ConsoleColor` for color names!
 
