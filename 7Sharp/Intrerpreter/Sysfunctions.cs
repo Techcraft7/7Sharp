@@ -31,6 +31,7 @@ namespace _7Sharp.Intrerpreter
 			Interpreter = interpreter;
 			interpreter.functions.Clear();
 			Interpreter.functions.Add("write", new _7sFunction("write", 1, new Action<dynamic>(Write)));
+			Interpreter.functions.Add("writeraw", new _7sFunction("writeraw", 1, new Action<dynamic>(WriteRaw)));
 			Interpreter.functions.Add("read", new _7sFunction("read", 0, new Func<string>(Read)));
 			Interpreter.functions.Add("getLoopIndex", new _7sFunction("getLoopIndex", 0, new Func<int>(GetLoopIndex)));
 			Interpreter.functions.Add("fgColor", new _7sFunction("fgColor", 1, new Action<dynamic>(FgColor)));
@@ -56,6 +57,11 @@ namespace _7Sharp.Intrerpreter
 		static void FgColor(dynamic c) => ForegroundColor = (ConsoleColor)c;
 
 		static void Write(dynamic s) => WriteLine(s);
+
+		static void WriteRaw(dynamic s)
+		{
+			Out.Write(s);
+		}
 
 		static int GetLoopIndex() => Interpreter.loopIndexes.Count != 0 ? Interpreter.loopIndexes.Peek() : -1;
 		#endregion

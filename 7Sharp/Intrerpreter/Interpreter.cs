@@ -340,7 +340,10 @@ namespace _7Sharp.Intrerpreter
 					evaluator.Variables.Remove(kv.Key);
 				}
 			}
-			evaluator.Variables = scope.PopScope();
+			if (!scope.IsEmpty())
+			{
+				evaluator.Variables = scope.PopScope();
+			}
 		}
 
 		private TokenList GetExpression(TokenList tokens, ref int i)

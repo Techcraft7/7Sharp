@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Runtime.Remoting.Messaging;
 
 namespace _7Sharp.Intrerpreter
 {
@@ -24,9 +25,15 @@ namespace _7Sharp.Intrerpreter
 			vars.Push(prev);
 		}
 
+		public bool IsEmpty() => vars.Count == 0;
+
 		public IDictionary<string, object> PopScope()
 		{
 			var ret = vars.Pop();
+			if (IsEmpty())
+			{
+				return ret;
+			}
 			var prev = vars.Pop();
 			string[] keys = prev.Keys.ToArray();
 			foreach (string key in keys)
