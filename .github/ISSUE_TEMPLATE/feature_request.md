@@ -9,10 +9,5 @@ assignees: ''
 
 # Description
 
-Describe your feature here. Add syntax in \`grave accents\` if applicable.
+Describe your feature here. Add syntax if applicable.
 Please be descriptive!
-\`\`\`
-Multi
-Line
-Code
-\`\`\`
