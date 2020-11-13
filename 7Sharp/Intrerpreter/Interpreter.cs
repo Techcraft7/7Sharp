@@ -98,6 +98,7 @@ namespace _7Sharp.Intrerpreter
 			{
 				evaluator.Variables.Add(c.ToString(), c);
 			}
+			evaluator.Assemblies.Clear();
 		}
 
 		public void Run(string code)
@@ -269,6 +270,10 @@ namespace _7Sharp.Intrerpreter
 					i = end;
 					continue;
 				}
+				else if (IsArrayExpression(expression))
+				{
+					
+				}
 				else if (IsVarExpression(expression))
 				{
 					string expr = GetExpressionToToken(expression, SEMICOLON);
@@ -296,16 +301,26 @@ namespace _7Sharp.Intrerpreter
 					switch (expression.First().TokenID)
 					{
 						case LOOP:
-							int times = (int)Evaluate(args);
 							loopIndexes.Push(0);
-							for (int j = 0; j < times && !exitLoop; j++)
+							try
 							{
-								InternalRun(inside, out _, false);
-								loopIndexes.Push(loopIndexes.Pop() + 1);
-								skipLoop = false;
+								int times = (int)Evaluate(args);
+								for (int j = 0; j < times && !exitLoop; j++)
+								{
+									InternalRun(inside, out _, false);
+									loopIndexes.Push(loopIndexes.Pop() + 1);
+									skipLoop = false;
+								}
+								exitLoop = false;
 							}
-							exitLoop = false;
-							_ = loopIndexes.Pop(); //remove loop index because we are done with it
+							catch (Exception error)
+							{
+								PrintError(error);
+							}
+							finally
+							{
+								_ = loopIndexes.Pop(); //remove loop index because we are done with it
+							}
 							break;
 						case WHILE:
 							while ((bool)Evaluate(args) && !exitLoop)
@@ -344,6 +359,15 @@ namespace _7Sharp.Intrerpreter
 			{
 				evaluator.Variables = scope.PopScope();
 			}
+		}
+
+		private bool IsArrayExpression(TokenList expression)
+		{
+			bool result = false;
+			result |= expression[0].TokenID == IDENTIFIER;//array
+			result &= expression[1].TokenID == ASSIGNMENT;//=
+			result &= expression[2].TokenID == LBRACKET;//[
+			return result;
 		}
 
 		private TokenList GetExpression(TokenList tokens, ref int i)

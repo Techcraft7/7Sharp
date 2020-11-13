@@ -20,7 +20,10 @@ namespace ShellPluginTesting
     }
     public class CoolCommand : ShellCommand
     {
-        public CoolCommand() : base("cool_command", "do something cool!") => _ = new object();
+        public CoolCommand() : base("cool_command", "do something cool!")
+        {
+
+        }
 
         public override void Run(string[] args)
         {

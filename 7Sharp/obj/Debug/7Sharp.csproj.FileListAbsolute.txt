@@ -56,3 +56,5 @@ C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.Runtime.CompilerServic
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\System.ValueTuple.xml
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\_7Sharp.Editor.Editor.resources
 C:\Users\Techcraft7\Source\7Sharp\7Sharp\obj\Debug\7Sharp.csproj.GenerateResource.cache
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Techcraft7\Source\7Sharp\7Sharp\bin\Debug\Newtonsoft.Json.xml

@@ -1,28 +1,30 @@
 ﻿using _7Sharp.Intrerpreter;
+using _7Sharp.Manual;
+using _7Sharp.Plugins;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 using Techcraft7_DLL_Pack.Text;
 using _7SEditor = _7Sharp.Editor.Editor;
 using CommandList = System.Collections.Generic.Dictionary<_7Sharp.Shell.CommandInfo, System.Action<string[]>>;
-using System.Reflection;
-using _7Sharp.Plugins;
 
 namespace _7Sharp.Shell
 {
+	using static ColorConsoleMethods;
 	using static Console;
 	using static ConsoleColor;
-	using static ColorConsoleMethods;
 	internal sealed partial class Shell
 	{
 		internal _7SEditor editor = new _7SEditor();
 		internal Interpreter interpreter = new Interpreter();
 		internal CommandList commands;
-		bool run = true;
+		private bool run = true;
 		private readonly string PLUGINS_DIRECTORY = "plugins" + Path.DirectorySeparatorChar;
+		private Dictionary<string, string> Documentation = new Dictionary<string, string>();
 
 		public Shell()
 		{
@@ -33,15 +35,29 @@ namespace _7Sharp.Shell
 			PLUGINS_DIRECTORY = Path.GetFullPath(PLUGINS_DIRECTORY);
 			commands = new CommandList()
 			{
-				{ new SysCommandInfo("edit", "Open the editor"), Edit },
-				{ new SysCommandInfo("run", "Run the code in the editor"), RunCode },
-				{ new SysCommandInfo("help", "Display this message"), Help },
-				{ new SysCommandInfo("load", "Load a file into the editor"), Load },
-				{ new SysCommandInfo("save", "Save the code in the editor to a file"), Save },
-				{ new SysCommandInfo("clear", "Clear the screen"), new Action<string[]>((args) => { Clear(); }) },
-				{ new SysCommandInfo("exit", "Close 7Sharp"), new Action<string[]>((args) => { run = false; }) },
-				{ new SysCommandInfo("export", "Export the code into "), new Action<string[]>(Export) }
+				{ new SysCommandInfo("edit", "Open the editor: edit"), Edit },
+				{ new SysCommandInfo("run", "Run the code in the editor: run"), RunCode },
+				{ new SysCommandInfo("help", "Display this message: help"), Help },
+				{ new SysCommandInfo("load", "Load a file into the editor: load <path>"), Load },
+				{ new SysCommandInfo("save", "Save the code in the editor to a file: save [-o] <path>"), Save },
+				{ new SysCommandInfo("clear", "Clear the screen: clear"), new Action<string[]>((args) => { Clear(); }) },
+				{ new SysCommandInfo("exit", "Close 7Sharp: exit"), new Action<string[]>((args) => { run = false; }) },
+				{ new SysCommandInfo("export", "Export the code into 7slib file: export <path>"), new Action<string[]>(Export) },
+				{ new SysCommandInfo("man", "Show manual: man <topic>"), new Action<string[]>(Man) }
 			};
+			//Generate documentation
+			foreach (Type t in new Type[] { GetType(), typeof(SystemFunctions) })
+			{
+				foreach (MemberInfo m in t.GetMembers(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
+				{
+					ManualDocsAttribute[] attributes = m.GetCustomAttributes<ManualDocsAttribute>().ToArray();
+					//If member has attribute
+					if (attributes.Length != 0)
+					{
+						Documentation.Add(Utils.FormatPascalString(m.Name).ToLower().Replace(" ", "_"), attributes[0].Documentation);
+					}
+				}
+			}
 		}
 
 		public void Run(params string[] onStart)
