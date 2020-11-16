@@ -21,7 +21,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 		public override void Run(ref InterpreterState state)
 		{
 			// Try to parse condition as bool or error
-			while (state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value at {state.Location}"))
+			while (state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value or was invalid at {state.Location}"))
 			{
 				foreach (Node child in Children)
 				{

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.IO.Compression;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace _7Sharp._7sLib
 {
-	using static Console;
 	internal class _7sLibManager
 	{
 		const int LIBVERSION = 1;
@@ -18,16 +15,20 @@ namespace _7Sharp._7sLib
 		{
 			try
 			{
-				//create directory
-				string dir = GetTempDir();
-				Directory.CreateDirectory(dir);
-				//create files
-				string sha1Text = WriteAndGetSHA1(dir + ".text", Program.shell.GetCode());
-				_ = WriteAndGetSHA1(dir + ".head", "7SLIB\nV"+LIBVERSION+"\n"+sha1Text); 
-				//compress
-				string output = path + ".7slib";
-				ZipFile.CreateFromDirectory(dir, output);
-				Directory.Delete(dir, true);
+				using (ZipArchive zip = ZipFile.Open(path, ZipArchiveMode.Update))
+				{
+					ZipArchiveEntry dotText = zip.CreateEntry(".text");
+					ZipArchiveEntry dotHead = zip.CreateEntry(".head");
+					using (Stream text = dotText.Open())
+					{
+						string sha1Text = WriteAndGetSHA1(text, Program.shell.GetCode());
+						using (Stream head = dotHead.Open())
+						{
+							byte[] buf = Encoding.UTF8.GetBytes("7SLIB\nV" + LIBVERSION + "\n" + sha1Text);
+							head.Write(buf, 0, buf.Length);
+						}
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -35,20 +36,18 @@ namespace _7Sharp._7sLib
 			}
 		}
 
-		private static string WriteAndGetSHA1(string path, string contents)
+		private static string WriteAndGetSHA1(Stream s, string contents)
 		{
-			using (StreamWriter sw = new StreamWriter(path))
-			{
-				sw.Write(contents);
-			}
-			return GetSHA1(path);
+			byte[] buf = Encoding.UTF8.GetBytes(contents);
+			s.Write(buf, 0, buf.Length);
+			return GetSHA1(contents);
 		}
 
 		internal static _7sLibrary Load(string path)
 		{
 			try
 			{
-				using (ZipArchive archive =  ZipFile.Open(path, ZipArchiveMode.Read))
+				using (ZipArchive archive = ZipFile.Open(path, ZipArchiveMode.Read))
 				{
 					if (archive.GetEntry(".head") != null)
 					{

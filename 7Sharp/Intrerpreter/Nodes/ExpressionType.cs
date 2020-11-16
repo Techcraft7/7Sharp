@@ -20,7 +20,11 @@ namespace _7Sharp.Intrerpreter.Nodes
 		[Block]
 		LOOP,
 		[Block]
-		WHILE
+		WHILE,
+		[Block]
+		[DontRun]
+		FUNCTION DEFINITION
+
 	}
 	internal static class ExpressionTypeExtensions
 	{
@@ -65,9 +69,9 @@ namespace _7Sharp.Intrerpreter.Nodes
 					case ExpressionType.ASSIGNMENT:
 						return new AssignmentNode(expr[0].StringWithoutQuotes, expr.Skip(2).Reverse().Skip(1).Reverse().ToList().AsString(), exprPos);
 					case ExpressionType.INCREMENT:
-						throw new NotImplementedException();
+						return new IncrementNode(expr[0].StringWithoutQuotes, exprPos);
 					case ExpressionType.DECREMENT:
-						throw new NotImplementedException();
+						return new DecrementNode(expr[0].StringWithoutQuotes, exprPos);
 				}
 			}
 			return null;
@@ -84,9 +88,9 @@ namespace _7Sharp.Intrerpreter.Nodes
 				case ExpressionType.ASSIGNMENT:
 					return AssignmentNode.IsAssignment(expr);
 				case ExpressionType.INCREMENT:
-					return false; //TODO: IMPLEMENT ME
+					return IncrementNode.IsIncrement(expr);
 				case ExpressionType.DECREMENT:
-					return false; //TODO: IMPLEMENT ME
+					return DecrementNode.IsDecrement(expr);
 				case ExpressionType.IF:
 					return IfNode.IsIf(expr) || IfNode.IsElseIf(expr);
 				case ExpressionType.ELSE:

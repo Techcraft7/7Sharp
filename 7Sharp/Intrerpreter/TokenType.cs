@@ -16,7 +16,7 @@ namespace _7Sharp.Intrerpreter
 		INT,
 		[Lexeme(GenericToken.String, "\"", "\\")]
 		STRING,
-		[Lexeme(GenericToken.Identifier, IdentifierType.AlphaNumericDash)]
+		[Lexeme(GenericToken.Identifier, IdentifierType.AlphaNumeric)]
 		IDENTIFIER,
 		[Lexeme(GenericToken.SugarToken, ";")]
 		SEMICOLON,

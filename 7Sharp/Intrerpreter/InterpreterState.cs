@@ -20,12 +20,19 @@ namespace _7Sharp.Intrerpreter
 
 		public T TryParse<T>(string value, string message)
 		{
-			object o = evaluator.Evaluate(value);
-			if (!(o is T))
+			try
+			{
+				object o = evaluator.Evaluate(value);
+				if (!(o is T))
+				{
+					throw new InterpreterException(message);
+				}
+				return (T)o;
+			}
+			catch
 			{
 				throw new InterpreterException(message);
 			}
-			return (T)o;
 		}
 
 		public object ReturnValue;

@@ -33,7 +33,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 				state.LastIfResult = false;
 			}
 			// Try to parse condition as bool or error
-			state.LastIfResult = state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value at {state.Location}");
+			state.LastIfResult = state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value or was invalid at {state.Location}");
 			if (state.LastIfResult)
 			{
 				foreach (Node child in Children)

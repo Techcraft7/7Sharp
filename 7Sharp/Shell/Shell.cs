@@ -23,7 +23,7 @@ namespace _7Sharp.Shell
 		internal Interpreter interpreter = new Interpreter();
 		internal CommandList commands;
 		private bool run = true;
-		private readonly string PLUGINS_DIRECTORY = "plugins" + Path.DirectorySeparatorChar;
+		private readonly string PLUGINS_DIRECTORY = "plugins" + Program.DirectorySeperator;
 		private Dictionary<string, string> Documentation = new Dictionary<string, string>();
 
 		public Shell()
