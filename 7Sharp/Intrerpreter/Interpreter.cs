@@ -130,6 +130,7 @@ namespace _7Sharp.Intrerpreter
 				LexerPosition exprPos = expr[0].Position.Adjust();
 				state.Location = exprPos;
 				bool built = false;
+				// Loop over ervy expression type
 				foreach (ExpressionType type in Enum.GetValues(typeof(ExpressionType)).Cast<ExpressionType>())
 				{
 					if (type.Matches(expr))
@@ -142,7 +143,10 @@ namespace _7Sharp.Intrerpreter
 							BuildTree<RootNode>(block, ref state).Children.ForEach(c => tmp.Add(c));
 							node = tmp;
 						}
-						root.Add(node);
+						if (type.WillRun())
+						{
+							root.Add(node);
+						}
 						built = true;
 						break;
 					}

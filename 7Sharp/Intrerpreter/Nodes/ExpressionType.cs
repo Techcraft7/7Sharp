@@ -104,5 +104,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 			}
 			return false;
 		}
+
+		public static bool WillRun(this ExpressionType et) => !DONT_RUN.Contains(et);
 	}
 }
