@@ -1,16 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.IO;
-using Techcraft7_DLL_Pack.Text;
-using _7Sharp._7sLib;
-using System.Collections.Generic;
+﻿using _7Sharp._7sLib;
 using _7Sharp.Manual;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Techcraft7_DLL_Pack.Text;
 
 namespace _7Sharp.Shell
 {
-	using static ConsoleColor;
 	using static ColorConsoleMethods;
+	using static ConsoleColor;
 	internal sealed partial class Shell
 	{
 		private void Man(string[] args)
@@ -25,7 +25,7 @@ namespace _7Sharp.Shell
 							WriteLineColor(key, Cyan);
 						}
 						return;
-					}
+					}	
 					string topic = args[0].ToLower();
 					if (Documentation.ContainsKey(topic))
 					{
@@ -33,9 +33,11 @@ namespace _7Sharp.Shell
 						{
 							ManualObject obj = JsonConvert.DeserializeObject<ManualObject>(Documentation[topic]);
 							Console.WriteLine(obj.title);
+							Console.WriteLine("--------------\n");
 							foreach (ManualSection s in obj.sections)
 							{
 								Console.WriteLine(s.header);
+								Console.WriteLine();
 								foreach (ManualTextComponent c in s.text)
 								{
 									if (c.color == null)
@@ -71,12 +73,9 @@ namespace _7Sharp.Shell
 			}
 		}
 
-		private void Export(string[] args)
-		{
-			_7sLibManager.Save(string.Join(" ", args));
-		}
+		private void Export(string[] args) => _7sLibManager.Save(string.Join(" ", args));
 
-		void Load(string[] args)
+		private void Load(string[] args)
 		{
 			string path = string.Join(" ", args);
 			if (File.Exists(path))
@@ -100,7 +99,7 @@ namespace _7Sharp.Shell
 			}
 		}
 
-		void Save(string[] args)
+		private void Save(string[] args)
 		{
 			bool replace = false;
 			if (args[0] == "-o")
@@ -130,11 +129,11 @@ namespace _7Sharp.Shell
 			}
 		}
 
-		void Help(string[] args)
+		private void Help(string[] args)
 		{
 			for (int i = 0; i < commands.Keys.Count; i++)
 			{
-				var key = commands.Keys.ToArray()[i];
+				CommandInfo key = commands.Keys.ToArray()[i];
 				if (key == null)
 				{
 					key = new CommandInfo(" NULL COMMAND ", " The command help could not be loaded");
@@ -145,15 +144,11 @@ namespace _7Sharp.Shell
 				}
 				bool isSys = key.GetType() == typeof(SysCommandInfo);
 				WriteLineMultiColor(new string[] { isSys ? "(System) " : string.Empty, key.Name + ": ", key.Help }, new ConsoleColor[] { Green, Yellow, Cyan });
-		}
-		}
-
-		void RunCode(string[] args)
-		{
-			Intrerpreter.SystemFunctions.Init(ref interpreter);
-			interpreter.Run(GetCode());
+			}
 		}
 
-		void Edit(string[] args) => _ = editor.ShowDialog();
+		private void RunCode(string[] args) => interpreter.Run(GetCode());
+
+		private void Edit(string[] args) => _ = editor.ShowDialog();
 	}
 }

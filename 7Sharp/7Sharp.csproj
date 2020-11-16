@@ -84,7 +84,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Intrerpreter\7sFunction.cs" />
     <Compile Include="7sLib\7sLibManager.cs" />
     <Compile Include="7sLib\7sLibrary.cs" />
     <Compile Include="Editor\Editor.cs">
@@ -94,11 +93,20 @@
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Intrerpreter\FunctionDefinition.cs" />
     <Compile Include="Intrerpreter\Interpreter.cs" />
-    <Compile Include="Intrerpreter\Scope.cs" />
-    <Compile Include="Intrerpreter\Sysfunctions.cs" />
+    <Compile Include="Intrerpreter\InterpreterException.cs" />
+    <Compile Include="Intrerpreter\InterpreterState.cs" />
+    <Compile Include="Intrerpreter\Nodes\AssignmentNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\BlockNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\ElseNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\FunctionCallNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\IfNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\LoopNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\Node.cs" />
+    <Compile Include="Intrerpreter\Nodes\RootNode.cs" />
+    <Compile Include="Intrerpreter\SysFunctions.cs" />
     <Compile Include="Intrerpreter\TokenType.cs" />
+    <Compile Include="Intrerpreter\_7sFunction.cs" />
     <Compile Include="Manual\ManualDocsAttribute.cs" />
     <Compile Include="Manual\ManualObject.cs" />
     <Compile Include="Manual\ManualSection.cs" />

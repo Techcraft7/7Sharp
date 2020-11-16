@@ -10,7 +10,12 @@ namespace _7Sharp.Manual
     sealed class ManualDocsAttribute : Attribute
     {
         public readonly string Documentation;
+        public readonly string Title;
 
-        public ManualDocsAttribute(string JSONDocs) => Documentation = JSONDocs;
-    }
+        public ManualDocsAttribute(string title, string docs)
+		{
+			Title = title;
+			Documentation = docs;
+		}
+	}
 }

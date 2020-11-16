@@ -46,7 +46,7 @@ namespace _7Sharp.Shell
 				{ new SysCommandInfo("man", "Show manual: man <topic>"), new Action<string[]>(Man) }
 			};
 			//Generate documentation
-			foreach (Type t in new Type[] { GetType(), typeof(SystemFunctions) })
+			foreach (Type t in new Type[] { GetType(), typeof(SysFunctions) })
 			{
 				foreach (MemberInfo m in t.GetMembers(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
 				{
@@ -54,7 +54,7 @@ namespace _7Sharp.Shell
 					//If member has attribute
 					if (attributes.Length != 0)
 					{
-						Documentation.Add(Utils.FormatPascalString(m.Name).ToLower().Replace(" ", "_"), attributes[0].Documentation);
+						Documentation.Add(attributes[0].Title, attributes[0].Documentation);
 					}
 				}
 			}
