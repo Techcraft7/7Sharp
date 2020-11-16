@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace _7Sharp.Editor
 {
-	public partial class Editor : Form
+	internal partial class Editor : Form
 	{
 		public string Code
 		{

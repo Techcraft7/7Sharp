@@ -35,16 +35,16 @@ namespace _7Sharp.Plugins
 
 		public List<ShellCommand> GetCommands()
 		{
-			foreach (ShellCommand cmd in GetCommandsInternal())
+			foreach (ShellCommand cmd in GetPluginCommands())
 			{
 				if (cmd == null)
 				{
 					valid = false;
 				}
 			}
-			return GetCommandsInternal();
+			return GetPluginCommands();
 		}
 
-		protected abstract List<ShellCommand> GetCommandsInternal();
+		protected abstract List<ShellCommand> GetPluginCommands();
 	}
 }

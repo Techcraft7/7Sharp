@@ -97,8 +97,10 @@
     <Compile Include="Intrerpreter\InterpreterException.cs" />
     <Compile Include="Intrerpreter\InterpreterState.cs" />
     <Compile Include="Intrerpreter\Nodes\AssignmentNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\BlockAttribute.cs" />
     <Compile Include="Intrerpreter\Nodes\BlockNode.cs" />
     <Compile Include="Intrerpreter\Nodes\ElseNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\ExpressionType.cs" />
     <Compile Include="Intrerpreter\Nodes\FunctionCallNode.cs" />
     <Compile Include="Intrerpreter\Nodes\IfNode.cs" />
     <Compile Include="Intrerpreter\Nodes\LoopNode.cs" />

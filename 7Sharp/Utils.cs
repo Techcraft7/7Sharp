@@ -145,5 +145,13 @@ namespace _7Sharp
 			}
 			return s;
 		}
+
+		public static void ThrowIfNotSize<T>(this IEnumerable<T> ie, LexerPosition pos, params int[] sizes)
+		{
+			if (!sizes.Contains(ie.Count()))
+			{
+				throw new InterpreterException($"Too many arguments at {pos}");
+			}
+		}
 	}
 }

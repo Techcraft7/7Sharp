@@ -8,7 +8,7 @@ using sly.parser.generator;
 
 namespace _7Sharp.Intrerpreter
 {
-	public enum TokenType
+	internal enum TokenType
 	{
 		[Lexeme(GenericToken.Double)]
 		DOUBLE,

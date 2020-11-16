@@ -9,7 +9,7 @@ namespace ShellPluginTesting
 {
     public class CoolShellPlugin : ShellPlugin
     {
-        protected override List<ShellCommand> GetCommandsInternal()
+        protected override List<ShellCommand> GetPluginCommands()
         {
             List<ShellCommand> cmds = new List<ShellCommand>
             {

@@ -1,0 +1,102 @@
+﻿using sly.lexer;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _7Sharp.Intrerpreter.Nodes
+{
+	internal enum ExpressionType
+	{
+		FUNCTION_CALL,
+		ASSIGNMENT,
+		INCREMENT,
+		DECREMENT,
+		[Block]
+		IF, // "else if" falls under this type
+		[Block]
+		ELSE,
+		[Block]
+		LOOP,
+		[Block]
+		WHILE
+	}
+	internal static class ExpressionTypeExtensions
+	{
+		private static List<ExpressionType> BLOCKS = new List<ExpressionType>();
+
+		static ExpressionTypeExtensions()
+		{
+			BLOCKS.AddRange(typeof(ExpressionType).GetFields().Where(f => f.GetCustomAttributes(false).Any(a => a.GetType() == typeof(BlockAttribute))).Select(f => (ExpressionType)f.GetValue(null)));
+		}
+
+		public static Node GetNode(this ExpressionType et, ref Queue<Token<TokenType>> tokens, List<Token<TokenType>> expr, LexerPosition exprPos, ref InterpreterState state)
+		{
+			if (et.IsBlock())
+			{
+				bool hasArg = et != ExpressionType.ELSE;
+				List<List<Token<TokenType>>> args = new List<List<Token<TokenType>>>();
+				if (hasArg)
+				{
+					args = Interpreter.GetArgs(expr);
+				}
+				switch (et)
+				{
+					case ExpressionType.ELSE:
+						return new ElseNode(exprPos);
+					case ExpressionType.IF:
+						args.ThrowIfNotSize(exprPos, 1);
+						return new IfNode(args.First(), IfNode.IsElseIf(expr), exprPos);
+					case ExpressionType.LOOP:
+						args.ThrowIfNotSize(exprPos, 1);
+						return new LoopNode(args.First(), exprPos);
+					case ExpressionType.WHILE:
+						args.ThrowIfNotSize(exprPos, 1);
+						throw new NotImplementedException();
+				}
+			}
+			else
+			{
+				switch (et)
+				{
+					case ExpressionType.FUNCTION_CALL:
+						return new FunctionCallNode(state.Functions.First(f => f.Name.Equals(expr[0].StringWithoutQuotes)), Interpreter.GetArgs(expr), exprPos);
+					case ExpressionType.ASSIGNMENT:
+						return new AssignmentNode(expr[0].StringWithoutQuotes, expr.Skip(2).Reverse().Skip(1).Reverse().ToList().AsString(), exprPos);
+					case ExpressionType.INCREMENT:
+						throw new NotImplementedException();
+					case ExpressionType.DECREMENT:
+						throw new NotImplementedException();
+				}
+			}
+			return null;
+		}
+
+		public static bool IsBlock(this ExpressionType et) => BLOCKS.Contains(et);
+
+		public static bool Matches(this ExpressionType et, List<Token<TokenType>> expr)
+		{
+			switch (et)
+			{
+				case ExpressionType.FUNCTION_CALL:
+					return FunctionCallNode.IsFunctionCall(expr);
+				case ExpressionType.ASSIGNMENT:
+					return AssignmentNode.IsAssignment(expr);
+				case ExpressionType.INCREMENT:
+					return false;
+				case ExpressionType.DECREMENT:
+					return false;
+				case ExpressionType.IF:
+					return IfNode.IsIf(expr) || IfNode.IsElseIf(expr);
+				case ExpressionType.ELSE:
+					break;
+				case ExpressionType.LOOP:
+					return LoopNode.IsLoopNode(expr);
+				case ExpressionType.WHILE:
+					return false;
+			}
+			return false;
+		}
+	}
+}

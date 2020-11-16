@@ -14,7 +14,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 
 		public FunctionCallNode(_7sFunction func, List<List<Token<TokenType>>> args, LexerPosition linePosition) : base(linePosition)
 		{
-			this.func = func;
+			this.func = func ?? throw new InterpreterException($"Unknown function at {linePosition}");
 			this.args = args;
 		}
 

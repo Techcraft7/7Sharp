@@ -21,7 +21,7 @@ namespace _7Sharp.Intrerpreter
 	using static ConsoleColor;
 	using static TokenType;
 	using static Utils;
-	public sealed class Interpreter
+	internal sealed class Interpreter
 	{
 		private ILexer<TokenType> lexer;
 
@@ -87,7 +87,7 @@ namespace _7Sharp.Intrerpreter
 			// Build tree
 			InterpreterState state = new InterpreterState();
 			InterpreterState.Init(ref state);
-			RootNode root = BuildTree<RootNode>(tokens, ref state);
+			RootNode root = BuildTree<RootNode>(new Queue<Token<TokenType>>(tokens), ref state);
 
 			root.Dump();
 
@@ -95,38 +95,31 @@ namespace _7Sharp.Intrerpreter
 			root.Run(ref state);
 		}
 
-		private T BuildTree<T>(TokenList tokens, ref InterpreterState state) where T : BlockNode, new()
+		private T BuildTree<T>(Queue<Token<TokenType>> tokens, ref InterpreterState state) where T : BlockNode, new()
 		{
 			T root = new T(); // Create a new node
 
-			int i = 0; // i is declared out here so we can use the helper function below
-			Func<bool> inBounds = new Func<bool>(() => i < tokens.Count); // Helper function
-
-			for (i = 0; i < tokens.Count; i++)
+			while (tokens.Count > 0)
 			{
 				TokenList expr = new TokenList();
 				// If we hit EOS we are done
-				if (tokens[i].IsEOS)
+				Token<TokenType> token = tokens.Dequeue();
+				if (token == null || token.IsEOS)
 				{
 					WriteLineColor("EOS", Cyan);
 					break;
 				}
 				// While i is in bounds of tokens AND we have not hit an "expression ending" (; or {)
-				while (inBounds.Invoke() && !tokens[i].IsEnding())
+				while (tokens.Count() > 0 && !token.IsEnding() && !token.IsEOS)
 				{
-					expr.Add(tokens[i]);
-					i++;
+					expr.Add(token);
+					token = tokens.Dequeue();
 				}
-				// Add the ending token (; or {)
-				if (i < tokens.Count)
-				{
-					expr.Add(tokens[i]); // I will be on the ending token
-				}
+				expr.Add(token);
 				// If expression starts with }, remove it
 				if (expr.Count > 0 && expr[0].TokenID == RBRACE)
 				{
 					expr = expr.Skip(1).ToList();
-					i++;
 				}
 				// Dont run empty expression
 				if (expr.Count == 0)
@@ -136,52 +129,25 @@ namespace _7Sharp.Intrerpreter
 				expr.TokenDump();
 				LexerPosition exprPos = expr[0].Position.Adjust();
 				state.Location = exprPos;
-				if (LoopNode.IsLoopNode(expr))
+				bool built = false;
+				foreach (ExpressionType type in Enum.GetValues(typeof(ExpressionType)).Cast<ExpressionType>())
 				{
-					// Put it in a method because its really long :)
-					BuildLoop(ref state, ref expr, ref exprPos, ref tokens, ref i, ref root);
-					continue; // Start a new loop iteration
-				}
-				else if (IfNode.IsIf(tokens) || IfNode.IsElseIf(tokens))
-				{
-					bool elseIf = IfNode.IsElseIf(tokens);
-					TokenList block = BlockNode.GetBlock(tokens, i, out int loc);
-					i = loc; // Set i to be after the closing } so we dont evaluate the inside anyways
-					List<TokenList> args = GetArgs(expr);
-					if (args.Count != 1)
+					if (type.Matches(expr))
 					{
-						throw new InterpreterException($"If statement requires a condition at {exprPos}");
+						Node node = type.GetNode(ref tokens, expr, exprPos, ref state);
+						if (type.IsBlock())
+						{
+							BlockNode tmp = (BlockNode)node;
+							Queue<Token<TokenType>> block = GetBlock(ref tokens);
+							BuildTree<RootNode>(block, ref state).Children.ForEach(c => tmp.Add(c));
+							node = tmp;
+						}
+						root.Add(node);
+						built = true;
+						break;
 					}
-					IfNode node = new IfNode(args[0].AsString(), elseIf, exprPos);
-					BuildTree<RootNode>(block, ref state).Children.ForEach(c => node.Add(c));
-					root.Add(node);
 				}
-				else if (ElseNode.IsElse(tokens))
-				{
-					ElseNode node = new ElseNode(exprPos);
-					TokenList block = BlockNode.GetBlock(tokens, i, out int loc);
-					BuildTree<RootNode>(block, ref state).Children.ForEach(c => node.Add(c));
-					root.Add(node);
-				}
-				else if (AssignmentNode.IsAssignment(expr))
-				{
-					WriteLineColor("ASSIGNMENT", Yellow);
-					// To get just <VALUE>, remove the first 2 and the last tokens
-					// IDENTIFIER ASSIGNMENT <VALUE> SEMICOLON
-					root.Add(new AssignmentNode(expr[0].StringWithoutQuotes, expr.Skip(2).Reverse().Skip(1).Reverse().ToList().AsString(), exprPos));
-				}
-				else if (FunctionCallNode.IsFunctionCall(expr))
-				{
-					WriteLineColor("FUNCTION CALL", Yellow);
-					// Check if function exists
-					_7sFunction func = FunctionCallNode.GetFunction(state, expr[0].Value);
-					if (func == null)
-					{
-						throw new InterpreterException($"Unknown function \"{expr[0].Value}\" at {exprPos}");
-					}
-					root.Add(new FunctionCallNode(func, GetArgs(expr), exprPos));
-				}
-				else // Unknown Expression
+				if (!built) // Unknown Expression
 				{
 					throw new InterpreterException($"Unknown expression at {exprPos}");
 				}
@@ -190,26 +156,32 @@ namespace _7Sharp.Intrerpreter
 			return root;
 		}
 
-		private void BuildLoop<T>(ref InterpreterState state, ref TokenList expr, ref LexerPosition exprPos, ref TokenList tokens, ref int i, ref T root) where T : BlockNode
+		private Queue<Token<TokenType>> GetBlock(ref Queue<Token<TokenType>> tokens)
 		{
-			WriteLineColor("LOOP", Yellow);
-			// Get the stuff in the {}'s
-			TokenList block = BlockNode.GetBlock(tokens, i, out int loc);
-			i = loc; // Set i to be after the closing } so we dont evaluate the inside anyways
-			List<TokenList> loopArgs = GetArgs(expr); // Get args
-													  // Can only have 1 argument
-			if (loopArgs.Count != 1)
+			TokenList block = new TokenList();
+			LexerPosition start = tokens.Peek().Position;
+			int depth = 1;
+			while (tokens.Count > 0)
 			{
-				throw new InterpreterException($"Loop has too many arguments at {exprPos}");
+				Token<TokenType> token = tokens.Dequeue();
+				block.Add(token);
+				if (token.TokenID == LBRACE)
+				{
+					depth++;
+				}
+				if (token.TokenID == RBRACE)
+				{
+					depth--;
+					if (depth == 0)
+					{
+						return new Queue<Token<TokenType>>(block);
+					}
+				}
 			}
-			// Make loop node
-			LoopNode loop = new LoopNode(loopArgs[0], exprPos);
-			BuildTree<RootNode>(block, ref state).Children.ForEach(c => loop.Add(c));
-			// Add to tree
-			root.Add(loop);
+			throw new InterpreterException($"Block at {start} doesn't end!");
 		}
 
-		private static List<TokenList> GetArgs(TokenList expr)
+		internal static List<TokenList> GetArgs(TokenList expr)
 		{
 			return expr.GetRange(expr.Select(t => t.TokenID).ToList().IndexOf(LPAREN), expr.Select(t => t.TokenID).ToList().LastIndexOf(RPAREN)).Split(COMMA);
 		}		

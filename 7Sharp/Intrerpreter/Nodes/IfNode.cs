@@ -12,9 +12,9 @@ namespace _7Sharp.Intrerpreter.Nodes
 		private readonly string condition;
 		private readonly bool isElseIf;
 
-		public IfNode(string condition, bool isElseIf, LexerPosition linePosition) : base(linePosition)
+		public IfNode(List<Token<TokenType>> condition, bool isElseIf, LexerPosition linePosition) : base(linePosition)
 		{
-			this.condition = condition;
+			this.condition = condition.AsString();
 			this.isElseIf = isElseIf;
 		}
 
