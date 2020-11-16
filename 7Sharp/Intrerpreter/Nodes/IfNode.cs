@@ -27,16 +27,20 @@ namespace _7Sharp.Intrerpreter.Nodes
 			{
 				return;
 			}
-			// Try to parse condition as bool or error
-			if (state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value at {state.Location}"))
+			// Reset the last result if we are a not an else if statment
+			if (!isElseIf)
 			{
-				state.LastIfResult = true;
+				state.LastIfResult = false;
+			}
+			// Try to parse condition as bool or error
+			state.LastIfResult = state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value at {state.Location}");
+			if (state.LastIfResult)
+			{
 				foreach (Node child in Children)
 				{
 					child.Run(ref state);
 				}
 			}
-			state.LastIfResult = false;
 		}
 
 		public static bool IsIf(List<Token<TokenType>> tokens) => tokens.Count >= 4 &&

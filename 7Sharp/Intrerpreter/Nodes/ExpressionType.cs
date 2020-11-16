@@ -53,7 +53,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 						return new LoopNode(args.First(), exprPos);
 					case ExpressionType.WHILE:
 						args.ThrowIfNotSize(exprPos, 1);
-						throw new NotImplementedException();
+						return new WhileNode(args.First(), exprPos);
 				}
 			}
 			else
@@ -84,9 +84,9 @@ namespace _7Sharp.Intrerpreter.Nodes
 				case ExpressionType.ASSIGNMENT:
 					return AssignmentNode.IsAssignment(expr);
 				case ExpressionType.INCREMENT:
-					return false;
+					return false; //TODO: IMPLEMENT ME
 				case ExpressionType.DECREMENT:
-					return false;
+					return false; //TODO: IMPLEMENT ME
 				case ExpressionType.IF:
 					return IfNode.IsIf(expr) || IfNode.IsElseIf(expr);
 				case ExpressionType.ELSE:
@@ -94,7 +94,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 				case ExpressionType.LOOP:
 					return LoopNode.IsLoopNode(expr);
 				case ExpressionType.WHILE:
-					return false;
+					return WhileNode.IsWhile(expr);
 			}
 			return false;
 		}

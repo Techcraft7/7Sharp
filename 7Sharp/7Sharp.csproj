@@ -106,6 +106,7 @@
     <Compile Include="Intrerpreter\Nodes\LoopNode.cs" />
     <Compile Include="Intrerpreter\Nodes\Node.cs" />
     <Compile Include="Intrerpreter\Nodes\RootNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\WhileNode.cs" />
     <Compile Include="Intrerpreter\SysFunctions.cs" />
     <Compile Include="Intrerpreter\TokenType.cs" />
     <Compile Include="Intrerpreter\_7sFunction.cs" />
