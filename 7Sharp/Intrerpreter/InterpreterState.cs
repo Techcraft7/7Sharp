@@ -1,4 +1,5 @@
-﻿using CodingSeb.ExpressionEvaluator;
+﻿using _7Sharp.Manual;
+using CodingSeb.ExpressionEvaluator;
 using sly.lexer;
 using System;
 using System.Collections.Generic;
@@ -82,6 +83,7 @@ namespace _7Sharp.Intrerpreter
 			}
 		}
 
+		[ManualDocs("getLoopIndex", "{\"title\":\"getLoopIndex() | getLoopIndex(n)\",\"sections\":[{\"header\":\"getLoopIndex()\",\"text\":[{\"text\":\"Returns the index of the current \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop. Equivalent of \"},{\"text\":\"getLoopIndex(0)\",\"color\":\"Cyan\"}]},{\"header\":\"getLoopIndex(n)\",\"text\":[{\"text\":\"Returns the index of the  \"},{\"text\":\"n\",\"color\":\"Green\"},{\"text\":\"th \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop. \"},{\"text\":\"getLoopIndex(1)\",\"color\":\"Cyan\"},{\"text\":\" will get the index of the loop outside of the current \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop, \"},{\"text\":\"getLoopIndex(2)\",\"color\":\"Cyan\"},{\"text\":\" will get the index of the loop outside of the loop outside of current \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop, and so on.\"}]}]}")]
 		private int GetFirstLoopIndex() => GetLoopIndex(0);
 
 		public int GetLoopIndex(int i)

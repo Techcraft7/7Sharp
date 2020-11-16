@@ -26,14 +26,17 @@ namespace _7Sharp.Shell
 						}
 						return;
 					}	
-					string topic = args[0].ToLower();
+					string topic = args[0];
 					if (Documentation.ContainsKey(topic))
 					{
 						try
 						{
 							ManualObject obj = JsonConvert.DeserializeObject<ManualObject>(Documentation[topic]);
+							Console.WriteLine("7Sharp Manual");
+							Console.WriteLine();
 							Console.WriteLine(obj.title);
-							Console.WriteLine("--------------\n");
+							Console.WriteLine();
+							Console.WriteLine($"{new string('=', Console.WindowWidth)}\n");
 							foreach (ManualSection s in obj.sections)
 							{
 								Console.WriteLine(s.header);
@@ -53,7 +56,7 @@ namespace _7Sharp.Shell
 									Console.Write(c.text);
 									Console.ResetColor();
 								}
-								Console.WriteLine();
+								Console.WriteLine($"\n{new string('-', Console.WindowWidth)}\n");
 							}
 						}
 						catch (Exception e)

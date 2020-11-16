@@ -46,7 +46,7 @@ namespace _7Sharp.Shell
 				{ new SysCommandInfo("man", "Show manual: man <topic>"), new Action<string[]>(Man) }
 			};
 			//Generate documentation
-			foreach (Type t in new Type[] { GetType(), typeof(SysFunctions) })
+			foreach (Type t in Assembly.GetExecutingAssembly().DefinedTypes)
 			{
 				foreach (MemberInfo m in t.GetMembers(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
 				{

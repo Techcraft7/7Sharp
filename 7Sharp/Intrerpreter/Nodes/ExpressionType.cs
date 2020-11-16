@@ -1,4 +1,5 @@
-﻿using sly.lexer;
+﻿using _7Sharp.Intrerpreter.Nodes.Attributes;
+using sly.lexer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,30 +10,31 @@ namespace _7Sharp.Intrerpreter.Nodes
 {
 	internal enum ExpressionType
 	{
-		FUNCTION_CALL,
-		ASSIGNMENT,
-		INCREMENT,
-		DECREMENT,
+		FUNCTION_CALL,			// write("hi");
+		ASSIGNMENT,				// x = 5;
+		INCREMENT,				// x++;
+		DECREMENT,				// x--;
 		[Block]
-		IF, // "else if" falls under this type
+		IF,						// if (condition) { OR else if (condition) {
 		[Block]
-		ELSE,
+		ELSE,					// else {
 		[Block]
-		LOOP,
+		LOOP,					// loop (times) {
 		[Block]
-		WHILE,
+		WHILE,					// while (condition) {
 		[Block]
 		[DontRun]
-		FUNCTION DEFINITION
-
+		FUNCTION_DEFINITION		// function func(param1, param2, ...) {
 	}
 	internal static class ExpressionTypeExtensions
 	{
 		private static List<ExpressionType> BLOCKS = new List<ExpressionType>();
+		private static List<ExpressionType> DONT_RUN = new List<ExpressionType>();
 
 		static ExpressionTypeExtensions()
 		{
 			BLOCKS.AddRange(typeof(ExpressionType).GetFields().Where(f => f.GetCustomAttributes(false).Any(a => a.GetType() == typeof(BlockAttribute))).Select(f => (ExpressionType)f.GetValue(null)));
+			DONT_RUN.AddRange(typeof(ExpressionType).GetFields().Where(f => f.GetCustomAttributes(false).Any(a => a.GetType() == typeof(DontRunAttribute))).Select(f => (ExpressionType)f.GetValue(null)));
 		}
 
 		public static Node GetNode(this ExpressionType et, ref Queue<Token<TokenType>> tokens, List<Token<TokenType>> expr, LexerPosition exprPos, ref InterpreterState state)
