@@ -103,6 +103,7 @@
     <Compile Include="Intrerpreter\Nodes\ExpressionType.cs" />
     <Compile Include="Intrerpreter\Nodes\FunctionCallNode.cs" />
     <Compile Include="Intrerpreter\Nodes\IfNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\IncrementNode.cs" />
     <Compile Include="Intrerpreter\Nodes\LoopNode.cs" />
     <Compile Include="Intrerpreter\Nodes\Node.cs" />
     <Compile Include="Intrerpreter\Nodes\RootNode.cs" />

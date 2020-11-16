@@ -20,23 +20,14 @@ loop (10) {
   write(getLoopIndex() + 1);
 }
 ```
-#### What is `getLoopIndex()`?
-`getLoopIndex()` is a function to get the index in the loop statement running. It automatically accounts for nested loops, so you don't need to manage any i's, j's, k's, etc.
+#### What is `getLoopIndex()`
 
-> Please note that `getLoopIndex()` starts at 0.
+`getLoopIndex()` gets the current index inside the current `loop` loop **(DOES NOT WORK FOR `while` LOOP!)**
 
-If you look at `Interpreter.cs` you will find this:
-```
-int times = (int)Evaluate(args); // in the "Count to 10" example it is just 10, but it can be an expression!
-loopIndexes.Push(0); // add a new loop index
-for (int j = 0; j < times && !exitLoop; j++) //exit loop is for "break"
-{
-  InternalRun(inside, out _, false); //run the code without resetting the evaluator
-  loopIndexes.Push(loopIndexes.Pop() + 1); //increment the current loop index by 1
-  skipLoop = false; // used for "continue"
-}
-_ = loopIndexes.Pop(); //remove loop index because we are done with it
-```
+`getLoopIndex(n)` can get loop indexes outside of the current `loop` loop.
+
+`getLoopIndex(n = 0)` is an abstraction for having to manage `i`, `j`, `k`, etc. because many beginners tend to mess this up, even though some interpreted languages (like Python) will let you have two for loops with `i` as the variable.
+
 All of that out of the way, here is another example
 ### Fibonacci
 ```

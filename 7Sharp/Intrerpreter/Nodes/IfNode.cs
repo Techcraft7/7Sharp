@@ -59,5 +59,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 			// End
 			tokens[tokens.Count - 2].TokenID == TokenType.RPAREN &&
 			tokens[tokens.Count - 1].TokenID == TokenType.LBRACE;
+		
+		public override string ToString() => $"{GetName()} {{ {condition} }}";
 	}
 }
