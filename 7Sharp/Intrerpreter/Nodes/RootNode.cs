@@ -19,6 +19,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 		
 		public override void Run(ref InterpreterState state)
 		{
+			state.Reset();
 			try
 			{
 				foreach (Node child in Children)

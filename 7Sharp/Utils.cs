@@ -92,6 +92,19 @@ namespace _7Sharp
 			int depth = 0;
 			for (int i = 0; i < tokens.Count; i++)
 			{
+				switch (tokens[i].TokenID)
+				{
+					case TokenType.LPAREN:
+					case TokenType.LBRACE:
+					case TokenType.LBRACKET:
+						depth++;
+						break;
+					case TokenType.RPAREN:
+					case TokenType.RBRACE:
+					case TokenType.RBRACKET:
+						depth--;
+						break;
+				}
 				if (depth == 0 && tokens[i].TokenID == sep)
 				{
 					list.Add(current);

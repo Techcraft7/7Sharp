@@ -20,9 +20,12 @@ namespace _7Sharp.Intrerpreter.Nodes
 		{
 			try
 			{
-				dynamic x = state.Variables[variableName];
-				x++;
-				state.Variables[variableName] = x;
+				state.RunWithVariables((ref Dictionary<string, object> vars) =>
+				{
+					dynamic x = vars[variableName];
+					x++;
+					vars[variableName] = x;
+				});
 			}
 			catch
 			{

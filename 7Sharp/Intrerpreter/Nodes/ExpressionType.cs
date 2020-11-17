@@ -60,6 +60,8 @@ namespace _7Sharp.Intrerpreter.Nodes
 					case ExpressionType.WHILE:
 						args.ThrowIfNotSize(exprPos, 1);
 						return new WhileNode(args.First(), exprPos);
+					case ExpressionType.FUNCTION_DEFINITION:
+						return new FunctionDefinitionNode(expr[1].StringWithoutQuotes, args.Select(a => a.AsString()).ToArray(), exprPos);
 				}
 			}
 			else

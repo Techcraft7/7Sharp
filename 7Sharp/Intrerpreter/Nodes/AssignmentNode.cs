@@ -1,4 +1,5 @@
-﻿using sly.lexer;
+﻿using CodingSeb.ExpressionEvaluator;
+using sly.lexer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +21,20 @@ namespace _7Sharp.Intrerpreter.Nodes
 
 		public override void Run(ref InterpreterState state)
 		{
-			// Update value if it exists
-			if (state.Variables.ContainsKey(name))
+			ExpressionEvaluator evaluator = state.evaluator;
+			state.RunWithVariables((ref Dictionary<string, object> vars) =>
 			{
-				state.Variables[name] = state.evaluator.Evaluate(value);
-				return;
-			}
-			// Otherwise add it
-			state.Variables.Add(name, state.evaluator.Evaluate(value));
+				// Evaluate
+				object value = evaluator.Evaluate(this.value);
+				// Update value if it exists
+				if (vars.ContainsKey(name))
+				{
+					vars[name] = value;
+					return;
+				}
+				// Otherwise add it
+				vars.Add(name, value);
+			});
 		}
 
 		public static bool IsAssignment(List<Token<TokenType>> tokens) => tokens.Count > 3 &&
