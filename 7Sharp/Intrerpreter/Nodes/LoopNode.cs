@@ -29,7 +29,6 @@ namespace _7Sharp.Intrerpreter.Nodes
 			}
 			// Create loop index
 			state.LoopIndexes.Push(0);
-			Console.WriteLine();
 			for (int i = 0; i < times; i++)
 			{
 				foreach (Node child in Children)
