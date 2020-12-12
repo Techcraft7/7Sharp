@@ -28,15 +28,16 @@ namespace _7Sharp.Intrerpreter
 			}
 			state.InsideFunction = true;
 			state.PushScope();
-			state.Variables.Push(Enumerable.Range(0, argNames.Length)
+			state.FuncParams = Enumerable.Range(0, argNames.Length)
 				.Select(i => Tuple.Create(argNames[i], args[i]))
-				.ToDictionary(t => t.Item1, t => t.Item2));
+				.ToDictionary(t => t.Item1, t => t.Item2);
 			foreach (Node n in code)
 			{
 				n.Run(ref state);
 			}
-			state.PushScope();
+			state.PopScope();
 			state.InsideFunction = false;
+			state.FuncParams = null;
 		}
 	}
 }

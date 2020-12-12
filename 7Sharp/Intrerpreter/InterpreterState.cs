@@ -18,6 +18,9 @@ namespace _7Sharp.Intrerpreter
 		public readonly Stack<int> LoopIndexes = new Stack<int>();
 		public bool LastIfResult = false;
 		public bool InsideFunction = false;
+		public object ReturnValue;
+		public LexerPosition Location;
+		public Dictionary<string, object> FuncParams;
 
 		// Utility to run code with a dictionary of variables in the current scope
 		public void RunWithVariables(RunWithVarsDelegate func)
@@ -55,9 +58,6 @@ namespace _7Sharp.Intrerpreter
 				throw new InterpreterException(message);
 			}
 		}
-
-		public object ReturnValue;
-		public LexerPosition Location;
 
 		public static void Init(ref InterpreterState state)
 		{
@@ -130,17 +130,32 @@ namespace _7Sharp.Intrerpreter
 
 		private void Evaluator_PreEvaluateVariable(object sender, VariablePreEvaluationEventArg e)
 		{
+			Dictionary<string, object> top = new Dictionary<string, object>();
 			if (InsideFunction)
 			{
-				Dictionary<string, object> globals = Variables.Last();
-				if (globals.ContainsKey(e.Name))
+				top = Variables.Last();
+				if (top.ContainsKey(e.Name))
 				{
-					e.Value = globals[e.Name];
+					e.Value = top[e.Name];
 					e.CancelEvaluation = false;
 				}
-				return;
+				if (FuncParams != null)
+				{
+					foreach (KeyValuePair<string, object> item in FuncParams)
+					{
+						if (top.ContainsKey(item.Key))
+						{
+							top[item.Key] = item.Value;
+						}
+						else
+						{
+							top.Add(item.Key, item.Value);
+						}
+					}
+				}
 			}
-			Dictionary<string, object> top = Variables.Pop();
+			Dictionary<string, object> lastVars = Variables.Pop();
+			top = top.Concat(lastVars.AsEnumerable()).ToDictionary(kv => kv.Key, kv => kv.Value);
 			if (top.ContainsKey(e.Name))
 			{
 				e.Value = top[e.Name];
@@ -150,7 +165,7 @@ namespace _7Sharp.Intrerpreter
 			{
 				throw new InterpreterException($"Variable \"{e.Name}\" not defined in the current scope at {Location}");
 			}
-			Variables.Push(top);
+			Variables.Push(lastVars);
 		}
 
 		[ManualDocs("getLoopIndex", "{\"title\":\"getLoopIndex() | getLoopIndex(n)\",\"sections\":[{\"header\":\"getLoopIndex()\",\"text\":[{\"text\":\"Returns the index of the current \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop. Equivalent of \"},{\"text\":\"getLoopIndex(0)\",\"color\":\"Cyan\"}]},{\"header\":\"getLoopIndex(n)\",\"text\":[{\"text\":\"Returns the index of the  \"},{\"text\":\"n\",\"color\":\"Green\"},{\"text\":\"th \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop. \"},{\"text\":\"getLoopIndex(1)\",\"color\":\"Cyan\"},{\"text\":\" will get the index of the loop outside of the current \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop, \"},{\"text\":\"getLoopIndex(2)\",\"color\":\"Cyan\"},{\"text\":\" will get the index of the loop outside of the loop outside of current \"},{\"text\":\"loop (times)\",\"color\":\"Green\"},{\"text\":\" loop, and so on.\"}]}]}")]
