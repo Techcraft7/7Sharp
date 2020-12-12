@@ -143,10 +143,10 @@ namespace _7Sharp.Intrerpreter
 
 		public void Import(string libPath)
 		{
+			InterpreterState state = this;
 			SysLibrary[] libs = SysLibrary.GetAllLibraries();
 			if (libs.Any(l => l.GetName() == libPath))
 			{
-				InterpreterState state = this;
 				libs.First(l => l.GetName() == libPath).Import(ref state);
 				return;
 			}
@@ -159,7 +159,11 @@ namespace _7Sharp.Intrerpreter
 				throw new InterpreterException($"Could not find library \"{libPath}\"");
 			}
 			_7sLibrary lib = _7sLibManager.Load(libPath);
-			UserFunction[] funcs = new Interpreter().GetFuncsFromCode(lib.Content);
+			UserFunction[] funcs = new Interpreter().GetFuncsFromCode(lib.Content, ref state);
+			foreach (UserFunction f in funcs)
+			{
+				UserFuncs.Add(f);
+			}
 		}
 
 		private void Evaluator_PreEvaluateVariable(object sender, VariablePreEvaluationEventArg e)

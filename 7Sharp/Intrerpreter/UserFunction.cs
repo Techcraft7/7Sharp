@@ -17,6 +17,13 @@ namespace _7Sharp.Intrerpreter
 		{
 			Name = name;
 			this.argNames = argNames;
+			if (argNames.Length == 1)
+			{
+				if (string.IsNullOrWhiteSpace(argNames[0]))
+				{
+					this.argNames = new string[0];
+				}
+			}
 			code = nodes;
 		}
 

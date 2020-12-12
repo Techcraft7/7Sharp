@@ -40,7 +40,16 @@ namespace _7Sharp.Intrerpreter.Nodes
 			}
 		}
 
-		private static object[] ParseArgs(List<List<Token<TokenType>>> args, InterpreterState state) => args.Select(list => state.evaluator.Evaluate(list.AsString())).ToArray();
+		private static object[] ParseArgs(List<List<Token<TokenType>>> args, InterpreterState state)
+		{
+			if (args.Count == 1 && args[0].Count == 0)
+			{
+				return new object[0];
+			}
+			return args
+				.Select(list => state.evaluator.Evaluate(list.AsString()))
+				.ToArray();
+		}
 
 		public static bool IsFunctionCall(List<Token<TokenType>> tokens) => tokens.Count >= 4 &&
 				// Start

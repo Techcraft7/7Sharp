@@ -97,7 +97,7 @@ namespace _7Sharp.Intrerpreter
 			root.Run(ref state);
 		}
 
-		private T BuildTree<T>(Queue<Token<TokenType>> tokens, ref InterpreterState state) where T : BlockNode, new()
+		private T BuildTree<T>(Queue<Token<TokenType>> tokens, ref InterpreterState state, bool getNodesOnly = false) where T : BlockNode, new()
 		{
 			T root = new T(); // Create a new node
 
@@ -108,7 +108,9 @@ namespace _7Sharp.Intrerpreter
 				Token<TokenType> token = tokens.Dequeue();
 				if (token == null || token.IsEOS)
 				{
+#if DEBUG
 					WriteLineColor("EOS", Cyan);
+#endif
 					break;
 				}
 				// While i is in bounds of tokens AND we have not hit an "expression ending" (; or {)
@@ -144,24 +146,27 @@ namespace _7Sharp.Intrerpreter
 						{
 							BlockNode tmp = (BlockNode)node;
 							Queue<Token<TokenType>> block = GetBlock(ref tokens);
-							BuildTree<RootNode>(block, ref state).Children.ForEach(c => tmp.Add(c));
+							BuildTree<RootNode>(block, ref state, getNodesOnly).Children.ForEach(c => tmp.Add(c));
 							node = tmp;
 						}
-						if (type.WillRun())
+						if (type.WillRun() || getNodesOnly)
 						{
 							root.Add(node);
 						}
-						if (node is FunctionDefinitionNode funcDefNode)
+						if (!getNodesOnly)
 						{
-							state.UserFuncs.Add(new UserFunction(
-								funcDefNode.Name,
-								funcDefNode.Args,
-								funcDefNode.Children
-							));
-						}
-						if (node is ImportNode impNode)
-						{
-							state.Import(impNode.Library);
+							if (node is FunctionDefinitionNode funcDefNode)
+							{
+								state.UserFuncs.Add(new UserFunction(
+									funcDefNode.Name,
+									funcDefNode.Args,
+									funcDefNode.Children
+								));
+							}
+							if (node is ImportNode impNode)
+							{
+								state.Import(impNode.Library);
+							}
 						}
 						built = true;
 						break;
@@ -201,9 +206,39 @@ namespace _7Sharp.Intrerpreter
 			throw new InterpreterException($"Block at {start} doesn't end!");
 		}
 
-		internal UserFunction[] GetFuncsFromCode(string content)
+		internal UserFunction[] GetFuncsFromCode(string code, ref InterpreterState state)
 		{
-			throw new NotImplementedException();
+			// Convert code to tokens
+			LexerResult<TokenType> result = lexer.Tokenize(code);
+			// Error out if lexer fails
+			if (result.IsError)
+			{
+				throw new InterpreterException($"Parsing Error: {result.Error}");
+			}
+
+			Queue<Token<TokenType>> tokens = new Queue<Token<TokenType>>(result.Tokens);
+
+			RootNode node = BuildTree<RootNode>(tokens, ref state, true);
+			List<FunctionDefinitionNode> funcs = new List<FunctionDefinitionNode>();
+
+			GetFuncsFromTree(node, ref funcs);
+
+			return funcs.Select(f => new UserFunction(f.Name, f.Args, f.Children)).ToArray();
+		}
+
+		private void GetFuncsFromTree(BlockNode tree, ref List<FunctionDefinitionNode> funcs)
+		{
+			foreach (var child in tree.Children)
+			{
+				if (child is FunctionDefinitionNode funcDef)
+				{
+					funcs.Add(funcDef);
+				}
+				else if (child is BlockNode block)
+				{
+					GetFuncsFromTree(block, ref funcs);
+				}
+			}
 		}
 
 		internal static List<TokenList> GetArgs(TokenList expr)
