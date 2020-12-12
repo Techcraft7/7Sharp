@@ -31,10 +31,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 			state.LoopIndexes.Push(0);
 			for (int i = 0; i < times; i++)
 			{
-				foreach (Node child in Children)
-				{
-					child.Run(ref state);
-				}
+				base.RunAllNodes(ref state);
 				// Add 1 to current loop index
 				state.LoopIndexes.Push(state.LoopIndexes.Pop() + 1);
 			}

@@ -14,7 +14,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 
 		public IfNode(List<Token<TokenType>> condition, bool isElseIf, LexerPosition linePosition) : base(linePosition)
 		{
-			this.condition = condition.AsString();
+			this.condition = (isElseIf ? condition.Take(condition.Count - 1).ToList() : condition).AsString();
 			this.isElseIf = isElseIf;
 		}
 
@@ -36,10 +36,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 			state.LastIfResult = state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value or was invalid at {state.Location}");
 			if (state.LastIfResult)
 			{
-				foreach (Node child in Children)
-				{
-					child.Run(ref state);
-				}
+				base.RunAllNodes(ref state);
 			}
 		}
 

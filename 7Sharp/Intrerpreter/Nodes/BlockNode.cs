@@ -75,6 +75,17 @@ namespace _7Sharp.Intrerpreter.Nodes
 			throw new InterpreterException($"Block not closed at {t.Position.Adjust()}");
 		}
 
+		protected void RunAllNodes(ref InterpreterState state)
+		{
+			state.PushScope();
+			foreach (Node child in Children)
+			{
+				state.Location = child.linePosition;
+				child.Run(ref state);
+			}
+			state.PopScope();
+		}
+
 		public override string ToString() => GetName();
 	}
 }

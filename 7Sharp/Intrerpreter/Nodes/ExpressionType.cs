@@ -98,7 +98,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 				case ExpressionType.IF:
 					return IfNode.IsIf(expr) || IfNode.IsElseIf(expr);
 				case ExpressionType.ELSE:
-					break;
+					return ElseNode.IsElse(expr);
 				case ExpressionType.LOOP:
 					return LoopNode.IsLoopNode(expr);
 				case ExpressionType.WHILE:

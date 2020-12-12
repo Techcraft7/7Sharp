@@ -96,7 +96,7 @@ namespace _7Sharp.Intrerpreter
 			}));
 		}
 
-		public void PushScope() => Variables.Push(Variables.Peek());
+		public void PushScope() => Variables.Push(Variables.Peek().Clone());
 
 		public void PopScope()
 		{
@@ -106,16 +106,18 @@ namespace _7Sharp.Intrerpreter
 			}
 			Dictionary<string, object> oldVars = Variables.Pop(); // Current scope
 			Dictionary<string, object> newVars = Variables.Pop(); // Previous scope
-			
+
+			Dictionary<string, object> temp = newVars.Clone();
+
 			// If variable in previous scope is changed in the current scope, update it
 			foreach (KeyValuePair<string, object> kv in newVars)
 			{
 				if (oldVars.ContainsKey(kv.Key))
 				{
-					newVars[kv.Key] = oldVars[kv.Key];
+					temp[kv.Key] = oldVars[kv.Key];
 				}
 			}
-			Variables.Push(newVars);
+			Variables.Push(temp);
 		}
 
 		private void Evaluator_PreEvaluateVariable(object sender, VariablePreEvaluationEventArg e)
@@ -135,6 +137,10 @@ namespace _7Sharp.Intrerpreter
 			{
 				e.Value = top[e.Name];
 				e.CancelEvaluation = false;
+			}
+			else
+			{
+				throw new InterpreterException($"Variable \"{e.Name}\" not defined in the current scope at {Location}");
 			}
 			Variables.Push(top);
 		}

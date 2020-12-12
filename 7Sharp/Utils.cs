@@ -166,5 +166,7 @@ namespace _7Sharp
 				throw new InterpreterException($"Too many arguments at {pos}");
 			}
 		}
+
+		public static Dictionary<K, V> Clone<K, V>(this Dictionary<K, V> dict) => dict.AsEnumerable().ToDictionary(kv => kv.Key, kv => kv.Value);
 	}
 }

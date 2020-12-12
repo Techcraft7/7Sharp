@@ -23,10 +23,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 				return;
 			}
 			state.LastIfResult = false; // If statement is complete
-			foreach (Node child in Children)
-			{
-				child.Run(ref state);
-			}
+			base.RunAllNodes(ref state);
 		}
 
 		public static bool IsElse(List<Token<TokenType>> tokens) => tokens.Count == 2 &&

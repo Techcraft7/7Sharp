@@ -23,10 +23,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 			// Try to parse condition as bool or error
 			while (state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value or was invalid at {state.Location}"))
 			{
-				foreach (Node child in Children)
-				{
-					child.Run(ref state);
-				}
+				base.RunAllNodes(ref state);
 			}
 		}
 
