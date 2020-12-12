@@ -24,7 +24,10 @@ namespace _7Sharp.Intrerpreter.Nodes
 		WHILE,					// while (condition) {
 		[Block]
 		[DontRun]
-		FUNCTION_DEFINITION		// function func(param1, param2, ...) {
+		FUNCTION_DEFINITION,	// function func(param1, param2, ...) {
+		BREAK,					// break;
+		CONTINUE,				// continue;
+		RETURN,					// return; OR return value;
 	}
 	internal static class ExpressionTypeExtensions
 	{
@@ -72,6 +75,12 @@ namespace _7Sharp.Intrerpreter.Nodes
 			{
 				switch (et)
 				{
+					case ExpressionType.RETURN:
+						return new ReturnNode(expr.Skip(1).Reverse().Skip(1).Reverse().ToList(), exprPos);
+					case ExpressionType.BREAK:
+						return new BreakNode(exprPos);
+					case ExpressionType.CONTINUE:
+						return new ContinueNode(exprPos);
 					case ExpressionType.FUNCTION_CALL:
 						string name = expr[0].StringWithoutQuotes;
 						bool isSysFunc = state.Functions.Any(f => f.Name == name);
@@ -127,6 +136,12 @@ namespace _7Sharp.Intrerpreter.Nodes
 					return LoopNode.IsLoopNode(expr);
 				case ExpressionType.WHILE:
 					return WhileNode.IsWhile(expr);
+				case ExpressionType.RETURN:
+					return ReturnNode.IsReturn(expr);
+				case ExpressionType.BREAK:
+					return BreakNode.IsBreak(expr);
+				case ExpressionType.CONTINUE:
+					return ContinueNode.IsContinue(expr);
 			}
 			return false;
 		}

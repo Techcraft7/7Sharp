@@ -99,6 +99,8 @@
     <Compile Include="Intrerpreter\Nodes\AssignmentNode.cs" />
     <Compile Include="Intrerpreter\Nodes\Attributes\BlockAttribute.cs" />
     <Compile Include="Intrerpreter\Nodes\BlockNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\BreakNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\ContinueNode.cs" />
     <Compile Include="Intrerpreter\Nodes\DecrementNode.cs" />
     <Compile Include="Intrerpreter\Nodes\Attributes\DontRunAttribute.cs" />
     <Compile Include="Intrerpreter\Nodes\ElseNode.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Intrerpreter\Nodes\IncrementNode.cs" />
     <Compile Include="Intrerpreter\Nodes\LoopNode.cs" />
     <Compile Include="Intrerpreter\Nodes\Node.cs" />
+    <Compile Include="Intrerpreter\Nodes\ReturnNode.cs" />
     <Compile Include="Intrerpreter\Nodes\RootNode.cs" />
     <Compile Include="Intrerpreter\Nodes\WhileNode.cs" />
     <Compile Include="Intrerpreter\SysFunctions.cs" />

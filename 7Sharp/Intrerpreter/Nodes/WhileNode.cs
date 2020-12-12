@@ -21,9 +21,25 @@ namespace _7Sharp.Intrerpreter.Nodes
 		public override void Run(ref InterpreterState state)
 		{
 			// Try to parse condition as bool or error
-			while (state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value or was invalid at {state.Location}"))
+			while (!state.BreakUsed && state.TryParse<bool>(condition, $"{GetName()} condition did not evaluate to a true/false value or was invalid at {state.Location}"))
 			{
-				base.RunAllNodes(ref state);
+				state.PushScope();
+				foreach (Node child in Children)
+				{
+					state.Location = child.linePosition;
+					child.Run(ref state);
+					if (state.ContinueUsed)
+					{
+						state.ContinueUsed = false;
+						break;
+					}
+					if (state.BreakUsed)
+					{
+						break;
+					}
+				}
+				state.BreakUsed = false;
+				state.PopScope();
 			}
 		}
 

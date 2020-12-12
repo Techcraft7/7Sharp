@@ -31,7 +31,24 @@ namespace _7Sharp.Intrerpreter.Nodes
 			state.LoopIndexes.Push(0);
 			for (int i = 0; i < times; i++)
 			{
-				base.RunAllNodes(ref state);
+				state.PushScope();
+				foreach (Node child in Children)
+				{
+					state.Location = child.linePosition;
+					child.Run(ref state);
+					if (state.ContinueUsed)
+					{
+						state.ContinueUsed = false;
+						break;
+					}
+					if (state.BreakUsed)
+					{
+						state.BreakUsed = false;
+						i = times;
+						break;
+					}
+				}
+				state.PopScope();
 				// Add 1 to current loop index
 				state.LoopIndexes.Push(state.LoopIndexes.Pop() + 1);
 			}

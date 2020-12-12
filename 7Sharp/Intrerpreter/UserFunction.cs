@@ -33,7 +33,12 @@ namespace _7Sharp.Intrerpreter
 				.ToDictionary(t => t.Item1, t => t.Item2);
 			foreach (Node n in code)
 			{
+				state.Location = n.linePosition;
 				n.Run(ref state);
+				if (state.ExitFunc) // If return is used
+				{
+					break;
+				}
 			}
 			state.PopScope();
 			state.InsideFunction = false;

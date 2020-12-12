@@ -21,6 +21,9 @@ namespace _7Sharp.Intrerpreter
 		public object ReturnValue;
 		public LexerPosition Location;
 		public Dictionary<string, object> FuncParams;
+		internal bool ExitFunc;
+		internal bool ContinueUsed;
+		internal bool BreakUsed;
 
 		// Utility to run code with a dictionary of variables in the current scope
 		public void RunWithVariables(RunWithVarsDelegate func)
@@ -104,7 +107,14 @@ namespace _7Sharp.Intrerpreter
 			}));
 		}
 
-		public void PushScope() => Variables.Push(Variables.Peek().Clone());
+		public void PushScope()
+		{
+			if (Variables.Count == 0)
+			{
+				Variables.Push(new Dictionary<string, object>());
+			}
+			Variables.Push(Variables.Peek().Clone());
+		}
 
 		public void PopScope()
 		{
@@ -189,18 +199,35 @@ namespace _7Sharp.Intrerpreter
 
 		private void Evaluator_PreEvaluateFunction(object sender, FunctionPreEvaluationEventArg e)
 		{
-			if (!Functions.Any(f => f.Name == e.Name) && !UserFuncs.Any(f => f.Name == e.Name))
+			bool isSysFunc = Functions.Any(f => f.Name == e.Name);
+			if (!isSysFunc && !UserFuncs.Any(f => f.Name == e.Name))
 			{
 				throw new InterpreterException($"Unkown function {e.Name} at {Location}");
 			}
-			_7sFunction func = Functions.First(f => f.Name == e.Name);
-			object[] args = new object[0];
-			if (e.Args.Count > 0)
+			if (isSysFunc)
 			{
-				args = e.Args.Select(a => evaluator.Evaluate(a)).ToArray();
+				_7sFunction func = Functions.First(f => f.Name == e.Name);
+				object[] args = new object[0];
+				if (e.Args.Count > 0)
+				{
+					args = e.Args.Select(a => evaluator.Evaluate(a)).ToArray();
+				}
+				e.Value = func.Run(args);
+				e.FunctionReturnedValue = true;
 			}
-			e.Value = func.Run(args);
-			e.FunctionReturnedValue = true;
+			else
+			{
+				UserFunction func = UserFuncs.First(f => f.Name == e.Name);
+				object[] args = new object[0];
+				if (e.Args.Count > 0)
+				{
+					args = e.Args.Select(a => evaluator.Evaluate(a)).ToArray();
+				}
+				InterpreterState state = this;
+				func.Run(ref state, args);
+				e.Value = state.ReturnValue;
+				e.FunctionReturnedValue = true;
+			}
 		}
 	}
 }
