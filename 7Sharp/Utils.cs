@@ -44,21 +44,6 @@ namespace _7Sharp
 			ColorConsoleMethods.WriteLineColor($"{e.GetType()}: {e.Message}\n{e.StackTrace}", ConsoleColor.Red);
 		}
 
-		internal static dynamic MultiDimToJagged(dynamic input, int nDims)
-		{
-			try
-			{
-				MethodInfo m = typeof(Enumerable).GetMethod("Cast").GetGenericMethodDefinition().MakeGenericMethod(Type.GetType($"System.Object{new string('X', input.Rank).Replace("X", "[]")}"));
-				var ie = (IEnumerable)m.Invoke(input, new object[] { input });
-				return ie;
-			}
-			catch (Exception e)
-			{
-				PrintError(e);
-				return null;
-			}
-		}
-
 		public static bool IsEnding(this Token<TokenType> t) => t.TokenID == TokenType.SEMICOLON || t.TokenID == TokenType.LBRACE;
 
 		public static void TokenDump(this TokenList tokens)
@@ -136,7 +121,7 @@ namespace _7Sharp
 		{
 			if (t == null || !t.IsConstant())
 			{
-				return t == null ? null : t.StringWithoutQuotes;
+				return t?.StringWithoutQuotes;
 			}
 			switch (t.TokenID)
 			{

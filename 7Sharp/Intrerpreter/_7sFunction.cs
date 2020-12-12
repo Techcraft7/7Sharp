@@ -39,5 +39,7 @@ namespace _7Sharp.Intrerpreter
 				throw new InterpreterException($"Error in {Name}", e);
 			}
 		}
+
+		public override string ToString() => $"SysFunc [{string.Join(", ", Funcs.Keys.Select(count => $"{Name}({string.Join(", ", Enumerable.Range(1, count + 1).Select(x => "p" + x))})"))}]";
 	}
 }

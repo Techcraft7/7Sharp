@@ -42,7 +42,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 			DONT_RUN.AddRange(typeof(ExpressionType).GetFields().Where(f => f.GetCustomAttributes(false).Any(a => a.GetType() == typeof(DontRunAttribute))).Select(f => (ExpressionType)f.GetValue(null)));
 		}
 
-		public static Node GetNode(this ExpressionType et, ref Queue<Token<TokenType>> tokens, List<Token<TokenType>> expr, LexerPosition exprPos, ref InterpreterState state)
+		public static Node GetNode(this ExpressionType et, List<Token<TokenType>> expr, LexerPosition exprPos, ref InterpreterState state)
 		{
 			if (et.IsBlock())
 			{

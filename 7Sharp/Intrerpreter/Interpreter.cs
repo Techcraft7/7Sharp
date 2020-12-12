@@ -139,7 +139,7 @@ namespace _7Sharp.Intrerpreter
 				{
 					if (type.Matches(expr))
 					{
-						Node node = type.GetNode(ref tokens, expr, exprPos, ref state);
+						Node node = type.GetNode(expr, exprPos, ref state);
 						if (type.IsBlock())
 						{
 							BlockNode tmp = (BlockNode)node;
@@ -151,13 +151,17 @@ namespace _7Sharp.Intrerpreter
 						{
 							root.Add(node);
 						}
-						if (node is FunctionDefinitionNode)
+						if (node is FunctionDefinitionNode funcDefNode)
 						{
 							state.UserFuncs.Add(new UserFunction(
-								((FunctionDefinitionNode)node).Name,
-								((FunctionDefinitionNode)node).Args,
-								((FunctionDefinitionNode)node).Children
+								funcDefNode.Name,
+								funcDefNode.Args,
+								funcDefNode.Children
 							));
+						}
+						if (node is ImportNode impNode)
+						{
+							state.Import(impNode.Library);
 						}
 						built = true;
 						break;
@@ -195,6 +199,11 @@ namespace _7Sharp.Intrerpreter
 				}
 			}
 			throw new InterpreterException($"Block at {start} doesn't end!");
+		}
+
+		internal UserFunction[] GetFuncsFromCode(string content)
+		{
+			throw new NotImplementedException();
 		}
 
 		internal static List<TokenList> GetArgs(TokenList expr)

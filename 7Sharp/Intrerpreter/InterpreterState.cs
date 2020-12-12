@@ -1,8 +1,11 @@
-﻿using _7Sharp.Manual;
+﻿using _7Sharp._7sLib;
+using _7Sharp.Intrerpreter.SysLibraries;
+using _7Sharp.Manual;
 using CodingSeb.ExpressionEvaluator;
 using sly.lexer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -136,6 +139,27 @@ namespace _7Sharp.Intrerpreter
 				}
 			}
 			Variables.Push(temp);
+		}
+
+		public void Import(string libPath)
+		{
+			SysLibrary[] libs = SysLibrary.GetAllLibraries();
+			if (libs.Any(l => l.GetName() == libPath))
+			{
+				InterpreterState state = this;
+				libs.First(l => l.GetName() == libPath).Import(ref state);
+				return;
+			}
+			if (!libPath.EndsWith(".7slib"))
+			{
+				libPath += ".7slib";
+			}
+			if (!File.Exists(libPath))
+			{
+				throw new InterpreterException($"Could not find library \"{libPath}\"");
+			}
+			_7sLibrary lib = _7sLibManager.Load(libPath);
+			UserFunction[] funcs = new Interpreter().GetFuncsFromCode(lib.Content);
 		}
 
 		private void Evaluator_PreEvaluateVariable(object sender, VariablePreEvaluationEventArg e)

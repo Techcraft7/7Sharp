@@ -69,8 +69,7 @@ namespace _7Sharp._7sLib
 								{
 									throw new FormatException($"Invalid header! Expected 7SLIB at line 1! Got {header[0]}");
 								}
-								int v;
-								if (!header[1].StartsWith("V") || !int.TryParse(header[1].Substring(1), out v))
+								if (!header[1].StartsWith("V") || !int.TryParse(header[1].Substring(1), out int v))
 								{
 									throw new FormatException($"Invalid header! Expected V{LIBVERSION} or higher at line 2!");
 								}
@@ -103,8 +102,10 @@ namespace _7Sharp._7sLib
 									code = sr.ReadToEnd();
 								}
 							}
-							var lib = new _7sLibrary();
-							lib.Content = code;
+							_7sLibrary lib = new _7sLibrary
+							{
+								Content = code
+							};
 							return lib;
 						}
 						else
@@ -135,29 +136,6 @@ namespace _7Sharp._7sLib
 				o = BitConverter.ToString(SHA1.Create().ComputeHash(fs)); //dont return here let using exit to close stream			}
 			}
 			return o;
-		}
-
-		private static string WriteBytesAndGetSHA1(string path, byte[] bytes)
-		{
-			using (FileStream fs = new FileStream(path, FileMode.Create))
-			{
-				foreach (byte b in bytes)
-				{
-					fs.WriteByte(b);
-				}
-			}
-			return GetSHA1(path);
-		}
-
-		private static string GetTempDir()
-		{
-			string dir;
-			do
-			{
-				dir = Path.GetTempPath() + Path.GetRandomFileName().Split('.')[0] + Program.DirectorySeperator;
-			}
-			while (dir == null || Directory.Exists(dir));
-			return dir;
 		}
 	}
 }
