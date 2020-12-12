@@ -28,6 +28,8 @@ namespace _7Sharp.Intrerpreter.Nodes
 		BREAK,					// break;
 		CONTINUE,				// continue;
 		RETURN,					// return; OR return value;
+		[DontRun]
+		IMPORT					// import "lib";
 	}
 	internal static class ExpressionTypeExtensions
 	{
@@ -75,6 +77,8 @@ namespace _7Sharp.Intrerpreter.Nodes
 			{
 				switch (et)
 				{
+					case ExpressionType.IMPORT:
+						return new ImportNode(expr[1].StringWithoutQuotes, exprPos);
 					case ExpressionType.RETURN:
 						return new ReturnNode(expr.Skip(1).Reverse().Skip(1).Reverse().ToList(), exprPos);
 					case ExpressionType.BREAK:
@@ -118,6 +122,8 @@ namespace _7Sharp.Intrerpreter.Nodes
 		{
 			switch (et)
 			{
+				case ExpressionType.IMPORT:
+					return ImportNode.IsImport(expr);
 				case ExpressionType.FUNCTION_DEFINITION:
 					return FunctionDefinitionNode.IsFunctionDefinition(expr);
 				case ExpressionType.FUNCTION_CALL:

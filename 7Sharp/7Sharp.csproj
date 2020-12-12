@@ -108,6 +108,7 @@
     <Compile Include="Intrerpreter\Nodes\FunctionCallNode.cs" />
     <Compile Include="Intrerpreter\Nodes\FunctionDefinitionNode.cs" />
     <Compile Include="Intrerpreter\Nodes\IfNode.cs" />
+    <Compile Include="Intrerpreter\Nodes\ImportNode.cs" />
     <Compile Include="Intrerpreter\Nodes\IncrementNode.cs" />
     <Compile Include="Intrerpreter\Nodes\LoopNode.cs" />
     <Compile Include="Intrerpreter\Nodes\Node.cs" />

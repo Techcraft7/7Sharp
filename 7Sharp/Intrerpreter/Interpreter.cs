@@ -89,7 +89,9 @@ namespace _7Sharp.Intrerpreter
 			InterpreterState.Init(ref state);
 			RootNode root = BuildTree<RootNode>(new Queue<Token<TokenType>>(tokens), ref state);
 
+#if DEBUG
 			root.Dump();
+#endif
 
 			// Run
 			root.Run(ref state);
@@ -126,7 +128,9 @@ namespace _7Sharp.Intrerpreter
 				{
 					continue;
 				}
+#if DEBUG
 				expr.TokenDump();
+#endif
 				LexerPosition exprPos = expr[0].Position.Adjust();
 				state.Location = exprPos;
 				bool built = false;
