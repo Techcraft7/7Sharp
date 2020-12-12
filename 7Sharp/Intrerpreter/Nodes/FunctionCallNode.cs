@@ -10,7 +10,17 @@ namespace _7Sharp.Intrerpreter.Nodes
 	internal class FunctionCallNode : Node
 	{
 		private readonly _7sFunction func;
+		private readonly UserFunction userFunc;
+		private readonly bool isUserFunc;
 		private readonly List<List<Token<TokenType>>> args;
+
+		public FunctionCallNode(UserFunction userFunc, List<List<Token<TokenType>>> args, LexerPosition linePosition) : base(linePosition)
+		{
+			func = null;
+			this.userFunc = userFunc;
+			isUserFunc = true;
+			this.args = args;
+		}
 
 		public FunctionCallNode(_7sFunction func, List<List<Token<TokenType>>> args, LexerPosition linePosition) : base(linePosition)
 		{
@@ -20,7 +30,14 @@ namespace _7Sharp.Intrerpreter.Nodes
 
 		public override void Run(ref InterpreterState state)
 		{
-			state.ReturnValue = func.Run(ParseArgs(args, state));
+			if (isUserFunc)
+			{
+				userFunc.Run(ref state, ParseArgs(args, state));
+			}
+			else
+			{
+				state.ReturnValue = func.Run(ParseArgs(args, state));
+			}
 		}
 
 		private static object[] ParseArgs(List<List<Token<TokenType>>> args, InterpreterState state) => args.Select(list => state.evaluator.Evaluate(list.AsString())).ToArray();
@@ -45,6 +62,6 @@ namespace _7Sharp.Intrerpreter.Nodes
 			return null;
 		}
 
-		public override string ToString() => $"Function Call {{ {func.Name} }} ";
+		public override string ToString() => $"Function Call {{ {(isUserFunc ? userFunc.Name : func.Name)} }} ";
 	}
 }

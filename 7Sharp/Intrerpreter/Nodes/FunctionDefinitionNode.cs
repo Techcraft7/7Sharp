@@ -9,8 +9,8 @@ namespace _7Sharp.Intrerpreter.Nodes
 {
 	internal class FunctionDefinitionNode : BlockNode
 	{
-		private readonly string name;
-		private readonly string[] args;
+		public readonly string Name;
+		public readonly string[] Args;
 		private static readonly TokenType[] PARAMS_TOKENS = new TokenType[]
 		{
 			TokenType.IDENTIFIER,
@@ -19,17 +19,17 @@ namespace _7Sharp.Intrerpreter.Nodes
 
 		public FunctionDefinitionNode(string name, string[] args, LexerPosition linePosition) : base(linePosition)
 		{
-			this.name = name ?? throw new ArgumentNullException();
-			this.args = args ?? throw new ArgumentNullException();
+			Name = name ?? throw new ArgumentNullException();
+			Args = args ?? throw new ArgumentNullException();
 		}
 
-		public UserFunction GetFunction() => new UserFunction(name, args, Children);
+		public UserFunction GetFunction() => new UserFunction(Name, Args, Children);
 
 		public override string GetName() => "Function Definition";
 
 		public override void Run(ref InterpreterState state) => throw new InvalidOperationException("Cannot run function call node! This is a bug!");
 
-		public override string ToString() => $"{GetName()} {{ {name}({string.Join(",", args)}) }}";
+		public override string ToString() => $"{GetName()} {{ {Name}({string.Join(", ", Args)}) }}";
 
 		public static bool IsFunctionDefinition(List<Token<TokenType>> tokens)
 		{

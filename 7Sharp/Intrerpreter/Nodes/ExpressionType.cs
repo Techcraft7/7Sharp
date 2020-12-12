@@ -61,7 +61,11 @@ namespace _7Sharp.Intrerpreter.Nodes
 						args.ThrowIfNotSize(exprPos, 1);
 						return new WhileNode(args.First(), exprPos);
 					case ExpressionType.FUNCTION_DEFINITION:
-						return new FunctionDefinitionNode(expr[1].StringWithoutQuotes, args.Select(a => a.AsString()).ToArray(), exprPos);
+						return new FunctionDefinitionNode(
+							expr[1].StringWithoutQuotes,
+							args.Select(a => a.AsString()).ToArray(),
+							exprPos
+						);
 				}
 			}
 			else
@@ -69,7 +73,25 @@ namespace _7Sharp.Intrerpreter.Nodes
 				switch (et)
 				{
 					case ExpressionType.FUNCTION_CALL:
-						return new FunctionCallNode(state.Functions.First(f => f.Name.Equals(expr[0].StringWithoutQuotes)), Interpreter.GetArgs(expr), exprPos);
+						string name = expr[0].StringWithoutQuotes;
+						bool isSysFunc = state.Functions.Any(f => f.Name == name);
+						if (isSysFunc)
+						{
+							return new FunctionCallNode(
+								state.Functions.First(f => f.Name.Equals(name)),
+								Interpreter.GetArgs(expr),
+								exprPos
+							);
+						}
+						else if (state.UserFuncs.Any(f => f.Name == name))
+						{
+							return new FunctionCallNode(
+								state.UserFuncs.First(f => f.Name == name),
+								Interpreter.GetArgs(expr),
+								exprPos
+							);
+						}
+						throw new InterpreterException($"Unkown function \"{name}\" at {exprPos}");
 					case ExpressionType.ASSIGNMENT:
 						return new AssignmentNode(expr[0].StringWithoutQuotes, expr.Skip(2).Reverse().Skip(1).Reverse().ToList().AsString(), exprPos);
 					case ExpressionType.INCREMENT:
@@ -87,6 +109,8 @@ namespace _7Sharp.Intrerpreter.Nodes
 		{
 			switch (et)
 			{
+				case ExpressionType.FUNCTION_DEFINITION:
+					return FunctionDefinitionNode.IsFunctionDefinition(expr);
 				case ExpressionType.FUNCTION_CALL:
 					return FunctionCallNode.IsFunctionCall(expr);
 				case ExpressionType.ASSIGNMENT:

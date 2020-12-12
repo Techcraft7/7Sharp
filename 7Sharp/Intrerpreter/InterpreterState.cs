@@ -17,7 +17,7 @@ namespace _7Sharp.Intrerpreter
 		public readonly ExpressionEvaluator evaluator = new ExpressionEvaluator();
 		public readonly Stack<int> LoopIndexes = new Stack<int>();
 		public bool LastIfResult = false;
-		public bool OnlyAllowGlobals = false;
+		public bool InsideFunction = false;
 
 		// Utility to run code with a dictionary of variables in the current scope
 		public void RunWithVariables(RunWithVarsDelegate func)
@@ -33,7 +33,7 @@ namespace _7Sharp.Intrerpreter
 		{
 			Variables.Clear();
 			Variables.Push(new Dictionary<string, object>());
-			OnlyAllowGlobals = false;
+			InsideFunction = false;
 			LastIfResult = false;
 		}
 
@@ -94,6 +94,14 @@ namespace _7Sharp.Intrerpreter
 			{
 				{ 1, new Func<double, double>(SysFunctions.Tan)}
 			}));
+			state.Functions.Add(new _7sFunction("deg2rad", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<double, double>(SysFunctions.Deg2Rad)}
+			}));
+			state.Functions.Add(new _7sFunction("rad2deg", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<double, double>(SysFunctions.Rad2Deg)}
+			}));
 		}
 
 		public void PushScope() => Variables.Push(Variables.Peek().Clone());
@@ -122,7 +130,7 @@ namespace _7Sharp.Intrerpreter
 
 		private void Evaluator_PreEvaluateVariable(object sender, VariablePreEvaluationEventArg e)
 		{
-			if (OnlyAllowGlobals)
+			if (InsideFunction)
 			{
 				Dictionary<string, object> globals = Variables.Last();
 				if (globals.ContainsKey(e.Name))

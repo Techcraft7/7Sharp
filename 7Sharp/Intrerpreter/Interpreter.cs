@@ -130,7 +130,7 @@ namespace _7Sharp.Intrerpreter
 				LexerPosition exprPos = expr[0].Position.Adjust();
 				state.Location = exprPos;
 				bool built = false;
-				// Loop over ervy expression type
+				// Loop over every expression type
 				foreach (ExpressionType type in Enum.GetValues(typeof(ExpressionType)).Cast<ExpressionType>())
 				{
 					if (type.Matches(expr))
@@ -146,6 +146,14 @@ namespace _7Sharp.Intrerpreter
 						if (type.WillRun())
 						{
 							root.Add(node);
+						}
+						if (node is FunctionDefinitionNode)
+						{
+							state.UserFuncs.Add(new UserFunction(
+								((FunctionDefinitionNode)node).Name,
+								((FunctionDefinitionNode)node).Args,
+								((FunctionDefinitionNode)node).Children
+							));
 						}
 						built = true;
 						break;
@@ -187,7 +195,15 @@ namespace _7Sharp.Intrerpreter
 
 		internal static List<TokenList> GetArgs(TokenList expr)
 		{
-			return expr.GetRange(expr.Select(t => t.TokenID).ToList().IndexOf(LPAREN), expr.Select(t => t.TokenID).ToList().LastIndexOf(RPAREN)).Split(COMMA);
+			int start = expr.Select(t => t.TokenID)
+				.ToList()
+				.IndexOf(LPAREN) + 1;
+			return expr.GetRange(
+					start,
+					expr.Select(t => t.TokenID)
+						.ToList()
+						.LastIndexOf(RPAREN) - start)
+				.Split(COMMA);
 		}		
 	}
 }

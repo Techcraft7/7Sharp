@@ -15,7 +15,7 @@ namespace _7Sharp.Intrerpreter
 
 		public UserFunction(string name, string[] argNames, List<Node> nodes)
 		{
-			this.Name = name;
+			Name = name;
 			this.argNames = argNames;
 			code = nodes;
 		}
@@ -26,12 +26,17 @@ namespace _7Sharp.Intrerpreter
 			{
 				throw new InterpreterException($"Function {Name} expects {argNames.Length} args, but got {args.Length}");
 			}
-			state.OnlyAllowGlobals = true;
+			state.InsideFunction = true;
 			state.PushScope();
-			RootNode node = new RootNode();
-			code.ForEach(n => node.Add(n));
-			node.Run(ref state);
-			state.OnlyAllowGlobals = false;
+			state.Variables.Push(Enumerable.Range(0, argNames.Length)
+				.Select(i => Tuple.Create(argNames[i], args[i]))
+				.ToDictionary(t => t.Item1, t => t.Item2));
+			foreach (Node n in code)
+			{
+				n.Run(ref state);
+			}
+			state.PushScope();
+			state.InsideFunction = false;
 		}
 	}
 }

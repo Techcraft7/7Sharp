@@ -107,12 +107,13 @@ namespace _7Sharp
 				}
 				if (depth == 0 && tokens[i].TokenID == sep)
 				{
-					list.Add(current);
+					list.Add(current.AsEnumerable().ToList());
 					current.Clear();
 					continue;
 				}
 				current.Add(tokens[i]);
 			}
+			list.Add(current.AsEnumerable().ToList());
 			return list;
 		}
 
