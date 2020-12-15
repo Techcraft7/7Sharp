@@ -116,6 +116,7 @@
     <Compile Include="Intrerpreter\Nodes\RootNode.cs" />
     <Compile Include="Intrerpreter\Nodes\WhileNode.cs" />
     <Compile Include="Intrerpreter\SysFunctions.cs" />
+    <Compile Include="Intrerpreter\SysLibraries\LibIO.cs" />
     <Compile Include="Intrerpreter\SysLibraries\LibRandom.cs" />
     <Compile Include="Intrerpreter\SysLibraries\SysLibrary.cs" />
     <Compile Include="Intrerpreter\TokenType.cs" />
