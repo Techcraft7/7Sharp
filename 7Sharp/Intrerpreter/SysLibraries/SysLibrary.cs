@@ -13,7 +13,8 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 
 		public static SysLibrary[] GetAllLibraries() => new SysLibrary[]
 		{
-			new LibRandom()
+			new LibRandom(),
+			new LibIO()
 		};
 	}
 }

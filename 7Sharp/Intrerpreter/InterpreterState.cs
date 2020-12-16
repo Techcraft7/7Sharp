@@ -125,17 +125,23 @@ namespace _7Sharp.Intrerpreter
 			{
 				throw new InterpreterException("Attempted to pop scope in an invalid context!");
 			}
-			Dictionary<string, object> oldVars = Variables.Pop(); // Current scope
-			Dictionary<string, object> newVars = Variables.Pop(); // Previous scope
+			Dictionary<string, object> current = Variables.Pop(); // Current scope
+			Dictionary<string, object> prev = Variables.Pop(); // Previous scope
 
-			Dictionary<string, object> temp = newVars.Clone();
+			if (InsideFunction) // Don't modify variables outside of scope
+			{
+				Variables.Push(prev);
+				return;
+			}
+
+			Dictionary<string, object> temp = prev.Clone();
 
 			// If variable in previous scope is changed in the current scope, update it
-			foreach (KeyValuePair<string, object> kv in newVars)
+			foreach (KeyValuePair<string, object> kv in prev)
 			{
-				if (oldVars.ContainsKey(kv.Key))
+				if (current.ContainsKey(kv.Key))
 				{
-					temp[kv.Key] = oldVars[kv.Key];
+					temp[kv.Key] = current[kv.Key];
 				}
 			}
 			Variables.Push(temp);
@@ -171,12 +177,7 @@ namespace _7Sharp.Intrerpreter
 			Dictionary<string, object> top = new Dictionary<string, object>();
 			if (InsideFunction)
 			{
-				top = Variables.Last();
-				if (top.ContainsKey(e.Name))
-				{
-					e.Value = top[e.Name];
-					e.CancelEvaluation = false;
-				}
+				top = Variables.Last().Clone();
 				if (FuncParams != null)
 				{
 					foreach (KeyValuePair<string, object> item in FuncParams)
@@ -191,17 +192,32 @@ namespace _7Sharp.Intrerpreter
 						}
 					}
 				}
+				if (top.ContainsKey(e.Name))
+				{
+					e.Value = top[e.Name];
+					e.CancelEvaluation = false;
+					return;
+				}
 			}
 			Dictionary<string, object> lastVars = Variables.Pop();
-			top = top.Concat(lastVars.AsEnumerable()).ToDictionary(kv => kv.Key, kv => kv.Value);
-			if (top.ContainsKey(e.Name))
+			if (lastVars.ContainsKey(e.Name))
 			{
-				e.Value = top[e.Name];
+				e.Value = lastVars[e.Name];
 				e.CancelEvaluation = false;
 			}
 			else
 			{
-				throw new InterpreterException($"Variable \"{e.Name}\" not defined in the current scope at {Location}");
+				top = top.Concat(lastVars.AsEnumerable())
+					.ToDictionary(kv => kv.Key, kv => kv.Value);
+				if (top.ContainsKey(e.Name))
+				{
+					e.Value = top[e.Name];
+					e.CancelEvaluation = false;
+				}
+				else
+				{
+					throw new InterpreterException($"Variable \"{e.Name}\" not defined in the current scope at {Location}");
+				}
 			}
 			Variables.Push(lastVars);
 		}
