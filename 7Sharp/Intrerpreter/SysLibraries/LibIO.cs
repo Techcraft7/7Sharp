@@ -43,9 +43,89 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			{
 				{ 1, new Action<Stream>(Close) }
 			}));
+			state.Functions.Add(new _7sFunction("readText", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Func<Stream, int, string>(ReadText) },
+				{ 3, new Func<Stream, int, string, string>(ReadText) },
+			}));
+			state.Functions.Add(new _7sFunction("writeText", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Action<Stream, string>(WriteText) },
+				{ 3, new Action<Stream, string, string>(WriteText) }
+			}));
 		}
 
-		private void Close(Stream s)
+		private static void WriteText(Stream s, string text) => WriteText(s, text, "utf8");
+
+		private static void WriteText(Stream stream, string text, string encoding)
+		{
+			if (stream.CanWrite)
+			{
+				try
+				{
+					byte[] bytes;
+					switch (encoding.ToLower())
+					{
+						case "utf8":
+						case "utf-8":
+							bytes = Encoding.UTF8.GetBytes(text);
+							break;
+						case "ascii":
+							bytes = Encoding.ASCII.GetBytes(text);
+							break;
+						default:
+							throw new InterpreterException("readLine: encoding must be ascii or utf8!");
+					}
+					stream.Write(bytes.ToArray(), 0, bytes.Length);
+				}
+				catch (ObjectDisposedException)
+				{
+					throw new InterpreterException("Cannot write to a stream that is closed!");
+				}
+			}
+			else
+			{
+				throw new InterpreterException("Stream is not writable!");
+			}
+		}
+
+		private static string ReadText(Stream s, int count) => ReadText(s, count, "utf8");
+
+		private static string ReadText(Stream s, int count, string encoding)
+		{
+			if (s.CanRead)
+			{
+				try
+				{
+					byte[] bytes = new byte[count];
+					s.Read(bytes, 0, bytes.Length);
+					switch (encoding.ToLower())
+					{
+						case "utf8":
+						case "utf-8":
+							return Encoding.UTF8.GetString(bytes);
+						case "ascii":
+							return Encoding.ASCII.GetString(bytes);
+						default:
+							throw new InterpreterException("readText: encoding must be ascii or utf8!");
+					}
+				}
+				catch (ObjectDisposedException)
+				{
+					throw new InterpreterException("Attempted to read from a closed stream!");
+				}
+				catch (Exception e)
+				{
+					throw new InterpreterException("Unkown error while reading from stream", e);
+				}
+			}
+			else
+			{
+				throw new InterpreterException("Stream is not readable!");
+			}
+		}
+
+		private static void Close(Stream s)
 		{
 			try
 			{
@@ -174,37 +254,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 		}
 
 		private static void WriteLine(Stream stream, string line) => WriteLine(stream, line, "utf8");
-		
-		private static void WriteLine(Stream stream, string line, string encoding)
-		{
-			if (stream.CanWrite)
-			{
-				try
-				{
-					byte[] bytes;
-					switch (encoding.ToLower())
-					{
-						case "utf8":
-						case "utf-8":
-							bytes = Encoding.UTF8.GetBytes(line);
-							break;
-						case "ascii":
-							bytes = Encoding.ASCII.GetBytes(line);
-							break;
-						default:
-							throw new InterpreterException("readLine: encoding must be ascii or utf8!");
-					}
-					stream.Write(bytes.Concat(new byte[] { (byte)'\n' }).ToArray(), 0, bytes.Length + 1);
-				}
-				catch (ObjectDisposedException)
-				{
-					throw new InterpreterException("Cannot write to a stream that is closed!");
-				}
-			}
-			else
-			{
-				throw new InterpreterException("Stream is not writable!");
-			}
-		}
+
+		private static void WriteLine(Stream stream, string line, string encoding) => WriteText(stream, line + "\n", encoding);
 	}
 }
