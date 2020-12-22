@@ -27,6 +27,29 @@ loop (10) {
 
 `getLoopIndex(n = 0)` is an abstraction for having to manage `i`, `j`, `k`, etc. because many beginners tend to mess this up, even though some interpreted languages (like Python) will let you have two for loops with `i` as the variable.
 
+##### Example
+```
+loop(5) {
+    loop(5) {
+        write("i = " + getLoopIndex(1) + " j = " + getLoopIndex());
+    }
+}
+```
+Outputs:
+```
+i = 0 j = 0
+i = 0 j = 1
+i = 0 j = 2
+i = 0 j = 3
+i = 0 j = 4
+i = 0 j = 5
+i = 1 j = 0
+i = 1 j = 1
+i = 1 j = 2
+i = 1 j = 3
+etc.
+```
+
 All of that out of the way, here is another example
 ### Fibonacci
 ```
