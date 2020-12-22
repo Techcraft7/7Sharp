@@ -10,13 +10,14 @@ namespace _7Sharp.Intrerpreter
 		public readonly bool InfiniteArgs;
 		public readonly Dictionary<int, Delegate> Funcs;
 
-		public _7sFunction(string name, Dictionary<int, Delegate> funcs)
+		public _7sFunction(string name, Dictionary<int, Delegate> funcs, bool infArgs = false)
 		{
 			Name = name ?? throw new ArgumentNullException();
 			Funcs = funcs ?? throw new ArgumentNullException();
-			if (Funcs.Count == 0)
+			InfiniteArgs = infArgs;
+			if (infArgs && funcs.Count != 1)
 			{
-				InfiniteArgs = true;
+				throw new InvalidOperationException("Error: _7sFunction with infinite args can only have one overload!");
 			}
 		}
 
@@ -30,7 +31,7 @@ namespace _7Sharp.Intrerpreter
 			{
 				if (InfiniteArgs)
 				{
-					return Funcs[args.Count()].DynamicInvoke(args.ToArray());
+					return Funcs.First().Value.DynamicInvoke(args.ToArray());
 				}
 				return Funcs[args.Count()].DynamicInvoke(args);
 			}
