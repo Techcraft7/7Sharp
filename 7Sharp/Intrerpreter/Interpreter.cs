@@ -228,7 +228,7 @@ namespace _7Sharp.Intrerpreter
 
 		private void GetFuncsFromTree(BlockNode tree, ref List<FunctionDefinitionNode> funcs)
 		{
-			foreach (var child in tree.Children)
+			foreach (Node child in tree.Children)
 			{
 				if (child is FunctionDefinitionNode funcDef)
 				{
@@ -252,6 +252,6 @@ namespace _7Sharp.Intrerpreter
 						.ToList()
 						.LastIndexOf(RPAREN) - start)
 				.Split(COMMA);
-		}		
+		}
 	}
 }

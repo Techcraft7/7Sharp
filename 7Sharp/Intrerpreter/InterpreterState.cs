@@ -25,15 +25,17 @@ namespace _7Sharp.Intrerpreter
 		public object ReturnValue;
 		public LexerPosition Location;
 		public Dictionary<string, object> FuncParams;
-		internal bool ExitFunc;
-		internal bool ContinueUsed;
-		internal bool BreakUsed;
+		public bool ExitFunc;
+		public bool ContinueUsed;
+		public bool BreakUsed;
 
 		// Utility to run code with a dictionary of variables in the current scope
 		public void RunWithVariables(RunWithVarsDelegate func)
 		{
+			PushScope();
 			Dictionary<string, object> vars = Variables.Pop();
 			func.Invoke(ref vars);
+			_ = Variables.Pop();
 			Variables.Push(vars);
 		}
 
@@ -119,7 +121,19 @@ namespace _7Sharp.Intrerpreter
 			}));
 			state.Functions.Add(new _7sFunction("chars", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Func<string, char[]>(SysFunctions.Chars) }
+				{ 1, new Func<string, object[]>(SysFunctions.Chars) }
+			}));
+			state.Functions.Add(new _7sFunction("toString", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<object, string>(SysFunctions._7sToString) }
+			}));
+			state.Functions.Add(new _7sFunction("arrayAdd", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Func<object[], object, object[]>(SysFunctions.ArrayAdd) }
+			}));
+			state.Functions.Add(new _7sFunction("arrayRemove", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Func<object[], int, object[]>(SysFunctions.ArrayRemove) }
 			}));
 		}
 

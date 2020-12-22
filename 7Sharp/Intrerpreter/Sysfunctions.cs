@@ -9,7 +9,7 @@ namespace _7Sharp.Intrerpreter
 	{
 		[ManualDocs("write", "{\"title\":\"write(value)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"Outputs \"},{\"text\":\"value\",\"color\":\"Green\"},{\"text\":\" to the console, followed by a newline.\"}]}]}")]
 		public static void Write(object obj) => Console.WriteLine(obj);
-		
+
 		[ManualDocs("writeraw", "{\"title\":\"writeraw(value)\",\"sections\":[{\"header\":\"Behavior\",\"text\":[{\"text\":\"Like \"},{\"text\":\"write(value)\",\"color\":\"Green\"},{\"text\":\", but it does not start a new line\"}]}]}")]
 		public static void WriteRaw(object obj) => Console.Write(obj);
 
@@ -18,21 +18,21 @@ namespace _7Sharp.Intrerpreter
 
 		[ManualDocs("trig", "{\"title\":\"trig\",\"sections\":[{\"header\":\"Note\",\"text\":[{\"text\":\"ALL TRIG FUNCTIONS ARE IN RADIANS!\",\"color\":\"Red\"}]},{\"header\":\"sin(x)\",\"text\":[{\"text\":\"Returns the sine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"cos(x)\",\"text\":[{\"text\":\"Returns the cosine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"tan(x)\",\"text\":[{\"text\":\"Returns the tangent of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"sin(x)\",\"text\":[{\"text\":\"Returns the sine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"cos(x)\",\"text\":[{\"text\":\"Returns the cosine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"tan(x)\",\"text\":[{\"text\":\"Returns the tangent of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"atan2(x, y)\",\"text\":[{\"text\":\"Returns the angle between (0, 0) and \"},{\"color\":\"Green\",\"text\":\"(x, y)\"},{\"text\":\" in radians.\"}]},{\"header\":\"Degrees and radians conversion\",\"text\":[{\"text\":\"Use \"},{\"text\":\"deg2rad(x)\",\"color\":\"Green\"},{\"text\":\" and \"},{\"text\":\"rad2deg(x)\",\"color\":\"Green\"},{\"text\":\" to convert \"},{\"text\":\"x\",\"color\":\"Green\"},{\"text\":\" from radians to degrees, or vice. versa. \"}]}]}")]
 		public static double Sin(double v) => Math.Sin(v);
-		
+
 		public static double Cos(double v) => Math.Cos(v);
-		
+
 		public static double Tan(double v) => Math.Tan(v);
 
 		public static double Asin(double v) => Math.Asin(v);
-		
+
 		public static double Acos(double v) => Math.Acos(v);
-		
+
 		public static double Atan(double v) => Math.Atan(v);
-		
+
 		public static double Atan2(double x, double y) => Math.Atan2(x, y);
 
 		public static double Deg2Rad(double v) => v * Math.PI / 180D;
-		
+
 		public static double Rad2Deg(double v) => v * 180D / Math.PI;
 
 		[ManualDocs("sleep", "{\"title\":\"sleep(ms)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sleep(<number of miliseconds to wait>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Waits for \"},{\"text\":\"ms\",\"color\":\"Green\"},{\"text\":\" miliseconds.\"}]}]}")]
@@ -55,13 +55,46 @@ namespace _7Sharp.Intrerpreter
 			throw new InterpreterException("len: object passed was not an array or a string!");
 		}
 
-		public static char[] Chars(string s)
+		public static object[] Chars(string s)
 		{
 			if (s == null)
 			{
 				throw new InterpreterException("chars: string passed was null!");
 			}
-			return s.ToArray();
+			return Utils.ToArray(s.ToArray());
+		}
+
+		public static string _7sToString(object obj)
+		{
+			if (obj == null)
+			{
+				return string.Empty;
+			}
+			if (obj is string s)
+			{
+				return s;
+			}
+			if (obj is System.Collections.IEnumerable ie)
+			{
+				return $"Array [{string.Join(", ", Utils.ToArray(ie))}]";
+			}
+			return obj.ToString();
+		}
+
+		public static object[] ArrayAdd(object[] arr, object value)
+		{
+			Array.Resize(ref arr, arr.Length + 1);
+			arr[arr.Length - 1] = value;
+			return arr;
+		}
+
+		public static object[] ArrayRemove(object[] arr, int index)
+		{
+			if (index < 0 || index >= arr.Length)
+			{
+				throw new InterpreterException("Attempted to remove an element that is not in bounds of the array");
+			}
+			return arr.Take(index).Concat(arr.Skip(index + 1)).ToArray();
 		}
 	}
 }

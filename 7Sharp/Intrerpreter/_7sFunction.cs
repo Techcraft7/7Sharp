@@ -32,17 +32,20 @@ namespace _7Sharp.Intrerpreter
 			Type[] types = del.GetType().GetMethod("Invoke").GetParameters().Select(pi => pi.ParameterType).ToArray();
 			for (int i = 0; i < args.Count(); i++)
 			{
-				if (!args[i].GetType().IsSubclassOf(types[i]) && !args[i].GetType().IsEquivalentTo(types[i]))
+				if (types[i].IsByRef)
+				{
+					if (!args[i].GetType().IsSubclassOf(types[i].GetElementType()) && !args[i].GetType().IsEquivalentTo(types[i].GetElementType()))
+					{
+						throw new InterpreterException($"Argument {i + 1} of {Name} should be {types[i].GetElementType().GetSimpleName()}");
+					}
+				}
+				else if (!args[i].GetType().IsSubclassOf(types[i]) && !args[i].GetType().IsEquivalentTo(types[i]))
 				{
 					throw new InterpreterException($"Argument {i + 1} of {Name} should be {types[i].GetSimpleName()}");
 				}
 			}
 			// Run
-			if (InfiniteArgs)
-			{
-				return del.DynamicInvoke(args.ToArray());
-			}
-			return del.DynamicInvoke(args);
+			return del.DynamicInvoke(InfiniteArgs ? args.ToArray() : args);
 		}
 
 		public override string ToString() => $"SysFunc [{string.Join(", ", Funcs.Keys.Select(count => $"{Name}({string.Join(", ", Enumerable.Range(1, count + 1).Select(x => "p" + x))})"))}]";

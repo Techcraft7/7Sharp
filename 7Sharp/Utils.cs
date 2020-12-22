@@ -35,7 +35,7 @@ namespace _7Sharp
 		//Converts "SomePascalCaseString" -> "Some Pascal Case String"
 		internal static string FormatPascalString(string v)
 		{
-			
+
 			string output = string.Empty;
 			for (int i = 0; i < v.Length; i++)
 			{
@@ -115,6 +115,20 @@ namespace _7Sharp
 			}
 			list.Add(current.AsEnumerable().ToList());
 			return list;
+		}
+
+		public static object[] ToArray(IEnumerable ie)
+		{
+			if (ie == null)
+			{
+				throw new ArgumentNullException(nameof(ie));
+			}
+			List<object> list = new List<object>();
+			foreach (object obj in ie)
+			{
+				list.Add(obj);
+			}
+			return list.ToArray();
 		}
 
 		public static bool IsConstant(this Token<TokenType> t)
