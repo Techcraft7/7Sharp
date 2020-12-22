@@ -108,6 +108,10 @@ namespace _7Sharp.Intrerpreter
 			{
 				{ 1, new Func<double, double>(SysFunctions.Rad2Deg)}
 			}));
+			state.Functions.Add(new _7sFunction("sleep", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Action<int>(SysFunctions.Sleep) }
+			}));
 		}
 
 		public void PushScope()

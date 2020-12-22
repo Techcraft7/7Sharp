@@ -1,5 +1,6 @@
 ﻿using _7Sharp.Manual;
 using System;
+using System.Threading;
 
 namespace _7Sharp.Intrerpreter
 {
@@ -32,5 +33,8 @@ namespace _7Sharp.Intrerpreter
 		public static double Deg2Rad(double v) => v * Math.PI / 180D;
 		
 		public static double Rad2Deg(double v) => v * 180D / Math.PI;
+
+		[ManualDocs("sleep", "{\"title\":\"sleep(ms)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sleep(<number of miliseconds to wait>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Waits for \"},{\"text\":\"ms\",\"color\":\"Green\"},{\"text\":\" miliseconds.\"}]}]}")]
+		public static void Sleep(int ms) => Thread.Sleep(ms);
 	}
 }
