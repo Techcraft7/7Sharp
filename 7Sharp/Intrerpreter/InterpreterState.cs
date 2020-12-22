@@ -117,6 +117,10 @@ namespace _7Sharp.Intrerpreter
 			{
 				{ 1, new Func<object, int>(SysFunctions.Len) }
 			}));
+			state.Functions.Add(new _7sFunction("chars", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<string, char[]>(SysFunctions.Chars) }
+			}));
 		}
 
 		public void PushScope()

@@ -71,6 +71,6 @@ namespace _7Sharp.Intrerpreter.Nodes
 			return null;
 		}
 
-		public override string ToString() => $"Function Call {{ {(isUserFunc ? userFunc.Name : func.Name)} }} ";
+		public override string ToString() => $"Function Call {{ {(isUserFunc ? userFunc.Name : func.Name)}({string.Join(", ", args.Select(list => list.AsString()))}) }} ";
 	}
 }

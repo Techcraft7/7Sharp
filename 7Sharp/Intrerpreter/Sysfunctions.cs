@@ -54,5 +54,14 @@ namespace _7Sharp.Intrerpreter
 			}
 			throw new InterpreterException("len: object passed was not an array or a string!");
 		}
+
+		public static char[] Chars(string s)
+		{
+			if (s == null)
+			{
+				throw new InterpreterException("chars: string passed was null!");
+			}
+			return s.ToArray();
+		}
 	}
 }

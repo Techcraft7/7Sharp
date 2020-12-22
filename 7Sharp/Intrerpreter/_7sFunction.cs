@@ -29,11 +29,20 @@ namespace _7Sharp.Intrerpreter
 			}
 			try
 			{
+				Delegate del = InfiniteArgs ? Funcs.First().Value : Funcs[args.Count()];
+				Type[] types = del.GetType().GetMethod("Invoke").GetParameters().Select(pi => pi.ParameterType).ToArray();
+				for (int i = 0; i < args.Count(); i++)
+				{
+					if (!args[i].GetType().IsSubclassOf(types[i]))
+					{
+						throw new InterpreterException($"{Name}: argument {i + 1} should be {types[i].Name}");
+					}
+				}
 				if (InfiniteArgs)
 				{
-					return Funcs.First().Value.DynamicInvoke(args.ToArray());
+					return del.DynamicInvoke(args.ToArray());
 				}
-				return Funcs[args.Count()].DynamicInvoke(args);
+				return del.DynamicInvoke(args);
 			}
 			catch (Exception e)
 			{
