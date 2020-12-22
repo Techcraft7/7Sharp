@@ -49,8 +49,11 @@ namespace _7Sharp
 				}
 			}
 			shell.Run();
-			WriteLineColor("Press any key to exit 7Sharp", Yellow);
-			_ = ReadKey(true);
+			if (!shell.SilentExit)
+			{
+				WriteLineColor("Press any key to exit 7Sharp", Yellow);
+				_ = ReadKey(true);
+			}
 		}
 	}
 }

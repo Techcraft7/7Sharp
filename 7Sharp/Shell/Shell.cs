@@ -25,6 +25,7 @@ namespace _7Sharp.Shell
 		private bool run = true;
 		private readonly string PLUGINS_DIRECTORY = "plugins" + Program.DirectorySeperator;
 		private Dictionary<string, string> Documentation = new Dictionary<string, string>();
+		public bool SilentExit { get; private set; }  = false;
 
 		public Shell()
 		{
@@ -41,7 +42,17 @@ namespace _7Sharp.Shell
 				{ new SysCommandInfo("load", "Load a file into the editor: load <path>"), Load },
 				{ new SysCommandInfo("save", "Save the code in the editor to a file: save [-o] <path>"), Save },
 				{ new SysCommandInfo("clear", "Clear the screen: clear"), new Action<string[]>((args) => { Clear(); }) },
-				{ new SysCommandInfo("exit", "Close 7Sharp: exit"), new Action<string[]>((args) => { run = false; }) },
+				{ new SysCommandInfo("exit", "Close 7Sharp: exit"), new Action<string[]>((args) =>
+				{
+					run = false;
+					if (args != null)
+					{
+						if (args.Contains("-s"))
+						{
+							SilentExit = true;
+						}
+					}
+				}) },
 				{ new SysCommandInfo("export", "Export the code into 7slib file: export <path>"), new Action<string[]>(Export) },
 				{ new SysCommandInfo("man", "Show manual: man <topic>"), new Action<string[]>(Man) }
 			};
