@@ -18,9 +18,24 @@ namespace _7Sharp
 {
 	internal static class Utils
 	{
+		private static readonly Dictionary<Type, string> SIMPLE_TYPE_NAMES = new Dictionary<Type, string>()
+		{
+			{ typeof(byte), "byte" },
+			{ typeof(sbyte), "sbyte" },
+			{ typeof(short), "short" },
+			{ typeof(ushort), "ushort" },
+			{ typeof(int), "int" },
+			{ typeof(uint), "uint" },
+			{ typeof(long), "long" },
+			{ typeof(ulong), "ulong" },
+			{ typeof(string), "string" },
+			{ typeof(object), "object" }
+		};
+
 		//Converts "SomePascalCaseString" -> "Some Pascal Case String"
 		internal static string FormatPascalString(string v)
 		{
+			
 			string output = string.Empty;
 			for (int i = 0; i < v.Length; i++)
 			{
@@ -151,6 +166,15 @@ namespace _7Sharp
 			{
 				throw new InterpreterException($"Too many arguments at {pos}");
 			}
+		}
+
+		public static string GetSimpleName(this Type t)
+		{
+			if (SIMPLE_TYPE_NAMES.ContainsKey(t))
+			{
+				return SIMPLE_TYPE_NAMES[t];
+			}
+			return t.Name;
 		}
 
 		public static Dictionary<K, V> Clone<K, V>(this Dictionary<K, V> dict) => dict.AsEnumerable().ToDictionary(kv => kv.Key, kv => kv.Value);
