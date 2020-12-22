@@ -52,6 +52,8 @@ namespace _7Sharp.Intrerpreter
 		TIMES,
 		[Lexeme(GenericToken.SugarToken, "/")]
 		DIVIDE,
+		[Lexeme(GenericToken.SugarToken, "%")]
+		MODULUS,
 		[Lexeme(GenericToken.SugarToken, "++")]
 		PLUSPLUS,
 		[Lexeme(GenericToken.SugarToken, "--")]

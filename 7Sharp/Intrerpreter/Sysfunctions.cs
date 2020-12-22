@@ -1,5 +1,6 @@
 ﻿using _7Sharp.Manual;
 using System;
+using System.Linq;
 using System.Threading;
 
 namespace _7Sharp.Intrerpreter
@@ -36,5 +37,22 @@ namespace _7Sharp.Intrerpreter
 
 		[ManualDocs("sleep", "{\"title\":\"sleep(ms)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sleep(<number of miliseconds to wait>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Waits for \"},{\"text\":\"ms\",\"color\":\"Green\"},{\"text\":\" miliseconds.\"}]}]}")]
 		public static void Sleep(int ms) => Thread.Sleep(ms);
+
+		public static int Len(object obj)
+		{
+			if (obj == null)
+			{
+				throw new InterpreterException("len: cannot get the length of null!");
+			}
+			if (obj is System.Collections.IEnumerable ie)
+			{
+				return ie.Cast<object>().Count();
+			}
+			else if (obj is string s)
+			{
+				return s.Length;
+			}
+			throw new InterpreterException("len: object passed was not an array or a string!");
+		}
 	}
 }

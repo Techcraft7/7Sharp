@@ -106,7 +106,12 @@ namespace _7Sharp.Intrerpreter.Nodes
 						}
 						throw new InterpreterException($"Unkown function \"{name}\" at {exprPos}");
 					case ExpressionType.ASSIGNMENT:
-						return new AssignmentNode(expr[0].StringWithoutQuotes, expr.Skip(2).Reverse().Skip(1).Reverse().ToList().AsString(), exprPos);
+						return new AssignmentNode(
+							expr[0].StringWithoutQuotes,
+							expr.Skip(2).Reverse().Skip(1).Reverse().ToList(),
+							AssignmentNode.IsArrayAssignment(expr),
+							exprPos
+						);
 					case ExpressionType.INCREMENT:
 						return new IncrementNode(expr[0].StringWithoutQuotes, exprPos);
 					case ExpressionType.DECREMENT:

@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Techcraft7_DLL_Pack.Text;
 
 namespace _7Sharp.Intrerpreter
 {
@@ -77,11 +78,11 @@ namespace _7Sharp.Intrerpreter
 			state.evaluator.Variables.Add("E", Math.E);
 			state.Functions.Add(new _7sFunction("write", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Action<object>(SysFunctions.Write)}
+				{ 1, new Action<object>(SysFunctions.Write) }
 			}));
 			state.Functions.Add(new _7sFunction("writeraw", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Action<object>(SysFunctions.WriteRaw)}
+				{ 1, new Action<object>(SysFunctions.WriteRaw) }
 			}));
 			state.Functions.Add(new _7sFunction("getLoopIndex", new Dictionary<int, Delegate>()
 			{
@@ -90,27 +91,31 @@ namespace _7Sharp.Intrerpreter
 			}));
 			state.Functions.Add(new _7sFunction("sin", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Func<double, double>(SysFunctions.Sin)}
+				{ 1, new Func<double, double>(SysFunctions.Sin) }
 			}));
 			state.Functions.Add(new _7sFunction("cos", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Func<double, double>(SysFunctions.Cos)}
+				{ 1, new Func<double, double>(SysFunctions.Cos) }
 			}));
 			state.Functions.Add(new _7sFunction("tan", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Func<double, double>(SysFunctions.Tan)}
+				{ 1, new Func<double, double>(SysFunctions.Tan) }
 			}));
 			state.Functions.Add(new _7sFunction("deg2rad", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Func<double, double>(SysFunctions.Deg2Rad)}
+				{ 1, new Func<double, double>(SysFunctions.Deg2Rad) }
 			}));
 			state.Functions.Add(new _7sFunction("rad2deg", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Func<double, double>(SysFunctions.Rad2Deg)}
+				{ 1, new Func<double, double>(SysFunctions.Rad2Deg) }
 			}));
 			state.Functions.Add(new _7sFunction("sleep", new Dictionary<int, Delegate>()
 			{
 				{ 1, new Action<int>(SysFunctions.Sleep) }
+			}));
+			state.Functions.Add(new _7sFunction("len", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<object, int>(SysFunctions.Len) }
 			}));
 		}
 
@@ -153,6 +158,7 @@ namespace _7Sharp.Intrerpreter
 
 		public void Import(string libPath)
 		{
+			ColorConsoleMethods.WriteLineColor($"Importing: \"{libPath}\"", ConsoleColor.Magenta);
 			InterpreterState state = this;
 			SysLibrary[] libs = SysLibrary.GetAllLibraries();
 			if (libs.Any(l => l.GetName() == libPath))

@@ -11,12 +11,14 @@ namespace _7Sharp.Intrerpreter.Nodes
 	internal class AssignmentNode : Node
 	{
 		private readonly string name;
-		private readonly string value;
+		private readonly List<Token<TokenType>> valueTokens;
+		private readonly bool isArrayAssignment;
 
-		public AssignmentNode(string name, string value, LexerPosition linePosition) : base(linePosition)
+		public AssignmentNode(string name, List<Token<TokenType>> valueTokens, bool isArrayAssignment, LexerPosition linePosition) : base(linePosition)
 		{
 			this.name = name;
-			this.value = value;
+			this.valueTokens = valueTokens;
+			this.isArrayAssignment = isArrayAssignment;
 		}
 
 		public override void Run(ref InterpreterState state)
@@ -24,8 +26,21 @@ namespace _7Sharp.Intrerpreter.Nodes
 			ExpressionEvaluator evaluator = state.evaluator;
 			state.RunWithVariables((ref Dictionary<string, object> vars) =>
 			{
-				// Evaluate
-				object value = evaluator.Evaluate(this.value);
+				object value = null;
+				if (isArrayAssignment)
+				{
+					value = valueTokens
+						.Skip(1).Reverse()							// Remove [
+						.Skip(1).Reverse()							// Remove ]
+						.ToList().Split(TokenType.COMMA)			// Split by ,
+						.Select(list => list.AsString()).ToList()	// Convert to strings
+						.Select(s => evaluator.Evaluate(s))			// Evaluate
+						.ToArray();
+				}
+				else
+				{
+					value = evaluator.Evaluate(valueTokens.AsString());
+				}
 				// Update value if it exists
 				if (vars.ContainsKey(name))
 				{
@@ -44,6 +59,17 @@ namespace _7Sharp.Intrerpreter.Nodes
 				// End
 				tokens[tokens.Count - 1].TokenID == TokenType.SEMICOLON;
 
-		public override string ToString() => $"Assignment {{ {name} = {value} }}";
+		public override string ToString() => $"Assignment {{ {name} = {valueTokens.AsString()}, isArrayAssignment = {isArrayAssignment} }}";
+
+		public static bool IsArrayAssignment(List<Token<TokenType>> tokens)
+		{
+			if (!IsAssignment(tokens))
+			{
+				return false;
+			}
+			//x = [ ... ];
+			return tokens[2].TokenID == TokenType.LBRACKET &&
+				tokens[tokens.Count - 2].TokenID == TokenType.RBRACKET;
+		}
 	}
 }
