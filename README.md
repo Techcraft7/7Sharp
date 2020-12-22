@@ -8,8 +8,7 @@ The free, open source, and simple programming language
 - Built in shell to load, save, edit, and run 7Sharp code
 - C-style code
 - Simple to learn
-- Setting colors `fgColor()` and `bgColor`
-  - See `System.ConsoleColor` for color names!
+- Setting colors `fgColor()` and `bgColor()`
 
 ## Sample code
 
@@ -31,7 +30,7 @@ loop (10) {
 All of that out of the way, here is another example
 ### Fibonacci
 ```
-a = 0.0; //double so we can go BIG
+a = 0.0; // double so we can go BIG
 b = 1.0;
 c = 0.0;
 loop (50) {
