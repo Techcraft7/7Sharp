@@ -38,6 +38,7 @@ namespace _7Sharp.Intrerpreter
 		[ManualDocs("sleep", "{\"title\":\"sleep(ms)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sleep(<number of miliseconds to wait>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Waits for \"},{\"text\":\"ms\",\"color\":\"Green\"},{\"text\":\" miliseconds.\"}]}]}")]
 		public static void Sleep(int ms) => Thread.Sleep(ms);
 
+		[ManualDocs("len", "{\"title\":\"len(obj)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"len(<array or string>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Returns the length of \"},{\"text\":\"obj\",\"color\":\"Green\"},{\"text\":\", if it is a string or an array. If not it will throw an error.\"}]}]}")]
 		public static int Len(object obj)
 		{
 			if (obj == null)
@@ -55,6 +56,7 @@ namespace _7Sharp.Intrerpreter
 			throw new InterpreterException("len: object passed was not an array or a string!");
 		}
 
+		[ManualDocs("chars", "{\"title\":\"chars(str)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"chars(<string>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Returns an array of every character in \"},{\"text\":\"str\",\"color\":\"Green\"}]}]}")]
 		public static object[] Chars(string s)
 		{
 			if (s == null)
@@ -64,6 +66,7 @@ namespace _7Sharp.Intrerpreter
 			return Utils.ToArray(s.ToArray());
 		}
 
+		[ManualDocs("toString", "{\"title\":\"toString(obj)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"chars(<string>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Converts \"},{\"text\":\"obj\",\"color\":\"Green\"},{\"text\":\" to a string. If \"},{\"text\":\"obj\",\"color\":\"Green\"},{\"text\":\" is an array it will take the following format:\n\"},{\"text\":\"Array [stuff, goes, here, etc]\",\"color\":\"Cyan\"}]}]}")]
 		public static string _7sToString(object obj)
 		{
 			if (obj == null)
@@ -81,6 +84,7 @@ namespace _7Sharp.Intrerpreter
 			return obj.ToString();
 		}
 
+		[ManualDocs("arrayAdd", "{\"title\":\"arrayAdd(arr, value)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"arrayAdd(<array>, <value>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Returns \"},{\"text\":\"array\",\"color\":\"Green\"},{\"text\":\" with \"},{\"text\":\"value\",\"color\":\"Green\"},{\"text\":\" added to the end.\"}]}]}")]
 		public static object[] ArrayAdd(object[] arr, object value)
 		{
 			Array.Resize(ref arr, arr.Length + 1);
@@ -88,6 +92,7 @@ namespace _7Sharp.Intrerpreter
 			return arr;
 		}
 
+		[ManualDocs("arrayRemove", "{\"title\":\"arrayRemove(arr, index)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"arrayAdd(<array>, <index>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Returns \"},{\"text\":\"array\",\"color\":\"Green\"},{\"text\":\", but the element at index \"},{\"text\":\"index\",\"color\":\"Green\"},{\"text\":\" is removed.\"}]}]}")]
 		public static object[] ArrayRemove(object[] arr, int index)
 		{
 			if (index < 0 || index >= arr.Length)
