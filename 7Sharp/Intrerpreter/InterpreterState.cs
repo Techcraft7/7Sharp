@@ -163,6 +163,14 @@ namespace _7Sharp.Intrerpreter
 			{
 				{ 0, new Action(SysFunctions.ResetColor) }
 			}));
+			state.Functions.Add(new _7sFunction("sqrt", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<double, double>(Math.Sqrt) }
+			}));
+			state.Functions.Add(new _7sFunction("pow", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Func<double, double, double>(Math.Pow) }
+			}));
 		}
 
 		public void PushScope()
