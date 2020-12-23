@@ -13,6 +13,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 		
 		public override void Import(ref InterpreterState state)
 		{
+			// Opening / closing streams
 			state.Functions.Add(new _7sFunction("readFile", new Dictionary<int, Delegate>()
 			{
 				{ 1, new Func<string, Stream>(ReadFile) }
@@ -21,6 +22,11 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			{
 				{ 1, new Func<string, Stream>(WriteFile) }
 			}));
+			state.Functions.Add(new _7sFunction("close", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Action<Stream>(Close) }
+			}));
+			// Reading
 			state.Functions.Add(new _7sFunction("readByte", new Dictionary<int, Delegate>()
 			{
 				{ 1, new Func<Stream, byte>(ReadByte) }
@@ -30,6 +36,17 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 				{ 1, new Func<Stream, string>(ReadLine) },
 				{ 2, new Func<Stream, string, string>(ReadLine) }
 			}));
+			state.Functions.Add(new _7sFunction("readText", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Func<Stream, int, string>(ReadText) },
+				{ 3, new Func<Stream, int, string, string>(ReadText) },
+			}));
+			// Writing
+			state.Functions.Add(new _7sFunction("writeText", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Action<Stream, string>(WriteText) },
+				{ 3, new Action<Stream, string, string>(WriteText) }
+			}));
 			state.Functions.Add(new _7sFunction("writeByte", new Dictionary<int, Delegate>()
 			{
 				{ 2, new Action<Stream, int>(WriteByte) }
@@ -38,20 +55,6 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			{
 				{ 2, new Action<Stream, string>(WriteLine) },
 				{ 3, new Action<Stream, string, string>(WriteLine) }
-			}));
-			state.Functions.Add(new _7sFunction("close", new Dictionary<int, Delegate>()
-			{
-				{ 1, new Action<Stream>(Close) }
-			}));
-			state.Functions.Add(new _7sFunction("readText", new Dictionary<int, Delegate>()
-			{
-				{ 2, new Func<Stream, int, string>(ReadText) },
-				{ 3, new Func<Stream, int, string, string>(ReadText) },
-			}));
-			state.Functions.Add(new _7sFunction("writeText", new Dictionary<int, Delegate>()
-			{
-				{ 2, new Action<Stream, string>(WriteText) },
-				{ 3, new Action<Stream, string, string>(WriteText) }
 			}));
 		}
 
