@@ -78,6 +78,22 @@ namespace _7Sharp.Intrerpreter
 			state.evaluator.Variables.Clear();
 			state.evaluator.Variables.Add("PI", Math.PI);
 			state.evaluator.Variables.Add("E", Math.E);
+			state.evaluator.Variables.Add("BLACK", (int)ConsoleColor.Black);
+			state.evaluator.Variables.Add("BLUE", (int)ConsoleColor.Blue);
+			state.evaluator.Variables.Add("CYAN", (int)ConsoleColor.Cyan);
+			state.evaluator.Variables.Add("DARK_BLUE", (int)ConsoleColor.DarkBlue);
+			state.evaluator.Variables.Add("DARK_CYAN", (int)ConsoleColor.DarkCyan);
+			state.evaluator.Variables.Add("DARK_GRAY", (int)ConsoleColor.DarkGray);
+			state.evaluator.Variables.Add("DARK_GREEN", (int)ConsoleColor.DarkGreen);
+			state.evaluator.Variables.Add("DARK_MAGENTA", (int)ConsoleColor.DarkMagenta);
+			state.evaluator.Variables.Add("DARK_RED", (int)ConsoleColor.DarkRed);
+			state.evaluator.Variables.Add("DARK_YELLOW", (int)ConsoleColor.DarkYellow);
+			state.evaluator.Variables.Add("GRAY", (int)ConsoleColor.Gray);
+			state.evaluator.Variables.Add("GREEN", (int)ConsoleColor.Green);
+			state.evaluator.Variables.Add("MAGENTA", (int)ConsoleColor.Magenta);
+			state.evaluator.Variables.Add("RED", (int)ConsoleColor.Red);
+			state.evaluator.Variables.Add("WHITE", (int)ConsoleColor.White);
+			state.evaluator.Variables.Add("YELLOW", (int)ConsoleColor.Yellow);
 			state.Functions.Add(new _7sFunction("write", new Dictionary<int, Delegate>()
 			{
 				{ 1, new Action<object>(SysFunctions.Write) }
@@ -134,6 +150,18 @@ namespace _7Sharp.Intrerpreter
 			state.Functions.Add(new _7sFunction("arrayRemove", new Dictionary<int, Delegate>()
 			{
 				{ 2, new Func<object[], int, object[]>(SysFunctions.ArrayRemove) }
+			}));
+			state.Functions.Add(new _7sFunction("fgColor", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Action<int>(SysFunctions.FgColor) }
+			}));
+			state.Functions.Add(new _7sFunction("bgColor", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Action<int>(SysFunctions.BgColor) }
+			}));
+			state.Functions.Add(new _7sFunction("resetColor", new Dictionary<int, Delegate>()
+			{
+				{ 0, new Action(SysFunctions.ResetColor) }
 			}));
 		}
 

@@ -101,5 +101,25 @@ namespace _7Sharp.Intrerpreter
 			}
 			return arr.Take(index).Concat(arr.Skip(index + 1)).ToArray();
 		}
+
+		public static void FgColor(int color)
+		{
+			if (color < 0 || color > 15)
+			{
+				throw new InterpreterException("fgColor: color was invalid! Must be from 0 to 15!");
+			}
+			Console.ForegroundColor = (ConsoleColor)color;
+		}
+
+		public static void BgColor(int color)
+		{
+			if (color < 0 || color > 15)
+			{
+				throw new InterpreterException("bgColor: color was invalid! Must be from 0 to 15!");
+			}
+			Console.BackgroundColor = (ConsoleColor)color;
+		}
+
+		public static void ResetColor() => Console.ResetColor();
 	}
 }
