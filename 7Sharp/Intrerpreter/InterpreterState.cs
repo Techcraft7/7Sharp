@@ -165,11 +165,11 @@ namespace _7Sharp.Intrerpreter
 			}));
 			state.Functions.Add(new _7sFunction("sqrt", new Dictionary<int, Delegate>()
 			{
-				{ 1, new Func<double, double>(Math.Sqrt) }
+				{ 1, new Func<double, double>(SysFunctions.Sqrt) }
 			}));
 			state.Functions.Add(new _7sFunction("pow", new Dictionary<int, Delegate>()
 			{
-				{ 2, new Func<double, double, double>(Math.Pow) }
+				{ 2, new Func<double, double, double>(SysFunctions.Pow) }
 			}));
 		}
 

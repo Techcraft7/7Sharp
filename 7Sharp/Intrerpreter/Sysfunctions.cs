@@ -111,6 +111,10 @@ namespace _7Sharp.Intrerpreter
 			Console.ForegroundColor = (ConsoleColor)color;
 		}
 
+		public static double Sqrt(double x) => Math.Sqrt(x);
+
+		public static double Pow(double x, double y) => Math.Pow(x, y);
+
 		public static void BgColor(int color)
 		{
 			if (color < 0 || color > 15)
