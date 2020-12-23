@@ -234,16 +234,27 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 							bytes.Add((byte)v);
 						}
 					}
+					string s = null;
 					switch (encoding.ToLower())
 					{
 						case "utf8":
 						case "utf-8":
-							return Encoding.UTF8.GetString(bytes.ToArray());
+							s = Encoding.UTF8.GetString(bytes.ToArray());
+							break;
 						case "ascii":
-							return Encoding.ASCII.GetString(bytes.ToArray());
+							s = Encoding.ASCII.GetString(bytes.ToArray());
+							break;
 						default:
 							throw new InterpreterException("readLine: encoding must be ascii or utf8!");
 					}
+					if (s != null)
+					{
+						if (s.EndsWith("\r"))
+						{
+							s = s.Remove(s.Length - 1, 1);
+						}
+					}
+					return s ?? string.Empty;
 				}
 				catch (ObjectDisposedException)
 				{
