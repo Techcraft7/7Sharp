@@ -25,7 +25,13 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			{
 				{ 0, new Func<int>(Next) }
 			}));
+			state.Functions.Add(new _7sFunction("setSeed", new Dictionary<int, Delegate>()
+			{
+				{ 0, new Action<int>(SetSeed) }
+			}));
 		}
+
+		private void SetSeed(int seed) => RNG = new Random(seed);
 
 		private static int Next() => RNG.Next();
 
