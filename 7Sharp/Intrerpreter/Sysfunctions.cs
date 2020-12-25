@@ -7,6 +7,8 @@ namespace _7Sharp.Intrerpreter
 {
 	internal class SysFunctions
 	{
+		public static double Double(object value) => Convert.ToDouble(value);
+
 		[ManualDocs("write", "{\"title\":\"write(value)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"Outputs \"},{\"text\":\"value\",\"color\":\"Green\"},{\"text\":\" to the console, followed by a newline.\"}]}]}")]
 		public static void Write(object obj) => Console.WriteLine(obj);
 

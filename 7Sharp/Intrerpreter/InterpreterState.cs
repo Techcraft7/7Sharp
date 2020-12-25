@@ -74,6 +74,7 @@ namespace _7Sharp.Intrerpreter
 			state.evaluator.PreEvaluateFunction += state.Evaluator_PreEvaluateFunction;
 			state.evaluator.PreEvaluateVariable += state.Evaluator_PreEvaluateVariable;
 			state.evaluator.OptionInlineNamespacesEvaluationActive = false;
+			state.evaluator.OptionNumberParsingDecimalSeparator = ".";
 			state.evaluator.Assemblies.Clear();
 			state.evaluator.Variables.Clear();
 			state.evaluator.Variables.Add("PI", Math.PI);
@@ -186,6 +187,10 @@ namespace _7Sharp.Intrerpreter
 			state.Functions.Add(new _7sFunction("pow", new Dictionary<int, Delegate>()
 			{
 				{ 2, new Func<double, double, double>(SysFunctions.Pow) }
+			}));
+			state.Functions.Add(new _7sFunction("double", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<object, double>(SysFunctions.Double) }
 			}));
 		}
 
