@@ -5,3 +5,4 @@
 **/Release
 **/**.exe
 **/**.pbd
+/packages
