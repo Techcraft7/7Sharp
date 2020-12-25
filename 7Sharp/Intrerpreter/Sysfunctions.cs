@@ -18,6 +18,7 @@ namespace _7Sharp.Intrerpreter
 		[ManualDocs("read", "{\"title\":\"read()\",\"sections\":[{\"header\":\"Behavior\",\"text\":[{\"text\":\"Asks the user for input, and returns a string of the text provided.\"}]}]}")]
 		public static string Read() => Console.ReadLine();
 
+		#region trig
 		[ManualDocs("trig", "{\"title\":\"trig\",\"sections\":[{\"header\":\"Note\",\"text\":[{\"text\":\"ALL TRIG FUNCTIONS ARE IN RADIANS!\",\"color\":\"Red\"}]},{\"header\":\"sin(x)\",\"text\":[{\"text\":\"Returns the sine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"cos(x)\",\"text\":[{\"text\":\"Returns the cosine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"tan(x)\",\"text\":[{\"text\":\"Returns the tangent of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"sin(x)\",\"text\":[{\"text\":\"Returns the sine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"cos(x)\",\"text\":[{\"text\":\"Returns the cosine of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"tan(x)\",\"text\":[{\"text\":\"Returns the tangent of \"},{\"text\":\"x\",\"color\":\"Green\"}]},{\"header\":\"atan2(x, y)\",\"text\":[{\"text\":\"Returns the angle between (0, 0) and \"},{\"color\":\"Green\",\"text\":\"(x, y)\"},{\"text\":\" in radians.\"}]},{\"header\":\"Degrees and radians conversion\",\"text\":[{\"text\":\"Use \"},{\"text\":\"deg2rad(x)\",\"color\":\"Green\"},{\"text\":\" and \"},{\"text\":\"rad2deg(x)\",\"color\":\"Green\"},{\"text\":\" to convert \"},{\"text\":\"x\",\"color\":\"Green\"},{\"text\":\" from radians to degrees, or vice. versa. \"}]}]}")]
 		public static double Sin(double v) => Math.Sin(v);
 
@@ -36,6 +37,7 @@ namespace _7Sharp.Intrerpreter
 		public static double Deg2Rad(double v) => v * Math.PI / 180D;
 
 		public static double Rad2Deg(double v) => v * 180D / Math.PI;
+		#endregion
 
 		[ManualDocs("sleep", "{\"title\":\"sleep(ms)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sleep(<number of miliseconds to wait>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Waits for \"},{\"text\":\"ms\",\"color\":\"Green\"},{\"text\":\" miliseconds.\"}]}]}")]
 		public static void Sleep(int ms) => Thread.Sleep(ms);
@@ -104,6 +106,10 @@ namespace _7Sharp.Intrerpreter
 			return arr.Take(index).Concat(arr.Skip(index + 1)).ToArray();
 		}
 
+		public static double Sqrt(double x) => Math.Sqrt(x);
+
+		public static double Pow(double x, double y) => Math.Pow(x, y);
+
 		public static void FgColor(int color)
 		{
 			if (color < 0 || color > 15)
@@ -112,10 +118,6 @@ namespace _7Sharp.Intrerpreter
 			}
 			Console.ForegroundColor = (ConsoleColor)color;
 		}
-
-		public static double Sqrt(double x) => Math.Sqrt(x);
-
-		public static double Pow(double x, double y) => Math.Pow(x, y);
 
 		public static void BgColor(int color)
 		{
