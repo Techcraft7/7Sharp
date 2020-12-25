@@ -14,7 +14,7 @@ The free, open source, and simple programming language
 
 ### Count to 10
 
-```
+```c
 loop (10) {
   write(getLoopIndex() + 1);
 }
@@ -28,7 +28,7 @@ loop (10) {
 `getLoopIndex(n = 0)` is an abstraction for having to manage `i`, `j`, `k`, etc. because many beginners tend to mess this up, even though some interpreted languages (like Python) will let you have two for loops with `i` as the variable.
 
 ##### Example
-```
+```c
 loop(5) {
     loop(5) {
         write("i = " + getLoopIndex(1) + " j = " + getLoopIndex());
@@ -52,10 +52,10 @@ etc.
 
 All of that out of the way, here is another example
 ### Fibonacci
-```
-a = 0.0; // double so we can go BIG
-b = 1.0;
-c = 0.0;
+```c
+a = double(0);
+b = double(1);
+c = double(0);
 loop (50) {
   c = a + b;
   b = a;
