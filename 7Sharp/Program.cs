@@ -39,6 +39,10 @@ namespace _7Sharp
 					{
 						shell.SetCode(sr.ReadToEnd());
 						shell.Execute("run");
+#if DEBUG
+#else
+						shell.Execute("exit -s");
+#endif
 					}
 				}
 				catch (Exception e)
