@@ -119,6 +119,22 @@ namespace _7Sharp.Intrerpreter
 			{
 				{ 1, new Func<double, double>(SysFunctions.Tan) }
 			}));
+			state.Functions.Add(new _7sFunction("asin", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<double, double>(SysFunctions.Asin) }
+			}));
+			state.Functions.Add(new _7sFunction("acos", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<double, double>(SysFunctions.Acos) }
+			}));
+			state.Functions.Add(new _7sFunction("atan", new Dictionary<int, Delegate>()
+			{
+				{ 1, new Func<double, double>(SysFunctions.Atan) }
+			}));
+			state.Functions.Add(new _7sFunction("atan2", new Dictionary<int, Delegate>()
+			{
+				{ 2, new Func<double, double, double>(SysFunctions.Atan2) }
+			}));
 			state.Functions.Add(new _7sFunction("deg2rad", new Dictionary<int, Delegate>()
 			{
 				{ 1, new Func<double, double>(SysFunctions.Deg2Rad) }
