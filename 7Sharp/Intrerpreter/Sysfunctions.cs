@@ -7,7 +7,25 @@ namespace _7Sharp.Intrerpreter
 {
 	internal class SysFunctions
 	{
-		public static double Double(object value) => Convert.ToDouble(value);
+		public static double Double(object value)
+		{
+			try
+			{
+				return Convert.ToDouble(value);
+			}
+			catch (OverflowException)
+			{
+				throw new InterpreterException("double: Number is too big!");
+			}
+			catch (FormatException)
+			{
+				throw new InterpreterException("double: Invalid number!");
+			}
+			catch (Exception e)
+			{
+				throw new InterpreterException("double: Unkown error", e);
+			}
+		}
 
 		[ManualDocs("write", "{\"title\":\"write(value)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"Outputs \"},{\"text\":\"value\",\"color\":\"Green\"},{\"text\":\" to the console, followed by a newline.\"}]}]}")]
 		public static void Write(object obj) => Console.WriteLine(obj);

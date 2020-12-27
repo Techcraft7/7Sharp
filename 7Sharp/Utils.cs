@@ -51,9 +51,10 @@ namespace _7Sharp
 
 		internal static void PrintError(Exception e)
 		{
-			if (e is InterpreterException)
+			bool hasInnerException = e.InnerException != null;
+			if (e is InterpreterException || (hasInnerException ? e.InnerException is InterpreterException : false))
 			{
-				ColorConsoleMethods.WriteLineColor($"{e.Message}", ConsoleColor.Red);
+				ColorConsoleMethods.WriteLineColor($"{(hasInnerException ? e.InnerException.Message : e.Message)}", ConsoleColor.Red);
 				return;
 			}
 			ColorConsoleMethods.WriteLineColor($"{e.GetType()}: {e.Message}\n{e.StackTrace}", ConsoleColor.Red);

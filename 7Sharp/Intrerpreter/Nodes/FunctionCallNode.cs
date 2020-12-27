@@ -13,6 +13,7 @@ namespace _7Sharp.Intrerpreter.Nodes
 		private readonly UserFunction userFunc;
 		private readonly bool isUserFunc;
 		private readonly List<List<Token<TokenType>>> args;
+		private string name;
 
 		public FunctionCallNode(UserFunction userFunc, List<List<Token<TokenType>>> args, LexerPosition linePosition) : base(linePosition)
 		{
@@ -20,23 +21,33 @@ namespace _7Sharp.Intrerpreter.Nodes
 			this.userFunc = userFunc;
 			isUserFunc = true;
 			this.args = args;
+			name = userFunc.Name;
 		}
 
 		public FunctionCallNode(_7sFunction func, List<List<Token<TokenType>>> args, LexerPosition linePosition) : base(linePosition)
 		{
 			this.func = func ?? throw new InterpreterException($"Unknown function at {linePosition}");
 			this.args = args;
+			isUserFunc = false;
+			name = func.Name;
 		}
 
 		public override void Run(ref InterpreterState state)
 		{
-			if (isUserFunc)
+			try
 			{
-				userFunc.Run(ref state, ParseArgs(args, state));
+				if (isUserFunc)
+				{
+					userFunc.Run(ref state, ParseArgs(args, state));
+				}
+				else
+				{
+					state.ReturnValue = func.Run(ParseArgs(args, state));
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				state.ReturnValue = func.Run(ParseArgs(args, state));
+				throw new InterpreterException($"Error in {name}", e);
 			}
 		}
 
