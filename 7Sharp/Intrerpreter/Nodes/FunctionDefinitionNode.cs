@@ -36,6 +36,10 @@ namespace _7Sharp.Intrerpreter.Nodes
 			bool result = true;
 			result &= tokens.Count >= 4;
 			result &= tokens[0].TokenID == TokenType.FUNCTION;
+			if (!result)
+			{
+				return false;
+			}
 			result &= tokens[1].TokenID == TokenType.IDENTIFIER;
 			result &= tokens[2].TokenID == TokenType.LPAREN;
 

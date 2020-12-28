@@ -103,6 +103,10 @@ namespace _7Sharp.Intrerpreter
 			{
 				{ 1, new Action<object>(SysFunctions.WriteRaw) }
 			}));
+			state.Functions.Add(new _7sFunction("read", new Dictionary<int, Delegate>()
+			{
+				{ 0, new Func<string>(SysFunctions.Read) }
+			}));
 			state.Functions.Add(new _7sFunction("getLoopIndex", new Dictionary<int, Delegate>()
 			{
 				{ 0, new Func<int>(state.GetFirstLoopIndex) },
@@ -233,7 +237,9 @@ namespace _7Sharp.Intrerpreter
 
 		public void Import(string libPath)
 		{
+#if DEBUG
 			ColorConsoleMethods.WriteLineColor($"Importing: \"{libPath}\"", ConsoleColor.Magenta);
+#endif
 			InterpreterState state = this;
 			SysLibrary[] libs = SysLibrary.GetAllLibraries();
 			if (libs.Any(l => l.GetName() == libPath))

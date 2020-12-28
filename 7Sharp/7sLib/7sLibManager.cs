@@ -15,6 +15,8 @@ namespace _7Sharp._7sLib
 		{
 			try
 			{
+				string[] splitPath = path.Split('.');
+				path = string.Join(".", splitPath.Take(splitPath.Length - 1).ToArray()) + ".7slib";
 				using (ZipArchive zip = ZipFile.Open(path, ZipArchiveMode.Update))
 				{
 					ZipArchiveEntry dotText = zip.CreateEntry(".text");
@@ -128,14 +130,12 @@ namespace _7Sharp._7sLib
 
 		private static string GetSHA1(Stream s) => BitConverter.ToString(SHA1.Create().ComputeHash(s));
 
-		private static string GetSHA1(string path)
+		private static string GetSHA1(string contents)
 		{
-			string o;
-			using (Stream fs = new FileStream(path, FileMode.Open))
+			using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(contents)))
 			{
-				o = BitConverter.ToString(SHA1.Create().ComputeHash(fs)); //dont return here let using exit to close stream			}
+				return BitConverter.ToString(SHA1.Create().ComputeHash(ms));
 			}
-			return o;
 		}
 	}
 }

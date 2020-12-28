@@ -44,9 +44,9 @@ namespace _7Sharp.Intrerpreter
 
 		public static double Tan(double v) => Math.Tan(v);
 
-		public static double Asin(double v) => Math.Asin(v);
+		public static double Asin(double v) => Math.Asin(Utils.CheckRange(v, -1, 1, "asin: Invalid domain!"));
 
-		public static double Acos(double v) => Math.Acos(v);
+		public static double Acos(double v) => Math.Acos(Utils.CheckRange(v, -1, 1, "acos: Invalid domain!"));
 
 		public static double Atan(double v) => Math.Atan(v);
 

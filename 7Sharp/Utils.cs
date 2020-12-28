@@ -193,5 +193,14 @@ namespace _7Sharp
 		}
 
 		public static Dictionary<K, V> Clone<K, V>(this Dictionary<K, V> dict) => dict.AsEnumerable().ToDictionary(kv => kv.Key, kv => kv.Value);
+
+		public static double CheckRange(double v, double min, double max, string message)
+		{
+			if (v < min || v > max)
+			{
+				throw new InterpreterException(message);
+			}
+			return v;
+		}
 	}
 }

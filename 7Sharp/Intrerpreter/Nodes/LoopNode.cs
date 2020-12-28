@@ -36,11 +36,13 @@ namespace _7Sharp.Intrerpreter.Nodes
 				{
 					state.Location = child.linePosition;
 					child.Run(ref state);
+					//continue;
 					if (state.ContinueUsed)
 					{
 						state.ContinueUsed = false;
 						break;
 					}
+					//break;
 					if (state.BreakUsed)
 					{
 						state.BreakUsed = false;
