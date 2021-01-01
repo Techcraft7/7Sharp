@@ -7,6 +7,7 @@ namespace _7Sharp.Intrerpreter
 {
 	internal class SysFunctions
 	{
+		[ManualDocs("double", "{\"title\":\"double(o)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"double(<object>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Convert \"},{\"text\":\"o\",\"color\":\"Green\"},{\"text\":\" to a double (64-bit floating-point number)\"}]}]}")]
 		public static double Double(object value)
 		{
 			try
@@ -24,6 +25,27 @@ namespace _7Sharp.Intrerpreter
 			catch (Exception e)
 			{
 				throw new InterpreterException("double: Unkown error", e);
+			}
+		}
+
+		[ManualDocs("int", "{\"title\":\"int(o)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"int(<object>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Convert \"},{\"text\":\"o\",\"color\":\"Green\"},{\"text\":\" to an int (32-bit integer)\"}]}]}")]
+		public static int Int(object value)
+		{
+			try
+			{
+				return Convert.ToInt32(value);
+			}
+			catch (OverflowException)
+			{
+				throw new InterpreterException("int: Number is too big!");
+			}
+			catch (FormatException)
+			{
+				throw new InterpreterException("int: Invalid number!");
+			}
+			catch (Exception e)
+			{
+				throw new InterpreterException("int: Unkown error", e);
 			}
 		}
 
@@ -124,10 +146,13 @@ namespace _7Sharp.Intrerpreter
 			return arr.Take(index).Concat(arr.Skip(index + 1)).ToArray();
 		}
 
+		[ManualDocs("sqrt", "{\"title\":\"sqrt(x)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sqrt(<number>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Takes the square root of\"},{\"text\":\"x\",\"color\":\"Green\"},{\"text\":\".\"}]}]}")]
 		public static double Sqrt(double x) => Math.Sqrt(x);
 
+		[ManualDocs("pow", "{\"title\":\"pow(x, n)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"pow(<number>, <number>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Raise \"},{\"text\":\"x\",\"color\":\"Green\"},{\"text\":\" to the power of \"},{\"text\":\"n\",\"color\":\"Green\"}]}]}")]
 		public static double Pow(double x, double y) => Math.Pow(x, y);
 
+		[ManualDocs("fgColor", "{\"title\":\"fgColor(color)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"fgColor(<color number or name>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Set the text color to \"},{\"text\":\"color\",\"color\":\"Green\"}]},{\"header\":\"Valid colors\",\"text\":[{\"text\":\"BLACK BLUE CYAN DARK_BLUE DARK_CYAN DARK_GRAY DARK_GREEN DARK_MAGENTA DARK_RED DARK_YELLOW GRAY GREEN MAGENTA RED WHITE YELLOW\",\"color\":\"Cyan\"}]}]}")]
 		public static void FgColor(int color)
 		{
 			if (color < 0 || color > 15)
@@ -137,6 +162,7 @@ namespace _7Sharp.Intrerpreter
 			Console.ForegroundColor = (ConsoleColor)color;
 		}
 
+		[ManualDocs("bgColor", "{\"title\":\"bgColor(color)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"bgColor(<color number or name>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Set the background color to \"},{\"text\":\"color\",\"color\":\"Green\"},{\"text\":\". call \"},{\"text\":\"clear()\",\"color\":\"Yellow\"},{\"text\":\"to if you want to set the background color of the whole screen, because \"},{\"text\":\"bgColor(color)\",\"color\":\"Yellow\"},{\"text\":\" only affects the background color of new printed text.\"}]},{\"header\":\"Valid colors\",\"text\":[{\"text\":\"BLACK BLUE CYAN DARK_BLUE DARK_CYAN DARK_GRAY DARK_GREEN DARK_MAGENTA DARK_RED DARK_YELLOW GRAY GREEN MAGENTA RED WHITE YELLOW\",\"color\":\"Cyan\"}]}]}")]
 		public static void BgColor(int color)
 		{
 			if (color < 0 || color > 15)
@@ -146,6 +172,7 @@ namespace _7Sharp.Intrerpreter
 			Console.BackgroundColor = (ConsoleColor)color;
 		}
 
+		[ManualDocs("resetColor", "{\"title\":\"resetColor()\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"resetColor();\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Reset the console colors back to their defaults.\"}]}]}")]
 		public static void ResetColor() => Console.ResetColor();
 	}
 }

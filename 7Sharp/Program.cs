@@ -23,25 +23,19 @@ namespace _7Sharp
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			if (args.Length > 1)
-			{
-				WriteLineColor("You may only pass 1 script file to read!", Red);
-				Read();
-				return;
-			}
 			//title
 			Title = "7Sharp";
-			if (args.Length == 1)
+			if (args.Length > 1)
 			{
 				try
 				{
-					using (StreamReader sr = new StreamReader(args[0]))
+					using (StreamReader sr = new StreamReader(string.Join(" ", args)))
 					{
 						shell.SetCode(sr.ReadToEnd());
 						shell.Execute("run");
 #if DEBUG
 #else
-						shell.Execute("exit -s");
+						return;
 #endif
 					}
 				}
