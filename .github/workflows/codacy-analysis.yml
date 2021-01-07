@@ -19,8 +19,6 @@ jobs:
     name: Codacy Security Scan
     runs-on: ubuntu-latest
     steps:
-      - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v1
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout code
         uses: actions/checkout@v2
