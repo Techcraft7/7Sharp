@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _7Sharp.Manual;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,6 +60,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 
 		private static void WriteText(Stream s, string text) => WriteText(s, text, "utf8");
 
+		[ManualDocs("writeText", "{\"title\":\"writeText(s, txt, enc = \\\"utf8\\\")\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"writeText(<stream>, <text>);\nOR\nwriteText(<stream>, <text>, <encoding>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Write \"},{\"text\":\"txt\",\"color\":\"Green\"},{\"text\":\" to stream \"},{\"text\":\"s\",\"color\":\"Green\"},{\"text\":\" using encoding \"},{\"text\":\"enc\",\"color\":\"Green\"},{\"text\":\". Defaults to \"},{\"text\":\"utf8\",\"color\":\"Cyan\"}]}]}")]
 		private static void WriteText(Stream stream, string text, string encoding)
 		{
 			if (stream.CanWrite)
@@ -91,6 +93,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			}
 		}
 
+		[ManualDocs("readText", "{\"title\":\"readText(s, count, enc = \\\"utf8\\\")\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"readText(<stream>, <text>);\nOR\nreadText(<stream>, <text>, <encoding>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Read \"},{\"text\":\"count\",\"color\":\"Green\"},{\"text\":\" characters from stream \"},{\"text\":\"s\",\"color\":\"Green\"},{\"text\":\" using encoding \"},{\"text\":\"enc\",\"color\":\"Green\"},{\"text\":\". \"},{\"text\":\"enc\",\"color\":\"Green\"},{\"text\":\" defaults to \"},{\"text\":\"utf8\",\"color\":\"Cyan\"}]}]}")]
 		private static string ReadText(Stream s, int count) => ReadText(s, count, "utf8");
 
 		private static string ReadText(Stream s, int count, string encoding)
@@ -127,6 +130,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			}
 		}
 
+		[ManualDocs("close", "{\"title\":\"close(s)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"close(<stream>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Close stream \"},{\"text\":\"s\",\"color\":\"Green\"},{\"text\":\". \"},{\"text\":\"Not doing this could cause a memory leak!\",\"color\":\"Red\"}]}]}")]
 		private static void Close(Stream s)
 		{
 			try
@@ -139,6 +143,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			}
 		}
 
+		[ManualDocs("readFile", "{\"title\":\"readFile(path)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"readFile(<path>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Get a read stream to file at \"},{\"text\":\"path\",\"color\":\"Green\"},{\"text\":\". See the following for more info: \"},{\"text\":\"readText readLine readByte\",\"color\":\"Yellow\"}]}]}")]
 		private static Stream ReadFile(string path)
 		{
 			if (!File.Exists(path))
@@ -211,6 +216,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			}
 		}
 
+		[ManualDocs("readLine", "{\"title\":\"readLine(s, enc = \\\"utf8\\\")\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"readLine(<stream>);\nOR\nreadLine(<stream>, <encoding>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Read \"},{\"text\":\"count\",\"color\":\"Green\"},{\"text\":\" one line of text from stream \"},{\"text\":\"s\",\"color\":\"Green\"},{\"text\":\" using encoding \"},{\"text\":\"enc\",\"color\":\"Green\"},{\"text\":\". \"},{\"text\":\"enc\",\"color\":\"Green\"},{\"text\":\" defaults to \"},{\"text\":\"utf8\",\"color\":\"Cyan\"}]}]}")]
 		private static string ReadLine(Stream stream) => ReadLine(stream, "utf8");
 
 		private static string ReadLine(Stream stream, string encoding)
@@ -267,7 +273,8 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 		}
 
 		private static void WriteLine(Stream stream, string line) => WriteLine(stream, line, "utf8");
-
+		
+		[ManualDocs("writeLine", "{\"title\":\"writeText(s, txt, enc = \\\"utf8\\\")\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"writeText(<stream>, <text>);\nOR\nwriteText(<stream>, <text>, <encoding>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Write \"},{\"text\":\"txt\",\"color\":\"Green\"},{\"text\":\" to stream \"},{\"text\":\"s\",\"color\":\"Green\"},{\"text\":\" using encoding \"},{\"text\":\"enc\",\"color\":\"Green\"},{\"text\":\", followed by a new line. \"},{\"text\":\"enc\",\"color\":\"Green\"},{\"text\":\" defaults to \"},{\"text\":\"utf8\",\"color\":\"Cyan\"}]}]}")]
 		private static void WriteLine(Stream stream, string line, string encoding) => WriteText(stream, line + "\n", encoding);
 	}
 }
