@@ -28,40 +28,72 @@ namespace _7Sharp.Interpreter.Nodes
 			state.RunWithVariables((ref Dictionary<string, object> vars) =>
 			{
 				object value = null;
+				if (isArrayAssignment)
+				{
+					value = valueTokens
+						.Skip(1).Reverse()                          // Remove [
+						.Skip(1).Reverse()                          // Remove ]
+						.ToList().Split(TokenType.COMMA)            // Split by ,
+						.Select(list => list.AsString()).ToList()   // Convert to strings
+						.Select(str => iState.Evaluate(str))        // Evaluate
+						.ToArray();
+				}
+				else
+				{
+					value = iState.Evaluate(valueTokens);
+				}
 				if (isIndexer)
 				{
-					throw new NotImplementedException();
-					if (isArrayAssignment)
+					if (!iState.Variables.Peek().ContainsKey(name))
 					{
-
+						throw new InterpreterException($"Cannot assign to value in array \"{name}\" because it does not exist!");
+					}
+					object obj = iState.Variables.Peek()[name];
+					int index = iState.TryParse<int>(indexTokens, $"Index to assign to array \"{name}\" must be an integer!");
+					if (obj is object[] array)
+					{
+						array[index] = value;
+						iState.Variables.Peek()[name] = array;
+					}
+					else if (obj is string s)
+					{
+						char[] arr = s.ToCharArray();
+						if (value is char c)
+						{
+							arr[index] = c;
+						}
+						else if (value is string s2)
+						{
+							if (s2.Length != 1)
+							{
+								throw new InterpreterException("Attempted to replace a character in a string with a string that was not one character long!");
+							}
+							arr[index] = s2[0];
+						}
+						else
+						{
+							throw new InterpreterException("Attempted to replace a character in a string with a non-character!");
+						}
+						iState.Variables.Peek()[name] = new string(arr);
+					}
+					else
+					{
+						throw new InterpreterException($"Variable \"{name}\" is not an array or string!");
 					}
 				}
 				else
 				{
-					if (isArrayAssignment)
+					// Update value if it exists
+					if (vars.ContainsKey(name))
 					{
-						value = valueTokens
-							.Skip(1).Reverse()                          // Remove [
-							.Skip(1).Reverse()                          // Remove ]
-							.ToList().Split(TokenType.COMMA)            // Split by ,
-							.Select(list => list.AsString()).ToList()   // Convert to strings
-							.Select(str => iState.Evaluate(str))        // Evaluate
-							.ToArray();
+						vars[name] = value;
+						return;
 					}
-					else
-					{
-						value = iState.Evaluate(valueTokens);
-					}
+					// Otherwise add it
+					vars.Add(name, value);
 				}
-				// Update value if it exists
-				if (vars.ContainsKey(name))
-				{
-					vars[name] = value;
-					return;
-				}
-				// Otherwise add it
-				vars.Add(name, value);
 			});
+			state = iState;
 		}
 
 		public static bool IsAssignment(List<Token<TokenType>> tokens, out bool isIndexer)
@@ -165,8 +197,37 @@ namespace _7Sharp.Interpreter.Nodes
 
 		public static List<Token<TokenType>> GetValueOfIndexerAssignment(List<Token<TokenType>> expr)
 		{
-			// blah [ ... ] = ...;
-			return expr.Skip(0).Reverse().Skip(0).Reverse().ToList();
+			int end = -1;
+			int depth = 0;
+			for (int i = 1; i < expr.Count; i++)
+			{
+				switch (expr[i].TokenID)
+				{
+					case TokenType.LBRACKET:
+						depth++;
+						break;
+					case TokenType.RBRACKET:
+						depth--;
+						if (depth < 0)
+						{
+							throw new InterpreterException("']' is missing a '['");
+						}
+						if (depth == 0)
+						{
+							end = i;
+							i = expr.Count;
+						}
+						break;
+				}
+			}
+			if (end < 0)
+			{
+				throw new InterpreterException("'[' is missing a ']'");
+			}
+			//           end
+			//            v
+			// blah [ ... ] = ... ;
+			return expr.Skip(end + 2).Reverse().Skip(1).Reverse().ToList();
 		}
 	}
 }
