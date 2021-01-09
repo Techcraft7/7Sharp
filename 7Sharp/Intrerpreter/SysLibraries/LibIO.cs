@@ -160,6 +160,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			}
 		}
 
+		[ManualDocs("writeFile", "{\"title\":\"writeFile(path)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"writeFile(<path>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Get a write stream to file at \"},{\"text\":\"path\",\"color\":\"Green\"},{\"text\":\". See the following for more info: \"},{\"text\":\"writeText writeLine writeByte\",\"color\":\"Yellow\"}]}]}")]
 		private static Stream WriteFile(string path)
 		{
 			try
@@ -172,6 +173,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			}
 		}
 
+		[ManualDocs("readByte", "{\"title\":\"readByte(s)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"readByte(<stream>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Read a byte from stream \"},{\"text\":\"s\",\"color\":\"Green\"}]}]}")]
 		private static byte ReadByte(Stream stream)
 		{
 			if (stream.CanRead)
@@ -200,6 +202,7 @@ namespace _7Sharp.Intrerpreter.SysLibraries
 			}
 		}
 
+		[ManualDocs("writeByte", "{\"title\":\"writeByte(s, v)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"writeByte(<stream>, <value>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Write byte \"},{\"text\":\"v\",\"color\":\"Green\"},{\"text\":\" to stream \"},{\"text\":\"s\",\"color\":\"Green\"}]}]}")]
 		private static void WriteByte(Stream stream, int v)
 		{
 			if (stream.CanWrite)
