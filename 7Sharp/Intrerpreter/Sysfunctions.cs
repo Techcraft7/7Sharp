@@ -72,7 +72,7 @@ namespace _7Sharp.Intrerpreter
 
 		public static double Atan(double v) => Math.Atan(v);
 
-		public static double Atan2(double x, double y) => Math.Atan2(x, y);
+		public static double Atan2(double x, double y) => x == 0 && y == 0 ? 0 : Math.Atan2(x, y);
 
 		public static double Deg2Rad(double v) => v * Math.PI / 180D;
 
@@ -80,7 +80,14 @@ namespace _7Sharp.Intrerpreter
 		#endregion
 
 		[ManualDocs("sleep", "{\"title\":\"sleep(ms)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sleep(<number of miliseconds to wait>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Waits for \"},{\"text\":\"ms\",\"color\":\"Green\"},{\"text\":\" miliseconds.\"}]}]}")]
-		public static void Sleep(int ms) => Thread.Sleep(ms);
+		public static void Sleep(int ms)
+		{
+			if (ms < 0)
+			{
+				throw new InterpreterException("sleep: Cannot sleep for a negative number of miliseconds!");
+			}
+			Thread.Sleep(ms);
+		}
 
 		[ManualDocs("len", "{\"title\":\"len(obj)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"len(<array or string>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Returns the length of \"},{\"text\":\"obj\",\"color\":\"Green\"},{\"text\":\", if it is a string or an array. If not it will throw an error.\"}]}]}")]
 		public static int Len(object obj)
@@ -105,7 +112,7 @@ namespace _7Sharp.Intrerpreter
 		{
 			if (s == null)
 			{
-				throw new InterpreterException("chars: string passed was null!");
+				throw new InterpreterException("chars: string passed in was null!");
 			}
 			return Utils.ToArray(s.ToArray());
 		}
@@ -123,7 +130,7 @@ namespace _7Sharp.Intrerpreter
 			}
 			if (obj is System.Collections.IEnumerable ie)
 			{
-				return $"Array [{string.Join(", ", Utils.ToArray(ie))}]";
+				return $"[{string.Join(", ", Utils.ToArray(ie))}]";
 			}
 			return obj.ToString();
 		}
@@ -131,6 +138,10 @@ namespace _7Sharp.Intrerpreter
 		[ManualDocs("arrayAdd", "{\"title\":\"arrayAdd(arr, value)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"arrayAdd(<array>, <value>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Returns \"},{\"text\":\"array\",\"color\":\"Green\"},{\"text\":\" with \"},{\"text\":\"value\",\"color\":\"Green\"},{\"text\":\" added to the end.\"}]}]}")]
 		public static object[] ArrayAdd(object[] arr, object value)
 		{
+			if (arr == null)
+			{
+				throw new InterpreterException("arrayAdd: Cannot add to an array that is null!");
+			}
 			Array.Resize(ref arr, arr.Length + 1);
 			arr[arr.Length - 1] = value;
 			return arr;
@@ -139,6 +150,10 @@ namespace _7Sharp.Intrerpreter
 		[ManualDocs("arrayRemove", "{\"title\":\"arrayRemove(arr, index)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"arrayAdd(<array>, <index>)\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Returns \"},{\"text\":\"array\",\"color\":\"Green\"},{\"text\":\", but the element at index \"},{\"text\":\"index\",\"color\":\"Green\"},{\"text\":\" is removed.\"}]}]}")]
 		public static object[] ArrayRemove(object[] arr, int index)
 		{
+			if (arr == null)
+			{
+				throw new InterpreterException("arrayRemove: Cannot remove from an array that is null!");
+			}
 			if (index < 0 || index >= arr.Length)
 			{
 				throw new InterpreterException("Attempted to remove an element that is not in bounds of the array");
@@ -147,10 +162,24 @@ namespace _7Sharp.Intrerpreter
 		}
 
 		[ManualDocs("sqrt", "{\"title\":\"sqrt(x)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"sqrt(<number>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Takes the square root of\"},{\"text\":\"x\",\"color\":\"Green\"},{\"text\":\".\"}]}]}")]
-		public static double Sqrt(double x) => Math.Sqrt(x);
+		public static double Sqrt(double x)
+		{
+			if (x < 0)
+			{
+				throw new InterpreterException("sqrt: Complex numbers are not supported! (Attempted to take the square root of a negative number)");
+			}
+			return Math.Sqrt(x);
+		}
 
 		[ManualDocs("pow", "{\"title\":\"pow(x, n)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"pow(<number>, <number>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Raise \"},{\"text\":\"x\",\"color\":\"Green\"},{\"text\":\" to the power of \"},{\"text\":\"n\",\"color\":\"Green\"}]}]}")]
-		public static double Pow(double x, double y) => Math.Pow(x, y);
+		public static double Pow(double x, double y)
+		{
+			if (x == 0 && y == 0)
+			{
+				throw new InterpreterException("pow: Cannot raise 0 to the 0th power!");
+			}
+			return Math.Pow(x, y);
+		}
 
 		[ManualDocs("fgColor", "{\"title\":\"fgColor(color)\",\"sections\":[{\"header\":\"Syntax\",\"text\":[{\"text\":\"fgColor(<color number or name>);\"}]},{\"header\":\"Behavior\",\"text\":[{\"text\":\"Set the text color to \"},{\"text\":\"color\",\"color\":\"Green\"}]},{\"header\":\"Valid colors\",\"text\":[{\"text\":\"BLACK BLUE CYAN DARK_BLUE DARK_CYAN DARK_GRAY DARK_GREEN DARK_MAGENTA DARK_RED DARK_YELLOW GRAY GREEN MAGENTA RED WHITE YELLOW\",\"color\":\"Cyan\"}]}]}")]
 		public static void FgColor(int color)
