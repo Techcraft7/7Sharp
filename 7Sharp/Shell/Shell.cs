@@ -1,13 +1,10 @@
-﻿using _7Sharp.Intrerpreter;
-using _7Sharp.Manual;
+﻿using _7Sharp.Manual;
 using _7Sharp.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Techcraft7_DLL_Pack.Text;
 using _7SEditor = _7Sharp.Editor.Editor;
 using CommandList = System.Collections.Generic.Dictionary<_7Sharp.Shell.CommandInfo, System.Action<string[]>>;
@@ -20,7 +17,7 @@ namespace _7Sharp.Shell
 	internal sealed partial class Shell
 	{
 		internal _7SEditor editor = new _7SEditor();
-		internal Interpreter interpreter = new Interpreter();
+		internal Interpreter.Interpreter interpreter = new Interpreter.Interpreter();
 		internal CommandList commands;
 		private bool run = true;
 		private readonly string PLUGINS_DIRECTORY = "plugins" + Program.DirectorySeperator;

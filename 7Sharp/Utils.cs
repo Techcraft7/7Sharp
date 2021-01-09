@@ -1,4 +1,4 @@
-﻿using _7Sharp.Intrerpreter;
+﻿using _7Sharp.Interpreter;
 using sly.lexer;
 using System;
 using System.CodeDom;
@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Techcraft7_DLL_Pack.Text;
-using TokenList = System.Collections.Generic.List<sly.lexer.Token<_7Sharp.Intrerpreter.TokenType>>;
+using TokenList = System.Collections.Generic.List<sly.lexer.Token<_7Sharp.Interpreter.TokenType>>;
 
 namespace _7Sharp
 {
@@ -52,7 +52,7 @@ namespace _7Sharp
 		internal static void PrintError(Exception e)
 		{
 			bool hasInnerException = e.InnerException != null;
-			if (e is InterpreterException || (hasInnerException ? e.InnerException is InterpreterException : false))
+			if (e is InterpreterException || (hasInnerException && e.InnerException is InterpreterException))
 			{
 				ColorConsoleMethods.WriteLineColor($"{(hasInnerException ? e.InnerException.Message : e.Message)}", ConsoleColor.Red);
 				return;

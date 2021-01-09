@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Techcraft7_DLL_Pack.Text;
-using _7Sharp.Intrerpreter;
+using _7Sharp.Interpreter;
 using _7SShell = _7Sharp.Shell.Shell;
 
 namespace _7Sharp
@@ -25,7 +25,7 @@ namespace _7Sharp
 		{
 			//title
 			Title = "7Sharp";
-			if (args.Length > 1)
+			if (args.Length >= 1)
 			{
 				try
 				{
