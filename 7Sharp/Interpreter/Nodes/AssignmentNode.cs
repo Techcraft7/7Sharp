@@ -74,7 +74,7 @@ namespace _7Sharp.Interpreter.Nodes
 						{
 							throw new InterpreterException("Attempted to replace a character in a string with a non-character!");
 						}
-						iState.Variables.Peek()[name] = new string(arr);
+						vars[name] = new string(arr);
 					}
 					else
 					{
