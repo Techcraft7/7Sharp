@@ -1,0 +1,12 @@
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\bin\Debug\net7.0\7Sharp.Compiler.deps.json
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\bin\Debug\net7.0\7Sharp.Compiler.dll
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\bin\Debug\net7.0\7Sharp.Compiler.pdb
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\7Sharp.Compiler.csproj.AssemblyReference.cache
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\7Sharp.Compiler.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\7Sharp.Compiler.AssemblyInfoInputs.cache
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\7Sharp.Compiler.AssemblyInfo.cs
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\7Sharp.Compiler.csproj.CoreCompileInputs.cache
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\7Sharp.Compiler.dll
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\refint\7Sharp.Compiler.dll
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\7Sharp.Compiler.pdb
+C:\Users\Techcraft7\Source\Repos\7Sharp\7Sharp.Compiler\obj\Debug\net7.0\ref\7Sharp.Compiler.dll
