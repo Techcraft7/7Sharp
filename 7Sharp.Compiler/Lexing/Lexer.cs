@@ -25,11 +25,20 @@ public static class Lexer
 			{
 				case '/' when stream.Peek() == '/':
 					_ = stream.Next(); // Eat second slash
-					tokens.Add(ReadSingleLineComment(stream));
+					tokens.Add(LexSingleLineComment(stream));
 					stream.Commit();
 					break;
 				case '/' when stream.Peek() == '*':
+				{
+					_ = stream.Next(); // eat *
+					if (!TryLexMultiLineComment(stream, out Token comment, out LexerError error))
+					{
+						return error;
+					}
+					tokens.Add(comment);
+					stream.Commit();
 					break;
+				}
 				case '\"':
 				{
 					if (!TryLexString(stream, out Token str, out LexerError error))
@@ -71,30 +80,6 @@ public static class Lexer
 					stream.Commit();
 					break;
 				}
-				case '(':
-					tokens.Add(new(TokenType.OPEN_PAREN, "(", new(stream.Line, stream.Column)));
-					stream.Commit();
-					break;
-				case ')':
-					tokens.Add(new(TokenType.CLOSE_PAREN, ")", new(stream.Line, stream.Column)));
-					stream.Commit();
-					break;
-				case '[':
-					tokens.Add(new(TokenType.OPEN_BRACKET, "[", new(stream.Line, stream.Column)));
-					stream.Commit();
-					break;
-				case ']':
-					tokens.Add(new(TokenType.CLOSE_BRACKET, "]", new(stream.Line, stream.Column)));
-					stream.Commit();
-					break;
-				case '{':
-					tokens.Add(new(TokenType.OPEN_BRACE, "{", new(stream.Line, stream.Column)));
-					stream.Commit();
-					break;
-				case '}':
-					tokens.Add(new(TokenType.CLOSE_BRACE, "}", new(stream.Line, stream.Column)));
-					stream.Commit();
-					break;
 				case ' ' or '\t' or '\r' or '\n':
 					stream.Commit();
 					continue;
@@ -105,8 +90,10 @@ public static class Lexer
 					threeCharBuf[2] = stream.Peek(2) ?? '\0';
 					(int count, TokenType type) = threeCharBuf switch
 					{
+						// 3 chars
 						['!', '>', '>'] => (3, TokenType.ERROR_MAP),
 						['!', '?', '?'] => (3, TokenType.ERROR_DEFAULT),
+						// 2 chars
 						['?', '?', _] => (2, TokenType.DEFAULT),
 						['?', '.', _] => (2, TokenType.VALUE_CHAIN),
 						['!', '.', _] => (2, TokenType.ERROR_CHAIN),
@@ -119,9 +106,10 @@ public static class Lexer
 						['=', '>', _] => (2, TokenType.LAMBDA),
 						['+', '+', _] => (2, TokenType.INCREMENT),
 						['-', '-', _] => (2, TokenType.DECREMENT),
-						['&', '&', _] => (1, TokenType.BOOL_AND),
-						['|', '|', _] => (1, TokenType.BOOL_OR),
-						['^', '^', _] => (1, TokenType.BOOL_XOR),
+						['&', '&', _] => (2, TokenType.BOOL_AND),
+						['|', '|', _] => (2, TokenType.BOOL_OR),
+						['^', '^', _] => (2, TokenType.BOOL_XOR),
+						// 1 char
 						['>', _, _] => (1, TokenType.GREATER_THAN),
 						['<', _, _] => (1, TokenType.LESS_THAN),
 						['!', _, _] => (1, TokenType.BOOL_NOT),
@@ -135,6 +123,14 @@ public static class Lexer
 						['.', _, _] => (1, TokenType.DOT),
 						['*', _, _] => (1, TokenType.TIMES),
 						['/', _, _] => (1, TokenType.DIVIDE),
+						['%', _, _] => (1, TokenType.MOD),
+						[';', _, _] => (1, TokenType.SEMICOLON),
+						['(', _, _] => (1, TokenType.OPEN_PAREN),
+						[')', _, _] => (1, TokenType.CLOSE_PAREN),
+						['[', _, _] => (1, TokenType.OPEN_BRACKET),
+						[']', _, _] => (1, TokenType.CLOSE_BRACKET),
+						['{', _, _] => (1, TokenType.OPEN_BRACE),
+						['}', _, _] => (1, TokenType.CLOSE_BRACE),
 						_ => (0, default)
 					};
 					if (count == 0)
@@ -179,6 +175,7 @@ public static class Lexer
 			"else" => TokenType.ELSE,
 			"while" => TokenType.WHILE,
 			"function" => TokenType.FUNCTION,
+			"_" => TokenType.CATCH_ALL,
 			_ => TokenType.IDENFITIER
 		}, s, new(startLine, startCol));
 		return true;
@@ -232,6 +229,11 @@ public static class Lexer
 		int startLine = stream.Line, startCol = stream.Column; // pos of first '
 		token = default;
 		error = default;
+		if (stream.AtEnd)
+		{
+			error = new(LexerErrorType.UNCLOSED_CHAR, new(startLine, startCol), 1);
+			return false;
+		}
 		char c = stream.Next();
 		switch (c)
 		{
@@ -267,11 +269,12 @@ public static class Lexer
 		bool r = false;
 		(esc, r) = c switch
 		{
+			'\'' => ("'", true),
 			'"' => ("\"", true),
 			'n' => ("\n", true),
 			't' => ("\t", true),
 			'r' => ("\r", true),
-			'\'' => ("'", true),
+			'\\' => ("\\", true),
 			'0' => ("\0", true),
 			_ => (string.Empty, false)
 		};
@@ -345,12 +348,12 @@ public static class Lexer
 		return r;
 	}
 
-	private static Token ReadSingleLineComment(TransactionalCharStream stream)
+	private static Token LexSingleLineComment(TransactionalCharStream stream)
 	{
 		int startLine = stream.Line, startCol = stream.Column;
 		StringBuilder sb = new();
 		char current = '\0';
-		while (!stream.AtEnd && current != '\n')
+		while (!stream.AtEnd && current is not '\n')
 		{
 			current = stream.Next();
 			_ = sb.Append(current);
@@ -358,6 +361,40 @@ public static class Lexer
 		_ = sb.Remove(sb.Length - 1, 1);
 		string s = sb.ToString();
 		return new(TokenType.SINGLE_LINE_COMMENT, s, new(startLine, startCol));
+	}
+
+	private static bool TryLexMultiLineComment(TransactionalCharStream stream, out Token token, out LexerError error)
+	{
+		int startLine = stream.Line, startCol = stream.Column;
+		token = default;
+		error = default;
+		StringBuilder sb = new();
+		bool closed = false;
+		while (!stream.AtEnd)
+		{
+			char c = stream.Next();
+			char c2 = stream.Peek() ?? '\0';
+			if (c == '*' && c2 == '/')
+			{
+				closed = true;
+				break;
+			}
+			else
+			{
+				sb.Append(c);
+			}
+		}
+		if (!closed)
+		{
+			error = new(LexerErrorType.UNCLOSED_MULTILINE_COMMENT, new(startLine, startCol), 2);
+			return false;
+		}
+		_ = sb.Remove(sb.Length - 1, 1); // remove * (we break when we are at * and see /)
+										 // Eat second /
+		_ = stream.Next();
+		string s = sb.ToString();
+		token = new(TokenType.MULTI_LINE_COMMENT, s, new(startLine, startCol));
+		return true;
 	}
 
 	private static bool TryLexNumber(TransactionalCharStream stream, out Token number, out LexerError error)

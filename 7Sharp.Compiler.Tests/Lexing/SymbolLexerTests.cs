@@ -1,0 +1,46 @@
+﻿using _7Sharp.Compiler.Lexing;
+
+namespace _7Sharp.Compiler.Tests.Lexing;
+
+public sealed class SymbolLexerTests
+{
+	[Theory]
+	[TestCase(";", new[] { TokenType.SEMICOLON })]
+	[TestCase("(", new[] { TokenType.OPEN_PAREN })]
+	[TestCase(")", new[] { TokenType.CLOSE_PAREN })]
+	[TestCase("{", new[] { TokenType.OPEN_BRACE })]
+	[TestCase("}", new[] { TokenType.CLOSE_BRACE })]
+	[TestCase("[", new[] { TokenType.OPEN_BRACKET })]
+	[TestCase("]", new[] { TokenType.CLOSE_BRACKET })]
+	[TestCase("+", new[] { TokenType.PLUS })]
+	[TestCase("-", new[] { TokenType.MINUS })]
+	[TestCase("*", new[] { TokenType.TIMES })]
+	[TestCase("/", new[] { TokenType.DIVIDE })]
+	[TestCase("%", new[] { TokenType.MOD })]
+	[TestCase("++", new[] { TokenType.INCREMENT })]
+	[TestCase("--", new[] { TokenType.DECREMENT })]
+	[TestCase("==", new[] { TokenType.EQUALS })]
+	[TestCase("!=", new[] { TokenType.NOT_EQUALS })]
+	[TestCase("&&", new[] { TokenType.BOOL_AND })]
+	[TestCase("||", new[] { TokenType.BOOL_OR })]
+	[TestCase("^^", new[] { TokenType.BOOL_XOR })]
+	[TestCase(">", new[] { TokenType.GREATER_THAN })]
+	[TestCase("<", new[] { TokenType.LESS_THAN })]
+	[TestCase(">=", new[] { TokenType.GREATER_THAN_OR_EQUAL })]
+	[TestCase("<=", new[] { TokenType.LESS_THAN_OR_EQUAL })]
+	[TestCase("!", new[] { TokenType.BOOL_NOT })]
+	[TestCase("&", new[] { TokenType.BIT_AND })]
+	[TestCase("|", new[] { TokenType.BIT_OR })]
+	[TestCase("^", new[] { TokenType.BIT_XOR })]
+	[TestCase("~", new[] { TokenType.BIT_NOT })]
+	[TestCase("=", new[] { TokenType.ASSIGNMENT })]
+	[TestCase(".", new[] { TokenType.DOT })]
+	[TestCase("??", new[] { TokenType.DEFAULT })]
+	[TestCase("!>>", new[] { TokenType.ERROR_MAP })]
+	[TestCase("!??", new[] { TokenType.ERROR_DEFAULT })]
+	[TestCase("?.", new[] { TokenType.VALUE_CHAIN })]
+	[TestCase("!.", new[] { TokenType.ERROR_CHAIN })]
+	[TestCase("_", new[] { TokenType.CATCH_ALL })]
+	[TestCase("=>", new[] { TokenType.LAMBDA })]
+	public void Valid(string s, TokenType[] tokens) => LexingTester.ExpectTokens(s, tokens);
+}
