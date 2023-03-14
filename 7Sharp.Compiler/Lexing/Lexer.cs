@@ -1,8 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Data;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
+﻿using System.Data;
 using System.Text;
 
 namespace _7Sharp.Compiler.Lexing;
@@ -34,7 +30,6 @@ public static class Lexer
 					break;
 				case '/' when stream.Peek() == '*':
 					break;
-				case '-' when stream.Peek() is >= '0' and <= '9':
 				case '\"':
 				{
 					if (!TryLexString(stream, out Token str, out LexerError error))
@@ -44,7 +39,7 @@ public static class Lexer
 					tokens.Add(str);
 					stream.Commit();
 					break;
-				}	
+				}
 				case '\'':
 				{
 					if (!TryLexChar(stream, out Token chr, out LexerError error))
@@ -54,22 +49,19 @@ public static class Lexer
 					tokens.Add(chr);
 					stream.Commit();
 					break;
-				}	
+				}
+				case '-' when stream.Peek() is >= '0' and <= '9':
 				case >= '0' and <= '9':
 				{
 					if (!TryLexNumber(stream, out Token number, out LexerError error))
 					{
 						return error;
 					}
-					if (number.Value.Contains('u') && number.Value.StartsWith('-'))
-					{
-						return new LexerError(LexerErrorType.NEGATIVE_UINT, number.Location, 1);
-					}
 					tokens.Add(number);
 					stream.Commit();
 					break;
 				}
-				case '_' or >= 'A' and <= 'Z' or >= 'a' and <= 'z':
+				case '_' or (>= 'A' and <= 'Z') or (>= 'a' and <= 'z'):
 				{
 					if (!TryLexIdentifier(stream, out Token id, out LexerError error))
 					{
@@ -79,18 +71,34 @@ public static class Lexer
 					stream.Commit();
 					break;
 				}
-				case '!':
-				case '?':
-				case '=':
-				case '<':
-				case '>':
-				case '+':
-				case '-':
-				case '&':
-				case '|':
-				case '^':
-				case '~':
-				case '.':
+				case '(':
+					tokens.Add(new(TokenType.OPEN_PAREN, "(", new(stream.Line, stream.Column)));
+					stream.Commit();
+					break;
+				case ')':
+					tokens.Add(new(TokenType.CLOSE_PAREN, ")", new(stream.Line, stream.Column)));
+					stream.Commit();
+					break;
+				case '[':
+					tokens.Add(new(TokenType.OPEN_BRACKET, "[", new(stream.Line, stream.Column)));
+					stream.Commit();
+					break;
+				case ']':
+					tokens.Add(new(TokenType.CLOSE_BRACKET, "]", new(stream.Line, stream.Column)));
+					stream.Commit();
+					break;
+				case '{':
+					tokens.Add(new(TokenType.OPEN_BRACE, "{", new(stream.Line, stream.Column)));
+					stream.Commit();
+					break;
+				case '}':
+					tokens.Add(new(TokenType.CLOSE_BRACE, "}", new(stream.Line, stream.Column)));
+					stream.Commit();
+					break;
+				case ' ' or '\t' or '\r' or '\n':
+					stream.Commit();
+					continue;
+				default:
 				{
 					threeCharBuf[0] = current;
 					threeCharBuf[1] = stream.Peek() ?? '\0';
@@ -125,6 +133,8 @@ public static class Lexer
 						['^', _, _] => (1, TokenType.BIT_XOR),
 						['~', _, _] => (1, TokenType.BIT_NOT),
 						['.', _, _] => (1, TokenType.DOT),
+						['*', _, _] => (1, TokenType.TIMES),
+						['/', _, _] => (1, TokenType.DIVIDE),
 						_ => (0, default)
 					};
 					if (count == 0)
@@ -140,11 +150,6 @@ public static class Lexer
 					stream.Commit();
 					break;
 				}
-				case ' ' or '\t' or '\r' or '\n':
-					stream.Commit();
-					continue;
-				default:
-					return new LexerError(LexerErrorType.INVALID_CHAR, new(stream.Line, stream.Column), 1, $"{current}");
 			}
 		}
 
@@ -159,10 +164,10 @@ public static class Lexer
 		// Start with first char
 		StringBuilder sb = new(stream.Peek(0).ToString());
 		char c = stream.Peek() ?? '\0';
-		while (!stream.AtEnd && c is '_' or >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9')
+		while (!stream.AtEnd && c is '_' or (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9'))
 		{
 			c = stream.Next();
-			sb.Append(c);
+			_ = sb.Append(c);
 		}
 		string s = sb.ToString();
 		id = new(s switch
@@ -185,12 +190,11 @@ public static class Lexer
 		error = default;
 		str = default;
 		StringBuilder sb = new();
-		char c = '\0';
 		bool closed = false;
 		int count = 0;
 		while (!stream.AtEnd)
 		{
-			c = stream.Next();
+			char c = stream.Next();
 			count++;
 			if (c == '"')
 			{
@@ -206,12 +210,12 @@ public static class Lexer
 				}
 				else
 				{
-					sb.Append(esc);
+					_ = sb.Append(esc);
 				}
 			}
 			else
 			{
-				sb.Append(c);
+				_ = sb.Append(c);
 			}
 		}
 		if (!closed)
@@ -362,7 +366,11 @@ public static class Lexer
 		number = default;
 		error = default;
 		StringBuilder sb = new();
-		bool isInt = true; // Assume s32
+		sb.Append(stream.Peek(0)!.Value);
+		// Assume s32
+		bool isInt = true;
+		int size = 32;
+		bool signed = true;
 		int? dotPos = default;
 		while (!stream.AtEnd)
 		{
@@ -383,13 +391,33 @@ public static class Lexer
 					break;
 				case 'u' or 's':
 				{
+					signed = c is 's';
 					isInt = true;
 					char? next1 = stream.Peek(1);
 					char? next2 = stream.Peek(2);
-					if (next1 is '8' && (next2 ?? '\0') is < '0' or > '9') { }
-					else if (next1 is '1' && next2 is '6') { }
-					else if (next1 is '3' && next2 is '2') { }
-					else if (next1 is '6' && next2 is '4') { }
+					if (next1 is '8' && (next2 ?? '\0') is < '0' or > '9')
+					{
+						size = 8;
+						_ = stream.Next();
+					}
+					else if (next1 is '1' && next2 is '6')
+					{
+						size = 16;
+						_ = stream.Next();
+						_ = stream.Next();
+					}
+					else if (next1 is '3' && next2 is '2')
+					{
+						size = 32;
+						_ = stream.Next();
+						_ = stream.Next();
+					}
+					else if (next1 is '6' && next2 is '4')
+					{
+						size = 64;
+						_ = stream.Next();
+						_ = stream.Next();
+					}
 					else
 					{
 						error = new(
@@ -404,6 +432,7 @@ public static class Lexer
 				case 'f':
 				{
 					isInt = false;
+					signed = true;
 					char? next1 = stream.Peek(1);
 					char? next2 = stream.Peek(2);
 					if (next1 is '3' && next2 is '2') { }
@@ -427,6 +456,13 @@ public static class Lexer
 		if (isInt && dotPos.HasValue)
 		{
 			error = new LexerError(LexerErrorType.INTEGER_WITH_DECIMAL_POINT, new(startLine, dotPos.Value), 1);
+			return false;
+		}
+		sb.Append(isInt ? (signed ? 's' : 'u') : 'f');
+		sb.Append(size);
+		if (sb.Length > 0 && sb[0] == '-' && !signed)
+		{
+			error = new LexerError(LexerErrorType.NEGATIVE_UINT, number.Location, 1);
 			return false;
 		}
 		number = new(isInt ? TokenType.INTEGER : TokenType.FLOAT, sb.ToString(), new(startLine, startCol));
