@@ -6,7 +6,7 @@ public enum TokenType
 	// "// ..." or "/* ... */"
 	SINGLE_LINE_COMMENT,
 	MULTI_LINE_COMMENT,
-	
+
 	SEMICOLON,
 	IDENFITIER,
 
@@ -20,7 +20,7 @@ public enum TokenType
 	// []
 	OPEN_BRACKET,
 	CLOSE_BRACKET,
-	
+
 	// Literals
 	TRUE,
 	FALSE,

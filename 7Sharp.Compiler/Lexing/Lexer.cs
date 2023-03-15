@@ -381,7 +381,7 @@ public static class Lexer
 			}
 			else
 			{
-				sb.Append(c);
+				_ = sb.Append(c);
 			}
 		}
 		if (!closed)
@@ -403,7 +403,7 @@ public static class Lexer
 		number = default;
 		error = default;
 		StringBuilder sb = new();
-		sb.Append(stream.Peek(0)!.Value);
+		_ = sb.Append(stream.Peek(0)!.Value);
 		// Assume s32
 		bool isInt = true;
 		int size = 32;
@@ -495,8 +495,8 @@ public static class Lexer
 			error = new LexerError(LexerErrorType.INTEGER_WITH_DECIMAL_POINT, new(startLine, dotPos.Value), 1);
 			return false;
 		}
-		sb.Append(isInt ? (signed ? 's' : 'u') : 'f');
-		sb.Append(size);
+		_ = sb.Append(isInt ? (signed ? 's' : 'u') : 'f');
+		_ = sb.Append(size);
 		if (sb.Length > 0 && sb[0] == '-' && !signed)
 		{
 			error = new LexerError(LexerErrorType.NEGATIVE_UINT, number.Location, 1);

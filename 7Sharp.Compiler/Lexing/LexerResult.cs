@@ -22,10 +22,7 @@ public sealed class LexerResult
 		tokens = Array.Empty<Token>();
 	}
 
-	public static implicit operator bool(LexerResult result)
-	{
-		return result.IsOk;
-	}
+	public static implicit operator bool(LexerResult result) => result.IsOk;
 
 	public static implicit operator LexerResult(LexerError error) => new(error);
 }

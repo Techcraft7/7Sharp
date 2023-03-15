@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using _7Sharp.Compiler.Lexing;
+﻿using _7Sharp.Compiler.Lexing;
 
 namespace _7Sharp.Compiler.Tests.Lexing;
 
