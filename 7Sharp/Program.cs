@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using _7Sharp.Editor;
+using System.Text;
+
+string editorText = string.Empty;
 
 while (true)
 {
@@ -15,8 +18,12 @@ while (true)
 	{
 		continue;
 	}
-	switch (split[0].ToLower())
+    switch (split[0].ToLower())
 	{
+		case "edit":
+		case "editor":
+			editorText = new Editor(editorText).Edit();
+			break;
 		case "exit":
 			return;
 		case "help":
